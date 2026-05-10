@@ -2770,7 +2770,7 @@ function snapForUndo() {
   const data = collectData();
   const snap = JSON.stringify(data);
   if (snap === lastSnap) return;
-  undoStack.push(JSON.stringify({ ...data, _snapAt: new Date().toISOString() }));
+  undoStack.push(snap);
   if (undoStack.length > 50) undoStack.shift();
   redoStack.length = 0;
   lastSnap = snap;
