@@ -1804,6 +1804,7 @@ function modalSaveSite() {
   localStorage.setItem('ecoverage_saved_sites', JSON.stringify(sites));
   document.getElementById('add-site-form').style.display = 'none';
   renderSavedSites();
+  scheduleSave();
 }
 
 function modalDeleteSite(url) {
@@ -1811,6 +1812,7 @@ function modalDeleteSite(url) {
   delete sites[url];
   localStorage.setItem('ecoverage_saved_sites', JSON.stringify(sites));
   renderSavedSites();
+  scheduleSave();
 }
 
 function renderSavedSites() {
@@ -1826,7 +1828,7 @@ function renderSavedSites() {
   list.innerHTML = entries.map(([url, bin]) => `
     <div style="display:flex;align-items:center;gap:8px;background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:6px;padding:7px 10px;">
       <span style="flex:1;font-size:12px;color:var(--text-primary);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${url}</span>
-      <code style="font-size:11px;color:var(--text-secondary);flex-shrink:0;">${bin.slice(0,8)}…</code>
+      <code style="font-size:11px;color:var(--text-secondary);flex-shrink:0;">${bin}</code>
       <button onclick="navigator.clipboard.writeText('${location.origin}${location.pathname}?bin=${bin}').then(()=>showToast('Link copied!','success'))" title="Copy share link" style="background:none;border:none;cursor:pointer;color:var(--text-secondary);font-size:12px;padding:0 4px;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">
         <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M3 11H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v1" stroke-linecap="round"/></svg>
       </button>
@@ -2833,6 +2835,7 @@ function collectData() {
     traffic: collectTable('traffic-body', ['num','source','geo','qty','type','notes']),
     ads: collectTable('ads-body', ['num','offer','channel','format','geo','lifecycle','landingPage','spyLink','fanPage','creative','creativeLink','angle','headline','cta','title','imp','notes']),
     funnels: collectTable('funnels-body', ['num','link','advertiser','geo','type','obs']),
+    savedSites: JSON.parse(localStorage.getItem('ecoverage_saved_sites') || '{}'),
   };
 }
 
@@ -2884,6 +2887,9 @@ function restoreData(data) {
   restoreTable('traffic-body', data.traffic||[], trafficRow, ['num','source','geo','qty','type','notes']);
   restoreTable('ads-body', data.ads||[], adsRow, ['num','offer','channel','format','geo','lifecycle','landingPage','spyLink','fanPage','creative','creativeLink','angle','headline','cta','title','imp','notes']);
   restoreTable('funnels-body', data.funnels||[], funnelRow, ['num','link','advertiser','geo','type','obs']);
+  if (data.savedSites && Object.keys(data.savedSites).length) {
+    try { localStorage.setItem('ecoverage_saved_sites', JSON.stringify(data.savedSites)); } catch(e) {}
+  }
   setTimeout(() => { resizeAllInputs(); updateAllBadges(); syncAllLinks(); initAllColResize(); updateFrozenOffsets(); applyTextColors(); restoreColWidths(data.colWidths); restoreRowHeights(data.rowHeights); centerTextareas(); initAllDragReorder(); }, 0);
   return true;
 }
