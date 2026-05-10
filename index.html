@@ -2755,6 +2755,7 @@ function setStatus(state, text) {
 }
 let cloudSaveTimer = null;
 function scheduleCloudSave() {
+  if (!autosaveEnabled) return;
   setStatus('saving', 'Saving…');
   clearTimeout(cloudSaveTimer);
   cloudSaveTimer = setTimeout(doSave, 1200);
