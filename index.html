@@ -422,27 +422,33 @@
       <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">Anyone who opens this link will load the same data:</div>
       <div style="display:flex;gap:8px;align-items:center;">
         <span id="modal-share-url" style="flex:1;font-size:11px;color:var(--accent,#4A90D9);word-break:break-all;background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:6px;padding:6px 10px;"></span>
-        <button onclick="copyShareUrl()" style="background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:6px;color:var(--text-secondary);font-size:12px;padding:6px 10px;cursor:pointer;white-space:nowrap;" title="Copy link">Copy</button>
+        <button onclick="copyShareUrl()" style="background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:6px;color:var(--text-secondary);font-size:12px;padding:6px 10px;cursor:pointer;white-space:nowrap;">Copy</button>
       </div>
     </div>
 
-    <div style="border-top:1px solid var(--border-light);padding-top:14px;margin-bottom:14px;">
-      <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-secondary);margin-bottom:8px;">Bake into file <span style="opacity:0.5;font-weight:400;text-transform:none;letter-spacing:0;">— no ?bin= needed</span></div>
-      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">Add URL → Bin ID mappings, download the file, upload to your server. Anyone opening that URL gets the data automatically.</div>
-      <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:10px;">
-        <div style="flex:1;">
-          <label style="font-size:11px;color:var(--text-secondary);display:block;margin-bottom:4px;">Page URL (no https://)</label>
-          <input type="text" id="modal-url-input" placeholder="mkruchan.github.io/my-research" style="font-size:12px;">
-        </div>
-        <div style="width:150px;">
-          <label style="font-size:11px;color:var(--text-secondary);display:block;margin-bottom:4px;">Bin ID</label>
-          <input type="text" id="modal-bin-input" placeholder="69fb9158..." style="font-size:12px;">
-        </div>
-        <button onclick="modalAddSite()" style="background:var(--accent-muted,rgba(74,144,217,0.15));border:1px solid var(--accent,#4A90D9);border-radius:6px;color:var(--accent,#4A90D9);font-size:12px;padding:8px 10px;cursor:pointer;white-space:nowrap;height:36px;">+ Add</button>
+    <div style="border-top:1px solid var(--border-light);padding-top:14px;margin-bottom:14px;" id="saved-sites-section" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-secondary);">Saved sites</div>
+        <button onclick="showAddSiteForm()" id="add-site-btn" style="background:none;border:none;color:var(--accent,#4A90D9);font-size:12px;cursor:pointer;padding:0;">+ Add</button>
       </div>
-      <div id="modal-sites-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;max-height:120px;overflow-y:auto;"></div>
-      <div id="modal-status" style="font-size:12px;color:var(--accent,#4A90D9);margin-top:6px;min-height:16px;text-align:center;"></div>
+      <div id="add-site-form" style="display:none;margin-bottom:10px;">
+        <div style="display:flex;gap:8px;align-items:flex-end;">
+          <div style="flex:1;">
+            <label style="font-size:11px;color:var(--text-secondary);display:block;margin-bottom:4px;">URL (no https://)</label>
+            <input type="text" id="modal-url-input" placeholder="mkruchan.github.io/my-research" style="font-size:12px;">
+          </div>
+          <div style="width:140px;">
+            <label style="font-size:11px;color:var(--text-secondary);display:block;margin-bottom:4px;">Bin ID</label>
+            <input type="text" id="modal-bin-input" placeholder="69fb9158..." style="font-size:12px;">
+          </div>
+          <button onclick="modalSaveSite()" style="background:var(--accent-muted,rgba(74,144,217,0.15));border:1px solid var(--accent,#4A90D9);border-radius:6px;color:var(--accent,#4A90D9);font-size:12px;padding:8px 10px;cursor:pointer;white-space:nowrap;height:36px;">Save</button>
+        </div>
+      </div>
+      <div id="modal-sites-list" style="display:flex;flex-direction:column;gap:5px;"></div>
     </div>
+
+
+
 
     <div class="modal-actions">
       <button class="toolbar-btn" onclick="skipSetup()">Close</button>
@@ -1771,16 +1777,62 @@ function saveSetup() {
   if (bin) BIN_ID = bin;
   if (key) API_KEY = key;
   saveSettings();
-  if (bin) {
-    const newUrl = location.origin + location.pathname + '?bin=' + bin;
-    history.replaceState(null, '', newUrl);
-    updateShareUrl();
-  }
+  if (bin) { history.replaceState(null, '', location.pathname + '?bin=' + bin); updateShareUrl(); }
   document.getElementById('setupModal').classList.add('hidden');
   if (BIN_ID && API_KEY) {
     showToast('Connected! Loading data…', 'success');
     cloudLoad().then(d => { if (d && d.v) { restoreData(d); setStatus('saved', '☁️ Synced'); setTimeout(() => runPostInit(d), 0); } });
   }
+}
+
+function showAddSiteForm() {
+  const form = document.getElementById('add-site-form');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  if (form.style.display === 'block') {
+    document.getElementById('modal-url-input').value = '';
+    document.getElementById('modal-bin-input').value = '';
+    document.getElementById('modal-url-input').focus();
+  }
+}
+
+function modalSaveSite() {
+  const url = document.getElementById('modal-url-input').value.trim().replace(/^https?:\/\//, '').replace(/\/$/, '');
+  const bin = document.getElementById('modal-bin-input').value.trim();
+  if (!url || !bin) return;
+  const sites = JSON.parse(localStorage.getItem('ecoverage_saved_sites') || '{}');
+  sites[url] = bin;
+  localStorage.setItem('ecoverage_saved_sites', JSON.stringify(sites));
+  document.getElementById('add-site-form').style.display = 'none';
+  renderSavedSites();
+}
+
+function modalDeleteSite(url) {
+  const sites = JSON.parse(localStorage.getItem('ecoverage_saved_sites') || '{}');
+  delete sites[url];
+  localStorage.setItem('ecoverage_saved_sites', JSON.stringify(sites));
+  renderSavedSites();
+}
+
+function renderSavedSites() {
+  const sites = JSON.parse(localStorage.getItem('ecoverage_saved_sites') || '{}');
+  const section = document.getElementById('saved-sites-section');
+  const list = document.getElementById('modal-sites-list');
+  const entries = Object.entries(sites);
+  section.style.display = '';
+  if (!entries.length) {
+    list.innerHTML = '<div style="font-size:12px;color:var(--text-secondary);opacity:0.5;padding:4px 0;">No saved sites yet</div>';
+    return;
+  }
+  list.innerHTML = entries.map(([url, bin]) => `
+    <div style="display:flex;align-items:center;gap:8px;background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:6px;padding:7px 10px;">
+      <span style="flex:1;font-size:12px;color:var(--text-primary);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${url}</span>
+      <code style="font-size:11px;color:var(--text-secondary);flex-shrink:0;">${bin.slice(0,8)}…</code>
+      <button onclick="navigator.clipboard.writeText('${location.origin}${location.pathname}?bin=${bin}').then(()=>showToast('Link copied!','success'))" title="Copy share link" style="background:none;border:none;cursor:pointer;color:var(--text-secondary);font-size:12px;padding:0 4px;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M3 11H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v1" stroke-linecap="round"/></svg>
+      </button>
+      <button onclick="modalDeleteSite('${url}')" style="background:none;border:none;cursor:pointer;color:var(--text-secondary);font-size:16px;line-height:1;padding:0 2px;opacity:0.5;" onmouseover="this.style.opacity='1';this.style.color='#e05555'" onmouseout="this.style.opacity='0.5';this.style.color='var(--text-secondary)'">×</button>
+    </div>
+  `).join('');
 }
 
 function copyShareUrl() {
@@ -1803,20 +1855,9 @@ function showSetupModal() {
   document.getElementById('setup-api-key').style.fontFamily = 'monospace';
   document.getElementById('setup-api-key').style.letterSpacing = '0.05em';
   _cloudTitleClicks = 0;
-  // Load current directory from cloud
-  _modalSites = [];
-  modalRenderSites();
-  loadDirectory().then(dir => {
-    _modalSites = Object.entries(dir || {}).map(([url, bin]) => ({ url, bin }));
-    modalRenderSites();
-  });
-  const curUrl = _hostPath;
-  document.getElementById('modal-url-input').value = curUrl;
-  document.getElementById('modal-bin-input').value = BIN_ID || '';
-  document.getElementById('modal-status').textContent = '';
-  modalRenderSites();
   updateShareUrl();
-  binInput.addEventListener('input', updateShareUrl);
+  document.getElementById('setup-bin-id').addEventListener('input', updateShareUrl);
+  renderSavedSites();
   document.getElementById('setupModal').classList.remove('hidden');
 }
 
