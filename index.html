@@ -1804,7 +1804,7 @@ function modalSaveSite() {
   localStorage.setItem('ecoverage_saved_sites', JSON.stringify(sites));
   document.getElementById('add-site-form').style.display = 'none';
   renderSavedSites();
-  scheduleSave();
+  doSave();
 }
 
 function modalDeleteSite(url) {
@@ -1812,7 +1812,7 @@ function modalDeleteSite(url) {
   delete sites[url];
   localStorage.setItem('ecoverage_saved_sites', JSON.stringify(sites));
   renderSavedSites();
-  scheduleSave();
+  doSave();
 }
 
 function renderSavedSites() {
@@ -2887,7 +2887,7 @@ function restoreData(data) {
   restoreTable('traffic-body', data.traffic||[], trafficRow, ['num','source','geo','qty','type','notes']);
   restoreTable('ads-body', data.ads||[], adsRow, ['num','offer','channel','format','geo','lifecycle','landingPage','spyLink','fanPage','creative','creativeLink','angle','headline','cta','title','imp','notes']);
   restoreTable('funnels-body', data.funnels||[], funnelRow, ['num','link','advertiser','geo','type','obs']);
-  if (data.savedSites && Object.keys(data.savedSites).length) {
+  if (data.savedSites) {
     try { localStorage.setItem('ecoverage_saved_sites', JSON.stringify(data.savedSites)); } catch(e) {}
   }
   setTimeout(() => { resizeAllInputs(); updateAllBadges(); syncAllLinks(); initAllColResize(); updateFrozenOffsets(); applyTextColors(); restoreColWidths(data.colWidths); restoreRowHeights(data.rowHeights); centerTextareas(); initAllDragReorder(); }, 0);
@@ -3087,7 +3087,24 @@ async function doSave() {
       localStorage.setItem(LS_HISTORY, JSON.stringify(hist));
     } catch(e) {}
   }
-  const cloudData = { ...data, savedAt: new Date().toISOString(), history: undoStack.filter(e => typeof e === 'string' && JSON.parse(e)._snapAt) };
+  // Strip history and large image data from cloud payload to stay under 100KB
+  const { ads, ...dataWithoutAds } = data;
+  const adsNoImages = (ads||[]).map(row => {
+    if (row.creative && row.creative.t === 'img') return { ...row, creative: { t: 'img', src: '' } };
+    return row;
+  });
+  // Store last 5 history entries in cloud (stripped of images to save space)
+  const last5 = undoStack.filter(e => typeof e === 'string').slice(-5).map(e => {
+    try {
+      const d = JSON.parse(e);
+      const ads = (d.ads||[]).map(r => {
+        if (r.creative && r.creative.t === 'img') return {...r, creative: null}; // strip base64 only
+        return r;
+      });
+      return JSON.stringify({...d, ads});
+    } catch { return e; }
+  });
+  const cloudData = { ...dataWithoutAds, ads: adsNoImages, savedAt: new Date().toISOString(), history: last5 };
   try { localStorage.setItem(LS_LOCAL, JSON.stringify(cloudData)); } catch(e){}
   if (BIN_ID && API_KEY) {
     const ok = await cloudSave(cloudData);
@@ -3254,14 +3271,18 @@ function showToast(msg, type) {
 }
 
 function runPostInit(cloudData) {
-  // Restore history — prefer cloud, fall back to localStorage
   try {
-    const cloudHist = cloudData?.history;
     const localHist = JSON.parse(localStorage.getItem(LS_HISTORY)||'[]');
-    const hist = (cloudHist && cloudHist.length > localHist.length) ? cloudHist : localHist;
-    hist.forEach(e => { if (typeof e === 'string') undoStack.push(e); });
-    // Sync version counter to highest known version number
-    const maxVer = hist.reduce((max, e) => {
+    const cloudHist = cloudData?.history || [];
+    // Merge: prefer cloud entries (more recent saves), dedupe by _snapAt
+    const seen = new Set();
+    const merged = [...localHist, ...cloudHist].filter(e => {
+      if (typeof e !== 'string') return false;
+      try { const d = JSON.parse(e); const k = d._snapAt||e.slice(0,50); if(seen.has(k)) return false; seen.add(k); return true; } catch { return false; }
+    });
+    merged.forEach(e => undoStack.push(e));
+    if (merged.length) localStorage.setItem(LS_HISTORY, JSON.stringify(merged.slice(-30)));
+    const maxVer = merged.reduce((max, e) => {
       try { const d = JSON.parse(e); return Math.max(max, d._versionNum||0); } catch { return max; }
     }, parseInt(localStorage.getItem(LS_VER_CTR)||'0'));
     localStorage.setItem(LS_VER_CTR, maxVer);
