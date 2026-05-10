@@ -2773,7 +2773,7 @@ function snapForUndo() {
   const snap = JSON.stringify(data);
   if (snap === lastSnap) return;
   undoStack.push(snap);
-  if (undoStack.length > 50) undoStack.shift();
+  if (undoStack.length > 100) undoStack.shift();
   redoStack.length = 0;
   lastSnap = snap;
 }
@@ -2821,13 +2821,13 @@ async function doSave() {
   const entry = JSON.stringify({ ...data, _snapAt: new Date().toISOString() });
   if (snap !== lastSnap) {
     undoStack.push(entry);
-    if (undoStack.length > 50) undoStack.shift();
+    if (undoStack.length > 100) undoStack.shift();
     lastSnap = snap;
     // Persist history to localStorage
     try {
       const hist = JSON.parse(localStorage.getItem(LS_HISTORY)||'[]');
       hist.push(entry);
-      if (hist.length > 50) hist.shift();
+      if (hist.length > 100) hist.shift();
       localStorage.setItem(LS_HISTORY, JSON.stringify(hist));
     } catch(e) {}
   }
