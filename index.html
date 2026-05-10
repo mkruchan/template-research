@@ -2756,7 +2756,7 @@ function setStatus(state, text) {
 }
 let cloudSaveTimer = null;
 function scheduleCloudSave() {
-  if (!autosaveEnabled) return;
+  if (_restoring || !autosaveEnabled) return;
   setStatus('saving', 'Saving…');
   clearTimeout(cloudSaveTimer);
   cloudSaveTimer = setTimeout(doSave, 1200);
@@ -2802,7 +2802,10 @@ function applyUndo(stack, otherStack) {
   }, 0);
 }
 
+let _restoring = false;
+
 function scheduleSave() {
+  if (_restoring) return;
   scheduleSnap();
   if (!autosaveEnabled) return;
   setStatus('saving','Saving…');
@@ -2954,14 +2957,19 @@ function hideHistory() {
 function restoreVersion(stackIdx) {
   const snap = undoStack[stackIdx];
   if (!snap) return;
-  if (!confirm('Restore this version? Current state will be saved first.')) return;
+  _restoring = true;
   snapForUndo();
   const parsed = JSON.parse(snap);
   delete parsed._snapAt;
   lastSnap = JSON.stringify(parsed);
   restoreData(parsed);
   hideHistory();
-  showToast('Version restored', 'success');
+  // After DOM settles, clear flag and save the restored state
+  setTimeout(() => {
+    _restoring = false;
+    doSave();
+    showToast('Version restored', 'success');
+  }, 300);
 }
 
 function showToast(msg, type) {
