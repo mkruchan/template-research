@@ -1701,30 +1701,27 @@ function notesResizeStart(e, handle) {
   const id = handle.dataset.for;
   const ta = document.getElementById(id);
   if (!ta) return;
-  _notesResizeState = { ta, id, startY: e.clientY, startH: ta.offsetHeight };
-  document.body.style.userSelect = 'none';
-  document.body.style.webkitUserSelect = 'none';
-  document.body.style.cursor = 'ns-resize';
+  const startY = e.clientY;
+  const startH = ta.offsetHeight;
   e.preventDefault();
   e.stopPropagation();
+
+  function onMove(ev) {
+    ta.style.height = Math.max(60, startH + (ev.clientY - startY)) + 'px';
+  }
+  function onUp() {
+    window.removeEventListener('mousemove', onMove);
+    window.removeEventListener('mouseup', onUp);
+    document.body.style.userSelect = '';
+    document.body.style.cursor = '';
+    localStorage.setItem('notes-h-' + id, ta.style.height);
+    try { doSave(); } catch(err) {}
+  }
+  document.body.style.userSelect = 'none';
+  document.body.style.cursor = 'ns-resize';
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onUp);
 }
-
-document.addEventListener('mousemove', (e) => {
-  if (!_notesResizeState) return;
-  const newH = Math.max(60, _notesResizeState.startH + (e.clientY - _notesResizeState.startY));
-  _notesResizeState.ta.style.height = newH + 'px';
-});
-
-document.addEventListener('mouseup', () => {
-  if (!_notesResizeState) return;
-  const { ta, id } = _notesResizeState;
-  localStorage.setItem('notes-h-' + id, ta.style.height);
-  try { doSave(); } catch(e) {}
-  document.body.style.userSelect = '';
-  document.body.style.webkitUserSelect = '';
-  document.body.style.cursor = '';
-  _notesResizeState = null;
-});
 
 
 function saveNotesHeight(ta) {
@@ -2882,6 +2879,8 @@ function restoreData(data) {
       h1.dataset.text = t; h1.dataset.url = tu;
       if (tu) { const a = document.createElement('a'); a.href = tu; a.target = '_blank'; a.rel = 'noopener'; a.textContent = t; a.style.cssText = 'color:inherit;text-decoration:underline;text-underline-offset:3px;'; h1.innerHTML = ''; h1.appendChild(a); } else { h1.textContent = t; }
       updateTitleLinkBtn(tu);
+      // Persist to localStorage so runPostInit doesn't overwrite with stale value
+      if (t) { localStorage.setItem('ecoverage_title', t); localStorage.setItem('ecoverage_title_url', tu || ''); document.title = t + ' — Multi-Platform Research'; }
     }
 
   }
