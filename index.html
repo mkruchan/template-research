@@ -622,6 +622,7 @@
 const LS_SETTINGS = 'ecoverage_settings_v1';
 const LS_LOCAL    = 'ecoverage_local_v2';
 const LS_HISTORY  = 'ecoverage_history_v1';
+const LS_VER_CTR  = 'ecoverage_version_counter';
 let BIN_ID  = '69fb9158adc21f119a6273c4';
 let API_KEY = '$2a$10$IecvGoWgfhfhPACcMbpQ1ePIEi423.hKIhOwKhAlyX3ARia6WvXt6';
 
@@ -2773,7 +2774,7 @@ function snapForUndo() {
   const snap = JSON.stringify(data);
   if (snap === lastSnap) return;
   undoStack.push(snap);
-  if (undoStack.length > 100) undoStack.shift();
+  if (undoStack.length > 30) undoStack.shift();
   redoStack.length = 0;
   lastSnap = snap;
 }
@@ -2818,16 +2819,18 @@ async function doSave() {
   const data = collectData();
   const snap = JSON.stringify(data);
   // Always record save in history with timestamp
-  const entry = JSON.stringify({ ...data, _snapAt: new Date().toISOString() });
+  const versionNum = (parseInt(localStorage.getItem(LS_VER_CTR)||'0') || 0) + 1;
+  localStorage.setItem(LS_VER_CTR, versionNum);
+  const entry = JSON.stringify({ ...data, _snapAt: new Date().toISOString(), _versionNum: versionNum });
   if (snap !== lastSnap) {
     undoStack.push(entry);
-    if (undoStack.length > 100) undoStack.shift();
+    if (undoStack.length > 30) undoStack.shift();
     lastSnap = snap;
     // Persist history to localStorage
     try {
       const hist = JSON.parse(localStorage.getItem(LS_HISTORY)||'[]');
       hist.push(entry);
-      if (hist.length > 100) hist.shift();
+      if (hist.length > 30) hist.shift();
       localStorage.setItem(LS_HISTORY, JSON.stringify(hist));
     } catch(e) {}
   }
@@ -2937,7 +2940,7 @@ function showHistory() {
       const rowCount = (data.ads?.length||0) + (data.traffic?.length||0) + (data.funnels?.length||0);
       return `<div style="background:var(--bg-primary);border:1px solid var(--border-light);border-radius:8px;padding:10px 12px;cursor:pointer;" onmouseover="this.style.borderColor='var(--accent,#4A90D9)'" onmouseout="this.style.borderColor='var(--border-light)'" onclick="restoreVersion(${undoStack.length - 1 - i})">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-          <span style="font-size:12px;font-weight:500;color:var(--text-primary);">${i === 0 ? '⭐ Latest' : `Version ${allSnaps.length - i}`}</span>
+          <span style="font-size:12px;font-weight:500;color:var(--text-primary);">${i === 0 ? '⭐ Latest' : `Version ${data._versionNum || (allSnaps.length - i)}`}</span>
           <span style="font-size:10px;color:var(--text-secondary);">${date} ${time}</span>
         </div>
         <div style="font-size:11px;color:var(--text-secondary);">${rowCount} rows · ${title}</div>
@@ -3004,6 +3007,11 @@ function runPostInit(cloudData) {
     const localHist = JSON.parse(localStorage.getItem(LS_HISTORY)||'[]');
     const hist = (cloudHist && cloudHist.length > localHist.length) ? cloudHist : localHist;
     hist.forEach(e => { if (typeof e === 'string') undoStack.push(e); });
+    // Sync version counter to highest known version number
+    const maxVer = hist.reduce((max, e) => {
+      try { const d = JSON.parse(e); return Math.max(max, d._versionNum||0); } catch { return max; }
+    }, parseInt(localStorage.getItem(LS_VER_CTR)||'0'));
+    localStorage.setItem(LS_VER_CTR, maxVer);
   } catch(e) {}
   resizeAllInputs(); updateAllBadges(); syncAllLinks(); initAllColResize(); updateFrozenOffsets(); applyTextColors(); initNotesResize(); restoreColWidths(); restoreRowHeights(); centerTextareas(); initAllDragReorder();
   setTimeout(centerTextareas, 300);
