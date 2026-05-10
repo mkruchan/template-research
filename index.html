@@ -264,14 +264,12 @@
     .add-row { padding: 8px 12px; border-top: 1px solid var(--border-light); }
     .add-btn { width: 100%; padding: 6px 12px; font-size: 12px; font-family: inherit; color: var(--text-secondary); background: none; border: 1px dashed var(--border-light); border-radius: var(--radius-md); cursor: pointer; }
     .add-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
-    .notes-body { position: relative; display: flex; flex-direction: column; min-height: 120px; }
-    .notes-body textarea { flex: 1; min-height: 80px; }
-    .notes-body textarea { width: 100%; min-height: 90px; padding: 12px 16px; font-size: 13px; font-family: inherit; color: var(--text-primary); background: transparent; border: none; resize: none; outline: none; line-height: 1.6; box-sizing: border-box; overflow-y: auto; display: block; cursor: text; }
-    .notes-body textarea:hover { cursor: text; }
-    .notes-resize-handle { height: 12px; cursor: row-resize; background: transparent; display: flex; align-items: center; justify-content: center; }
-    .notes-resize-handle::after { content: ''; width: 40px; height: 3px; background: var(--border-mid); border-radius: 2px; }
-    .notes-resize-handle:hover::after { background: var(--accent,#4A90D9); }
+    .notes-body { position: relative; }
+    .notes-body textarea { width: 100%; height: 160px; min-height: 80px; padding: 12px 16px; font-size: 13px; font-family: inherit; color: var(--text-primary); background: transparent; border: none; resize: none; outline: none; line-height: 1.6; box-sizing: border-box; overflow-y: auto; cursor: text; display: block; }
     .notes-body textarea:focus { background: var(--bg-secondary); }
+    .notes-resize-handle { height: 10px; background: var(--bg-secondary); border-top: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center; cursor: ns-resize; user-select: none; -webkit-user-select: none; }
+    .notes-resize-handle::after { content: ''; width: 32px; height: 2px; background: var(--border-mid); border-radius: 2px; pointer-events: none; }
+    .notes-resize-handle:hover::after { background: var(--accent,#4A90D9); }
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     @media (max-width: 620px) { .two-col { grid-template-columns: 1fr; } }
 
@@ -465,7 +463,7 @@
           <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTc4IiBoZWlnaHQ9IjI2MiIgdmlld0JveD0iMCAwIDk3OCAyNjIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0yMjAuMDA4IDIxNi4yMkwxMTguODk5IDBWMTM3LjMzOEMxMTguODk5IDE4MC45MDMgMTU0LjYwMyAyMTYuMjIgMTk4LjY0NyAyMTYuMjJIMjIwLjAwOFoiIGZpbGw9IiMwMTZBQzkiLz4KPHBhdGggZD0iTTAgMjE2LjIyTDEwMS4xMDkgMFYxMzcuMzM4QzEwMS4xMDkgMTgwLjkwMyA2NS40MDQyIDIxNi4yMiAyMS4zNjEgMjE2LjIySDBaIiBmaWxsPSIjMDE2QUM5Ii8+CjxwYXRoIGQ9Ik0xMDguOTQgMTgxLjcxTDExNi4xNjYgMTk0LjM4MUMxMjEuMDE0IDIwMi44ODQgMTI4LjEyIDIwOS45MTIgMTM2LjcxNSAyMTQuNzA4TDE0OS41MjYgMjIxLjg1NUwxMzYuNzE1IDIyOS4wMDJDMTI4LjEyIDIzMy43OTggMTIxLjAxNCAyNDAuODI2IDExNi4xNjYgMjQ5LjMyOEwxMDguOTQgMjYyTDEwMS43MTUgMjQ5LjMyOEM5Ni44NjY0IDI0MC44MjYgODkuNzYwNyAyMzMuNzk4IDgxLjE2NTMgMjI5LjAwMkw2OC4zNTQyIDIyMS44NTVMODEuMTY1MyAyMTQuNzA4Qzg5Ljc2MDcgMjA5LjkxMiA5Ni44NjY0IDIwMi44ODQgMTAxLjcxNSAxOTQuMzgxTDEwOC45NCAxODEuNzFaIiBmaWxsPSIjMDE2QUM5Ii8+CjxwYXRoIGQ9Ik0zMDUuNDg0IDE5My4xNzRIMzcwLjkwMVYyMjQuNDAySDI2NS42NjVWMjguMDMyN0gzMDUuNDg0VjE5My4xNzRaIiBmaWxsPSIjMDE2QUM5Ii8+CjxwYXRoIGQ9Ik00MTYuNDAyIDQ5Ljk3NjRDNDA5LjM4NSA0OS45NzY0IDQwMy41MDcgNDcuODE5MyAzOTguNzY2IDQzLjUwNTVDMzk0LjIxOCAzOS4wMDQ1IDM5MS45NDIgMzMuNDcxNiAzOTEuOTQyIDI2LjkwNzJDMzkxLjk0MiAyMC4zNDI4IDM5NC4yMTggMTQuOTAzNyAzOTguNzY2IDEwLjU5QzQwMy41MDcgNi4wODg2NyA0MDkuMzg1IDMuODM4MDQgNDE2LjQwMiAzLjgzODA0QzQyMy40MTggMy44MzgwNCA0MjkuMiA2LjA4ODY3IDQzMy43NTIgMTAuNTlDNDM4LjQ5MyAxNC45MDM3IDQ0MC44NjEgMjAuMzQyOCA0NDAuODYxIDI2LjkwNzJDNDQwLjg2MSAzMy40NzE2IDQzOC40OTMgMzkuMDA0NSA0MzMuNzUyIDQzLjUwNTVDNDI5LjIgNDcuODE5MyA0MjMuNDE4IDQ5Ljk3NjQgNDE2LjQwMiA0OS45NzY0Wk00MzYuMDI4IDY4LjU0NDRWMjI0LjQwMkgzOTYuMjA5VjY4LjU0NDRINDM2LjAyOFoiIGZpbGw9IiMwMTZBQzkiLz4KPHBhdGggZD0iTTU0Ny42MTMgMTAwLjg5OEg1MjAuMDI0VjIyNC40MDJINDc5LjYzNlYxMDAuODk4SDQ2MS43MTZWNjguNTQ0Nkg0NzkuNjM2VjYwLjY2NzNDNDc5LjYzNiA0MS41MzY2IDQ4NS4xMzcgMjcuNDcwMSA0OTYuMTMzIDE4LjQ2NzVDNTA3LjEyOSA5LjQ2NDkgNTIzLjcxOSA1LjI0NDkyIDU0NS45MDYgNS44MDc1OFYzOS4wMDQ3QzUzNi4yMzMgMzguODE3MSA1MjkuNTA0IDQwLjQxMTQgNTI1LjcxIDQzLjc4NzNDNTIxLjkxOSA0Ny4xNjM1IDUyMC4wMjQgNTMuMjU4OCA1MjAuMDI0IDYyLjA3NFY2OC41NDQ2SDU0Ny42MTNWMTAwLjg5OFoiIGZpbGw9IiMwMTZBQzkiLz4KPHBhdGggZD0iTTYxOS43NzUgMTAwLjg5N1YxNzYuMjk0QzYxOS43NzUgMTgxLjU0NiA2MjEuMDA5IDE4NS4zOSA2MjMuNDczIDE4Ny44MjhDNjI2LjEyNiAxOTAuMDc5IDYzMC40OSAxOTEuMjA0IDYzNi41NTcgMTkxLjIwNEg2NTUuMDQ1VjIyNC40MDJINjMwLjAxM0M1OTYuNDU2IDIyNC40MDIgNTc5LjY3MSAyMDguMjcyIDU3OS42NzEgMTc2LjAxM1YxMDAuODk3SDU2MC45MDFWNjguNTQ0Mkg1NzkuNjcxVjMwLjAwMTdINjE5Ljc3NVY2OC41NDQySDY1NS4wNDVWMTAwLjg5N0g2MTkuNzc1WiIgZmlsbD0iIzAxNkFDOSIvPgo8cGF0aCBkPSJNNzQxLjY3IDI2LjkwNzNWMjI0LjQwMkg2OTMuMDMyVjI2LjkwNzNINzQxLjY3WiIgZmlsbD0iIzAxNkFDOSIvPgo8cGF0aCBkPSJNOTE5LjEyMyAyNTguMTYxTDg5My41MjYgMjI0LjEyQzg4NS45NDQgMjI1LjYyIDg3OC41NDcgMjI2LjM3MSA4NzEuMzQyIDIyNi4zNzFDODUyLjU3MiAyMjYuMzcxIDgzNS4zMTQgMjIyLjA1NyA4MTkuNTc3IDIxMy40M0M4MDQuMDMgMjA0LjgwMiA3OTEuNjA4IDE5Mi43OTkgNzgyLjMxOSAxNzcuNDJDNzczLjIxNSAxNjEuODUyIDc2OC42NjcgMTQ0LjQxIDc2OC42NjcgMTI1LjA5MkM3NjguNjY3IDEwNS43NzQgNzczLjIxNSA4OC40MjQ4IDc4Mi4zMTkgNzMuMDQ1OEM3OTEuNjA4IDU3LjY2NjEgODA0LjAzIDQ1LjY2MjcgODE5LjU3NyAzNy4wMzUxQzgzNS4zMTQgMjguNDA3NiA4NTIuNTcyIDI0LjA5MzkgODcxLjM0MiAyNC4wOTM5Qzg5MC4xMTIgMjQuMDkzOSA5MDcuMjc0IDI4LjQwNzYgOTIyLjgyNSAzNy4wMzUxQzkzOC41NTggNDUuNjYyNyA5NTAuODg3IDU3LjY2NjEgOTU5Ljc5NiA3My4wNDU4Qzk2OC44OTYgODguNDI0OCA5NzMuNDQ4IDEwNS43NzQgOTczLjQ0OCAxMjUuMDkyQzk3My40NDggMTQxLjk3MiA5NjkuOTM4IDE1Ny40NDUgOTYyLjkyNSAxNzEuNTEyQzk1Ni4xMDEgMTg1LjM5IDk0Ni41MjQgMTk2LjkyNSA5MzQuMTk4IDIwNi4xMTVMOTc4IDI1OC4xNjFIOTE5LjEyM1pNODE4LjQzOSAxMjUuMDkyQzgxOC40MzkgMTQyLjUzNCA4MjMuMTc3IDE1Ni41MDcgODMyLjY2MSAxNjcuMDFDODQyLjMzIDE3Ny4zMjYgODU1LjIyNSAxODIuNDgzIDg3MS4zNDIgMTgyLjQ4M0M4ODcuMjcgMTgyLjQ4MyA4OTkuOTczIDE3Ny4yMzIgOTA5LjQ1NCAxNjYuNzI5QzkxOS4xMjMgMTU2LjIyNiA5MjMuOTYgMTQyLjM0NyA5MjMuOTYgMTI1LjA5MkM5MjMuOTYgMTA3LjY0OSA5MTkuMTIzIDkzLjc3MDIgOTA5LjQ1NCA4My40NTQ3Qzg5OS45NzMgNzIuOTUxOSA4ODcuMjcgNjcuNzAwMSA4NzEuMzQyIDY3LjcwMDFDODU1LjIyNSA2Ny43MDAxIDg0Mi4zMyA3Mi44NTc5IDgzMi42NjEgODMuMTczNEM4MjMuMTc3IDkzLjQ4OSA4MTguNDM5IDEwNy40NjIgODE4LjQzOSAxMjUuMDkyWiIgZmlsbD0iIzAxNkFDOSIvPgo8L3N2Zz4K" style="height:32px;object-fit:contain;margin-bottom:6px;display:block;">
           <div style="font-size:24px;color:var(--text-primary);font-weight:600;margin-bottom:4px;">Multi-Platform Creative Research</div>
           <div style="display:flex;align-items:center;gap:4px;flex-wrap:nowrap;">
-            <h1 id="main-title" style="color:var(--text-primary);margin:0;white-space:normal;word-break:break-word;">OBD Fuel Saver - SynGas</h1>
+            <h1 id="main-title" style="color:var(--text-primary);margin:0;white-space:normal;word-break:break-word;" data-text="" data-url=""></h1>
             <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
               <button onclick="editTitle()" title="Edit title" style="background:none;border:none;cursor:pointer;color:var(--text-secondary);opacity:0.7;padding:2px;line-height:1;display:flex;align-items:center;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 2l3 3-8 8H3v-3l8-8z" stroke-linejoin="round"/></svg>
@@ -526,7 +524,7 @@
         </div>
         <span class="section-title">Key takeaways</span>
       </div>
-      <div class="notes-body"><textarea id="notes-takeaways" placeholder="Summarize the main findings, patterns, and strategic insights from this analysis..." oninput="scheduleCloudSave()"></textarea><div class="notes-resize-handle" data-for="notes-takeaways" onmousedown="notesResizeStart(event,this)"></div></div>
+      <div class="notes-body"><textarea id="notes-takeaways" placeholder="Summarize the main findings, patterns, and strategic insights from this analysis..." oninput="scheduleCloudSave()"></textarea><div class="notes-resize-handle" onmousedown="notesResizeStart(event,this)" data-for="notes-takeaways"></div></div>
     </div>
     <div class="section">
       <div class="section-header">
@@ -535,7 +533,7 @@
         </div>
         <span class="section-title">Recommended actions</span>
       </div>
-      <div class="notes-body"><textarea id="notes-actions" placeholder="List specific actions to test, replicate, or counter based on these findings..." oninput="scheduleCloudSave()"></textarea><div class="notes-resize-handle" data-for="notes-actions" onmousedown="notesResizeStart(event,this)"></div></div>
+      <div class="notes-body"><textarea id="notes-actions" placeholder="List specific actions to test, replicate, or counter based on these findings..." oninput="scheduleCloudSave()"></textarea><div class="notes-resize-handle" onmousedown="notesResizeStart(event,this)" data-for="notes-actions"></div></div>
     </div>
   </div>
 
@@ -1702,36 +1700,46 @@ let _notesResizeState = null;
 function notesResizeStart(e, handle) {
   const id = handle.dataset.for;
   const ta = document.getElementById(id);
-  const body = ta ? ta.closest('.notes-body') : null;
-  if (!ta || !body) return;
-  _notesResizeState = { ta, body, id, startY: e.clientY, startH: body.offsetHeight };
+  if (!ta) return;
+  _notesResizeState = { ta, id, startY: e.clientY, startH: ta.offsetHeight };
   document.body.style.userSelect = 'none';
-  document.body.style.cursor = 'row-resize';
+  document.body.style.webkitUserSelect = 'none';
+  document.body.style.cursor = 'ns-resize';
   e.preventDefault();
+  e.stopPropagation();
 }
 
 document.addEventListener('mousemove', (e) => {
   if (!_notesResizeState) return;
-  const h = Math.max(80, _notesResizeState.startH + (e.clientY - _notesResizeState.startY));
-  _notesResizeState.body.style.height = h + 'px';
+  const newH = Math.max(60, _notesResizeState.startH + (e.clientY - _notesResizeState.startY));
+  _notesResizeState.ta.style.height = newH + 'px';
 });
 
 document.addEventListener('mouseup', () => {
   if (!_notesResizeState) return;
-  localStorage.setItem('notes-h-' + _notesResizeState.id, _notesResizeState.body.style.height);
+  const { ta, id } = _notesResizeState;
+  localStorage.setItem('notes-h-' + id, ta.style.height);
   try { doSave(); } catch(e) {}
   document.body.style.userSelect = '';
+  document.body.style.webkitUserSelect = '';
   document.body.style.cursor = '';
   _notesResizeState = null;
 });
+
+
+function saveNotesHeight(ta) {
+  if (ta.style.height) {
+    localStorage.setItem('notes-h-' + ta.id, ta.style.height);
+    try { doSave(); } catch(e) {}
+  }
+}
 
 function initNotesResize() {
   ['notes-takeaways', 'notes-actions'].forEach(id => {
     const ta = document.getElementById(id);
     if (!ta) return;
-    const body = ta.closest('.notes-body');
     const saved = localStorage.getItem('notes-h-' + id);
-    if (saved && body) body.style.height = saved;
+    if (saved) ta.style.height = saved;
   });
 }function loadSettings() {
   try {
@@ -2815,7 +2823,7 @@ function collectData() {
   return {
     v: 2,
     header: {
-      title: h1 ? (h1.dataset.text || h1.textContent) : '',
+      title: h1 ? (h1.dataset.text || h1.querySelector('a')?.textContent || h1.textContent || '') : '',
       titleUrl: h1 ? (h1.dataset.url || '') : '',
     },
     viewModes: {
@@ -2827,8 +2835,8 @@ function collectData() {
     notes: {
       takeaways: document.getElementById('notes-takeaways').value,
       actions: document.getElementById('notes-actions').value,
-      takeawaysH: document.getElementById('notes-takeaways')?.closest('.notes-body')?.style.height || '',
-      actionsH: document.getElementById('notes-actions')?.closest('.notes-body')?.style.height || '',
+      takeawaysH: document.getElementById('notes-takeaways')?.style.height || '',
+      actionsH: document.getElementById('notes-actions')?.style.height || '',
     },
     colWidths: (function() { const d={}; document.querySelectorAll('table').forEach(t => { const id=t.id||'table'; d[id]={}; t.querySelectorAll('thead th').forEach((th,i)=>{ if(th.style.width) d[id][i]=th.style.width; }); if(t.style.width) d[id]['_tableW']=t.style.width; }); return d; })(),
     rowHeights: (function() { const d={}; document.querySelectorAll('table').forEach(t => { const id=t.id||'table'; d[id]={}; t.querySelectorAll('tbody tr').forEach((tr,i)=>{ if(tr.style.height) d[id][i]=tr.style.height; }); }); return d; })(),
@@ -2882,8 +2890,8 @@ function restoreData(data) {
   document.getElementById('meta-period').value = data.meta?.period||'';
   document.getElementById('notes-takeaways').value = data.notes?.takeaways||'';
   document.getElementById('notes-actions').value = data.notes?.actions||'';
-  if (data.notes?.takeawaysH) { const b = document.getElementById('notes-takeaways')?.closest('.notes-body'); if(b) b.style.height = data.notes.takeawaysH; }
-  if (data.notes?.actionsH) { const b = document.getElementById('notes-actions')?.closest('.notes-body'); if(b) b.style.height = data.notes.actionsH; }
+  if (data.notes?.takeawaysH) { const ta = document.getElementById('notes-takeaways'); if(ta) ta.style.height = data.notes.takeawaysH; }
+  if (data.notes?.actionsH) { const ta = document.getElementById('notes-actions'); if(ta) ta.style.height = data.notes.actionsH; }
   restoreTable('traffic-body', data.traffic||[], trafficRow, ['num','source','geo','qty','type','notes']);
   restoreTable('ads-body', data.ads||[], adsRow, ['num','offer','channel','format','geo','lifecycle','landingPage','spyLink','fanPage','creative','creativeLink','angle','headline','cta','title','imp','notes']);
   restoreTable('funnels-body', data.funnels||[], funnelRow, ['num','link','advertiser','geo','type','obs']);
