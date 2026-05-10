@@ -619,11 +619,12 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-const LS_SETTINGS = 'ecoverage_settings_v1';
-const LS_LOCAL    = 'ecoverage_local_v2';
-const LS_HISTORY  = 'ecoverage_history_v1';
-const LS_VER_CTR  = 'ecoverage_version_counter';
-let BIN_ID  = '69fb9158adc21f119a6273c4';
+const _pageKey = btoa(location.pathname + location.search).replace(/=/g,'').slice(-12);
+const LS_SETTINGS = 'ecoverage_settings_v1_' + _pageKey;
+const LS_LOCAL    = 'ecoverage_local_v2_' + _pageKey;
+const LS_HISTORY  = 'ecoverage_history_v1_' + _pageKey;
+const LS_VER_CTR  = 'ecoverage_version_counter_' + _pageKey;
+let BIN_ID  = '';
 let API_KEY = '$2a$10$IecvGoWgfhfhPACcMbpQ1ePIEi423.hKIhOwKhAlyX3ARia6WvXt6';
 
 function editTitle() {
