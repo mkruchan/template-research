@@ -406,25 +406,47 @@
 
 <div class="modal-overlay hidden" id="setupModal" onclick="handleModalClick(event)">
   <div class="modal">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-      <h2 style="margin:0;cursor:default;user-select:none;" id="cloud-modal-title" onclick="cloudTitleClick()">☁️ Connect shared cloud save</h2>
-      <button onclick="skipSetup()" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text-secondary);line-height:1;padding:0 4px;" title="Close">×</button>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h2 style="margin:0;cursor:default;user-select:none;" id="cloud-modal-title" onclick="cloudTitleClick()">☁️ Cloud setup</h2>
+      <button onclick="skipSetup()" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text-secondary);line-height:1;padding:0 4px;">×</button>
     </div>
-    <p>To sync data across all team members, connect a free <strong>JSONBin.io</strong> bin. Anyone who opens the page will see the latest saved data.</p>
-    <ol>
-      <li>Go to <a href="https://jsonbin.io" target="_blank">jsonbin.io</a> → create a free account</li>
-      <li>Click <strong>Create Bin</strong>, paste <code>{}</code>, click Save</li>
-      <li>Copy the <strong>BIN ID</strong> from the URL bar</li>
-      <li>Go to <strong>API Keys</strong> in the sidebar → create a key → copy it</li>
-      <li>Paste both below and click Connect</li>
-    </ol>
-    <label>Bin ID</label>
-    <input type="text" id="setup-bin-id" placeholder="e.g. 6639abc1234567890abcdef" readonly style="cursor:default;opacity:0.7;">
-    <label id="api-key-label" style="cursor:default;user-select:none;">API Key</label>
-    <input type="text" id="setup-api-key" placeholder="$2a$10$..." readonly style="cursor:default;opacity:0.7;-webkit-text-security:disc;text-security:disc;font-family:text-security-disc,monospace;letter-spacing:0.05em;">
+
+    <label style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-secondary);display:block;margin-bottom:5px;">Bin ID</label>
+    <input type="text" id="setup-bin-id" placeholder="e.g. 69fb9158adc21f119a6273c4" readonly style="cursor:default;opacity:0.7;margin-bottom:14px;">
+
+    <label id="api-key-label" style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-secondary);display:block;margin-bottom:5px;">API Key</label>
+    <input type="text" id="setup-api-key" placeholder="$2a$10$..." readonly style="cursor:default;opacity:0.7;-webkit-text-security:disc;text-security:disc;font-family:monospace;letter-spacing:0.05em;margin-bottom:16px;">
+
+    <div style="border-top:1px solid var(--border-light);padding-top:14px;margin-bottom:14px;">
+      <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-secondary);margin-bottom:8px;">Share link</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">Anyone who opens this link will load the same data:</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span id="modal-share-url" style="flex:1;font-size:11px;color:var(--accent,#4A90D9);word-break:break-all;background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:6px;padding:6px 10px;"></span>
+        <button onclick="copyShareUrl()" style="background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:6px;color:var(--text-secondary);font-size:12px;padding:6px 10px;cursor:pointer;white-space:nowrap;" title="Copy link">Copy</button>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid var(--border-light);padding-top:14px;margin-bottom:14px;">
+      <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-secondary);margin-bottom:8px;">Bake into file <span style="opacity:0.5;font-weight:400;text-transform:none;letter-spacing:0;">— no ?bin= needed</span></div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">Add URL → Bin ID mappings, download the file, upload to your server. Anyone opening that URL gets the data automatically.</div>
+      <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:10px;">
+        <div style="flex:1;">
+          <label style="font-size:11px;color:var(--text-secondary);display:block;margin-bottom:4px;">Page URL (no https://)</label>
+          <input type="text" id="modal-url-input" placeholder="mkruchan.github.io/my-research" style="font-size:12px;">
+        </div>
+        <div style="width:150px;">
+          <label style="font-size:11px;color:var(--text-secondary);display:block;margin-bottom:4px;">Bin ID</label>
+          <input type="text" id="modal-bin-input" placeholder="69fb9158..." style="font-size:12px;">
+        </div>
+        <button onclick="modalAddSite()" style="background:var(--accent-muted,rgba(74,144,217,0.15));border:1px solid var(--accent,#4A90D9);border-radius:6px;color:var(--accent,#4A90D9);font-size:12px;padding:8px 10px;cursor:pointer;white-space:nowrap;height:36px;">+ Add</button>
+      </div>
+      <div id="modal-sites-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;max-height:120px;overflow-y:auto;"></div>
+      <div id="modal-status" style="font-size:12px;color:var(--accent,#4A90D9);margin-top:6px;min-height:16px;text-align:center;"></div>
+    </div>
+
     <div class="modal-actions">
-      <button class="toolbar-btn" onclick="skipSetup()">Skip — local only</button>
-      <button class="toolbar-btn primary" id="connectBtn" onclick="saveSetup()" disabled style="opacity:0.4;cursor:not-allowed;">Connect</button>
+      <button class="toolbar-btn" onclick="skipSetup()">Close</button>
+      <button class="toolbar-btn primary" onclick="saveSetup()">Save &amp; Connect</button>
     </div>
   </div>
 </div>
@@ -619,13 +641,55 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-const _pageKey = btoa(location.pathname + location.search).replace(/=/g,'').slice(-12);
+
+// Master directory bin — stores {_directory: {url: binId}} for all sites
+const MASTER_BIN_ID = '69fb9158adc21f119a6273c4';
+const MASTER_API_KEY = '$2a$10$IecvGoWgfhfhPACcMbpQ1ePIEi423.hKIhOwKhAlyX3ARia6WvXt6';
+const _hostPath = (location.hostname + location.pathname).replace(/\/index\.html$/, '').replace(/\/$/, '');
+const _urlBin = new URLSearchParams(location.search).get('bin') || '';
+// Per-file key — all storage is isolated per page URL
+const _pageKey = btoa(location.hostname + location.pathname.replace(/\/index\.html$/, '')).replace(/[^a-zA-Z0-9]/g,'').slice(-16);
 const LS_SETTINGS = 'ecoverage_settings_v1_' + _pageKey;
 const LS_LOCAL    = 'ecoverage_local_v2_' + _pageKey;
 const LS_HISTORY  = 'ecoverage_history_v1_' + _pageKey;
 const LS_VER_CTR  = 'ecoverage_version_counter_' + _pageKey;
-let BIN_ID  = '';
-let API_KEY = '$2a$10$IecvGoWgfhfhPACcMbpQ1ePIEi423.hKIhOwKhAlyX3ARia6WvXt6';
+const LS_DIR_CACHE = 'ecoverage_dir_cache';
+let BIN_ID  = _urlBin || '';
+let API_KEY = MASTER_API_KEY;
+
+async function loadDirectory() {
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${MASTER_BIN_ID}/latest`, {
+      headers: { 'X-Master-Key': MASTER_API_KEY }
+    });
+    if (!res.ok) return null;
+    const d = await res.json();
+    const dir = d?.record?._directory || {};
+    // Cache locally
+    try { localStorage.setItem(LS_DIR_CACHE, JSON.stringify(dir)); } catch(e) {}
+    return dir;
+  } catch(e) {
+    // Fall back to cache
+    try { return JSON.parse(localStorage.getItem(LS_DIR_CACHE) || '{}'); } catch(e2) { return {}; }
+  }
+}
+
+async function saveDirectory(dir) {
+  try {
+    // Read current master bin, update _directory, write back
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${MASTER_BIN_ID}/latest`, {
+      headers: { 'X-Master-Key': MASTER_API_KEY }
+    });
+    const current = res.ok ? (await res.json())?.record || {} : {};
+    current._directory = dir;
+    await fetch(`https://api.jsonbin.io/v3/b/${MASTER_BIN_ID}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_API_KEY, 'X-Bin-Versioning': 'false' },
+      body: JSON.stringify(current)
+    });
+    try { localStorage.setItem(LS_DIR_CACHE, JSON.stringify(dir)); } catch(e) {}
+  } catch(e) { console.error('saveDirectory error:', e); }
+}
 
 function editTitle() {
   const h1 = document.getElementById('main-title');
@@ -1664,7 +1728,12 @@ function initNotesResize() {
     if (saved && body) body.style.height = saved;
   });
 }function loadSettings() {
-  try { const s = JSON.parse(localStorage.getItem(LS_SETTINGS)||'{}'); BIN_ID = s.binId||BIN_ID; API_KEY = s.apiKey||API_KEY; } catch(e){}
+  try {
+    const s = JSON.parse(localStorage.getItem(LS_SETTINGS)||'{}');
+    // URL param > localStorage > _SITE_BINS (already set in BIN_ID)
+    if (!BIN_ID && s.binId) BIN_ID = s.binId;
+    if (s.apiKey) API_KEY = s.apiKey;
+  } catch(e) {}
 }
 
 function applyReadOnlyMode() {}
@@ -1691,17 +1760,41 @@ function unlockCloudSettings() {
   apiKey.style.letterSpacing = '';
   apiKey.removeAttribute('readonly'); apiKey.style.opacity = '1'; apiKey.style.cursor = 'text';
   binId.removeAttribute('readonly'); binId.style.opacity = '1'; binId.style.cursor = 'text';
-  const btn = document.getElementById('connectBtn');
-  if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; }
+  apiKey.addEventListener('change', () => {
+    if (apiKey.value.trim()) { API_KEY = apiKey.value.trim(); saveSettings(); showToast('API key updated', 'success'); }
+  });
+}
+
+function saveSetup() {
+  const bin = document.getElementById('setup-bin-id').value.trim();
+  const key = document.getElementById('setup-api-key').value.trim();
+  if (bin) BIN_ID = bin;
+  if (key) API_KEY = key;
+  saveSettings();
+  if (bin) {
+    const newUrl = location.origin + location.pathname + '?bin=' + bin;
+    history.replaceState(null, '', newUrl);
+    updateShareUrl();
+  }
+  document.getElementById('setupModal').classList.add('hidden');
+  if (BIN_ID && API_KEY) {
+    showToast('Connected! Loading data…', 'success');
+    cloudLoad().then(d => { if (d && d.v) { restoreData(d); setStatus('saved', '☁️ Synced'); setTimeout(() => runPostInit(d), 0); } });
+  }
+}
+
+function copyShareUrl() {
+  const url = document.getElementById('modal-share-url').textContent;
+  if (url && url !== '—') { navigator.clipboard.writeText(url).then(() => showToast('Link copied!', 'success')); }
 }
 
 function showSetupModal() {
-  document.getElementById('setup-bin-id').value = BIN_ID;
+  const binInput = document.getElementById('setup-bin-id');
+  binInput.value = BIN_ID || '';
+  binInput.setAttribute('readonly', true);
+  binInput.style.opacity = '0.7';
+  binInput.style.cursor = 'default';
   document.getElementById('setup-api-key').value = API_KEY;
-  // Lock fields on open — require triple-click to unlock
-  document.getElementById('setup-bin-id').setAttribute('readonly', true);
-  document.getElementById('setup-bin-id').style.opacity = '0.7';
-  document.getElementById('setup-bin-id').style.cursor = 'default';
   document.getElementById('setup-api-key').setAttribute('readonly', true);
   document.getElementById('setup-api-key').style.opacity = '0.7';
   document.getElementById('setup-api-key').style.cursor = 'default';
@@ -1710,14 +1803,126 @@ function showSetupModal() {
   document.getElementById('setup-api-key').style.fontFamily = 'monospace';
   document.getElementById('setup-api-key').style.letterSpacing = '0.05em';
   _cloudTitleClicks = 0;
+  // Load current directory from cloud
+  _modalSites = [];
+  modalRenderSites();
+  loadDirectory().then(dir => {
+    _modalSites = Object.entries(dir || {}).map(([url, bin]) => ({ url, bin }));
+    modalRenderSites();
+  });
+  const curUrl = _hostPath;
+  document.getElementById('modal-url-input').value = curUrl;
+  document.getElementById('modal-bin-input').value = BIN_ID || '';
+  document.getElementById('modal-status').textContent = '';
+  modalRenderSites();
+  updateShareUrl();
+  binInput.addEventListener('input', updateShareUrl);
   document.getElementById('setupModal').classList.remove('hidden');
 }
+
+function updateShareUrl() {
+  const bin = document.getElementById('setup-bin-id').value.trim();
+  const url = bin ? location.origin + location.pathname + '?bin=' + bin : '—';
+  document.getElementById('modal-share-url').textContent = url;
+}
+
 function saveSetup() {
-  BIN_ID  = document.getElementById('setup-bin-id').value.trim();
-  API_KEY = document.getElementById('setup-api-key').value.trim();
+  const bin = document.getElementById('setup-bin-id').value.trim();
+  const key = document.getElementById('setup-api-key').value.trim();
+  if (bin) BIN_ID = bin;
+  if (key) API_KEY = key;
   saveSettings();
+  // Update URL without reload so share link is correct
+  if (bin) {
+    const newUrl = location.origin + location.pathname + '?bin=' + bin;
+    history.replaceState(null, '', newUrl);
+  }
   document.getElementById('setupModal').classList.add('hidden');
-  if (BIN_ID && API_KEY) { showToast('Cloud sync connected! Loading data…', 'success'); cloudLoad().then(d => { if(d && d.v) { restoreData(d); setStatus('saved','☁️ Synced'); } }); }
+  if (BIN_ID && API_KEY) {
+    showToast('Connected! Loading data…', 'success');
+    cloudLoad().then(d => { if (d && d.v) { restoreData(d); setStatus('saved', '☁️ Synced'); setTimeout(() => runPostInit(d), 0); } });
+  }
+}
+
+let _modalSites = [];
+let _modalFileContent = null;
+
+function modalRenderSites() {
+  // Read current _SITE_BINS from page source if file loaded, else from variable
+  const list = document.getElementById('modal-sites-list');
+  if (!_modalSites.length) {
+    list.innerHTML = '<div style="font-size:12px;color:var(--text-secondary);opacity:0.5;text-align:center;padding:8px 0;">No mappings added yet</div>';
+    return;
+  }
+  list.innerHTML = _modalSites.map((s, i) => `
+    <div style="display:flex;align-items:center;gap:8px;background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:6px;padding:8px 10px;">
+      <span style="flex:1;font-size:12px;color:var(--text-primary);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s.url}</span>
+      <code style="font-size:11px;color:var(--text-secondary);flex-shrink:0;">${s.bin.slice(0,8)}…</code>
+      <button onclick="modalRemoveSite(${i})" style="background:none;border:none;cursor:pointer;color:var(--text-secondary);font-size:16px;line-height:1;padding:0 2px;opacity:0.6;" onmouseover="this.style.opacity='1';this.style.color='var(--danger,#e05555)'" onmouseout="this.style.opacity='0.6';this.style.color='var(--text-secondary)'">×</button>
+    </div>
+  `).join('');
+}
+
+async function modalAddSite() {
+  let url = document.getElementById('modal-url-input').value.trim().replace(/^https?:\/\//, '').replace(/\/$/, '');
+  const bin = document.getElementById('modal-bin-input').value.trim();
+  if (!url || !bin) { document.getElementById('modal-status').textContent = 'Enter both URL and Bin ID'; return; }
+  document.getElementById('modal-status').textContent = 'Saving…';
+  const dir = await loadDirectory() || {};
+  dir[url] = bin;
+  await saveDirectory(dir);
+  _modalSites = Object.entries(dir).map(([u, b]) => ({ url: u, bin: b }));
+  modalRenderSites();
+  document.getElementById('modal-bin-input').value = '';
+  document.getElementById('modal-status').textContent = '✓ Saved — anyone opening ' + url + ' will load this bin';
+  // If this is the current page, apply immediately
+  if (url === _hostPath || _hostPath.startsWith(url)) { BIN_ID = bin; }
+}
+
+async function modalRemoveSite(i) {
+  _modalSites.splice(i, 1);
+  const dir = {};
+  _modalSites.forEach(s => { dir[s.url] = s.bin; });
+  await saveDirectory(dir);
+  modalRenderSites();
+}
+
+function modalFileLoaded(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    _modalFileContent = e.target.result;
+    document.getElementById('modal-file-name').textContent = '✓ ' + file.name;
+    document.getElementById('modal-generate-btn').disabled = false;
+    document.getElementById('modal-generate-btn').style.opacity = '1';
+    // Extract existing _SITE_BINS
+    const m = _modalFileContent.match(/_SITE_BINS\s*=\s*\{([^}]*)\}/);
+    if (m) {
+      const entries = [...m[1].matchAll(/'([^']+)'\s*:\s*'([^']+)'/g)];
+      _modalSites = entries.map(e => ({ url: e[1], bin: e[2] }));
+      modalRenderSites();
+      document.getElementById('modal-status').textContent = entries.length + ' existing mapping(s) loaded from file';
+    }
+  };
+  reader.readAsText(file);
+}
+
+function modalGenerate() {
+  if (!_modalFileContent || !_modalSites.length) {
+    document.getElementById('modal-status').textContent = 'Upload a file and add at least one mapping';
+    return;
+  }
+  const binsStr = _modalSites.map(s => `  '${s.url}': '${s.bin}',`).join('\n');
+  const newBins = `_SITE_BINS = {\n${binsStr}\n}`;
+  let updated = _modalFileContent.replace(/_SITE_BINS\s*=\s*\{[^}]*\}/, newBins);
+  const blob = new Blob([updated], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'research-configured.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  document.getElementById('modal-status').textContent = '✓ Downloaded — upload to your server';
 }
 function handleModalClick(e) {
   if (e.target === document.getElementById('setupModal')) skipSetup();
@@ -3027,6 +3232,13 @@ function runPostInit(cloudData) {
 
 (async function init() {
   loadSettings();
+  // Look up this page's BIN_ID from the cloud directory
+  if (!BIN_ID) {
+    setStatus('saving', '☁️ Loading…');
+    const dir = await loadDirectory();
+    const matched = dir[_hostPath] || dir[Object.keys(dir).find(k => _hostPath.startsWith(k))] || '';
+    if (matched) BIN_ID = matched;
+  }
   if (BIN_ID && API_KEY) {
     setStatus('saving','☁️ Loading…');
     const cloudData = await cloudLoad();
