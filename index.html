@@ -2544,7 +2544,6 @@ function collectData() {
     header: {
       title: h1 ? (h1.dataset.text || h1.textContent) : '',
       titleUrl: h1 ? (h1.dataset.url || '') : '',
-      img: headerImg && headerImg.style.display !== 'none' ? headerImg.src : '',
     },
     viewModes: {
       ads: localStorage.getItem('ads_view_mode') || 'grid',
@@ -2794,10 +2793,16 @@ async function doSave() {
   if (BIN_ID && API_KEY) {
     const ok = await cloudSave(cloudData);
     const t = new Date().toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
-    setStatus(ok ? 'saved' : 'error', ok ? '☁️ Saved · '+t : '⚠️ Cloud failed — saved locally');
+    if (ok) {
+      setStatus('saved', '☁️ Saved · ' + t);
+    } else {
+      setStatus('error', '⚠️ Cloud failed — check console');
+      console.error('doSave: cloudSave returned false. BIN_ID:', BIN_ID, 'API_KEY length:', API_KEY?.length);
+    }
   } else {
     const t = new Date().toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
     setStatus('saved','Saved locally · '+t);
+    console.warn('doSave: no BIN_ID or API_KEY, saved locally only');
   }
 }
 
