@@ -621,6 +621,7 @@
 <script>
 const LS_SETTINGS = 'ecoverage_settings_v1';
 const LS_LOCAL    = 'ecoverage_local_v2';
+const LS_HISTORY  = 'ecoverage_history_v1';
 let BIN_ID  = '69fb9158adc21f119a6273c4';
 let API_KEY = '$2a$10$IecvGoWgfhfhPACcMbpQ1ePIEi423.hKIhOwKhAlyX3ARia6WvXt6';
 
@@ -2819,8 +2820,15 @@ async function doSave() {
     undoStack.push(entry);
     if (undoStack.length > 50) undoStack.shift();
     lastSnap = snap;
+    // Persist history to localStorage
+    try {
+      const hist = JSON.parse(localStorage.getItem(LS_HISTORY)||'[]');
+      hist.push(entry);
+      if (hist.length > 50) hist.shift();
+      localStorage.setItem(LS_HISTORY, JSON.stringify(hist));
+    } catch(e) {}
   }
-  const cloudData = { ...data, savedAt: new Date().toISOString() };
+  const cloudData = { ...data, savedAt: new Date().toISOString(), history: undoStack.filter(e => typeof e === 'string' && JSON.parse(e)._snapAt) };
   try { localStorage.setItem(LS_LOCAL, JSON.stringify(cloudData)); } catch(e){}
   if (BIN_ID && API_KEY) {
     const ok = await cloudSave(cloudData);
@@ -2964,7 +2972,14 @@ function showToast(msg, type) {
   setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),250); },3000);
 }
 
-function runPostInit() {
+function runPostInit(cloudData) {
+  // Restore history — prefer cloud, fall back to localStorage
+  try {
+    const cloudHist = cloudData?.history;
+    const localHist = JSON.parse(localStorage.getItem(LS_HISTORY)||'[]');
+    const hist = (cloudHist && cloudHist.length > localHist.length) ? cloudHist : localHist;
+    hist.forEach(e => { if (typeof e === 'string') undoStack.push(e); });
+  } catch(e) {}
   resizeAllInputs(); updateAllBadges(); syncAllLinks(); initAllColResize(); updateFrozenOffsets(); applyTextColors(); initNotesResize(); restoreColWidths(); restoreRowHeights(); centerTextareas(); initAllDragReorder();
   setTimeout(centerTextareas, 300);
   const vm = localStorage.getItem('ads_view_mode'); setAdsView(vm === 'table' ? 'table' : 'grid');
@@ -2985,13 +3000,13 @@ function runPostInit() {
       restoreData(cloudData);
       const ts = new Date(cloudData.savedAt||Date.now()).toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
       setStatus('saved','☁️ Synced · '+ts);
-      setTimeout(runPostInit, 0);
+      setTimeout(() => runPostInit(cloudData), 0);
       return;
     }
   }
   try {
     const raw = localStorage.getItem(LS_LOCAL);
-    if (raw) { restoreData(JSON.parse(raw)); setStatus('saved','Restored locally'); setTimeout(runPostInit, 0); return; }
+    if (raw) { const parsed = JSON.parse(raw); restoreData(parsed); setStatus('saved','Restored locally'); setTimeout(() => runPostInit(parsed), 0); return; }
   } catch(e){}
   for (let i=1;i<=3;i++) {
     document.getElementById('traffic-body').insertAdjacentHTML('beforeend', trafficRow(i));
@@ -2999,7 +3014,7 @@ function runPostInit() {
     document.getElementById('funnels-body').insertAdjacentHTML('beforeend', funnelRow(i));
   }
   setStatus('', 'Auto-save on');
-  setTimeout(runPostInit, 0);
+  setTimeout(() => runPostInit(null), 0);
 })();
 </script>
 </body>
