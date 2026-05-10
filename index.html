@@ -54,12 +54,13 @@
       }
     }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg-tertiary); color: var(--text-primary); min-height: 100vh; padding: 2rem 1rem; }
-    .container { max-width: 1400px; margin: 0 auto; }
+    .container { max-width: 1400px; margin: 0 auto; overflow-x: hidden; }
     .header { margin-bottom: 2rem; }
     .header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-    .header-left { flex: 1; min-width: 0; }
+    .header-left { flex: 1; min-width: 0; display: flex; align-items: center; gap: 24px; overflow: hidden; }
+    h1#main-title { word-break: break-word; overflow-wrap: break-word; min-width: 0; }
     .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; background: var(--blue-bg); color: var(--blue-text); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 10px; }
-    .header h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+    .header h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; color: var(--text-primary); }
     .header p { font-size: 14px; color: var(--text-secondary); }
     .save-bar { display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-wrap: wrap; }
     .autosave-status { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-secondary); white-space: nowrap; }
@@ -97,7 +98,7 @@
     .meta-field input { width: 100%; padding: 8px 12px; font-size: 13px; border: 1px solid var(--border-light); border-radius: var(--radius-md); background: var(--bg-primary); color: var(--text-primary); outline: none; }
     .meta-field input:focus { border-color: var(--border-mid); }
 
-    .section { margin-bottom: 1.25rem; border: 1px solid var(--border-light); border-radius: var(--radius-lg); overflow: visible; background: var(--bg-primary); }
+    .section { margin-bottom: 1.25rem; border: 1px solid var(--border-light); border-radius: var(--radius-lg); overflow: visible; background: var(--bg-primary); position: relative; }
     .section-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-secondary); border-bottom: 1px solid var(--border-light); }
     .section-icon { width: 30px; height: 30px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .icon-blue { background: var(--blue-bg); } .icon-teal { background: var(--teal-bg); }
@@ -115,97 +116,173 @@
     #ads-table tbody td:last-child { border-right: none; }
     th.frozen-num, td.frozen-num { position: sticky; left: 0; z-index: 20; background: var(--bg-primary); overflow: hidden; }
     th.frozen-num { background: var(--bg-secondary); z-index: 20; }
-    td.frozen-num { vertical-align: middle !important; }
-    th.frozen-offer, td.frozen-offer { position: sticky; left: 28px; z-index: 19; background: var(--bg-primary); vertical-align: top !important; box-shadow: 2px 0 0 var(--border-mid); overflow: hidden; }
+    #traffic-table, #funnels-table { border-collapse: separate; border-spacing: 0; }
+    #traffic-table thead th, #traffic-table tbody td,
+    #funnels-table thead th, #funnels-table tbody td { border-bottom: 1px solid var(--border-light); border-right: 1px solid var(--border-light); border-top: none; border-left: none; }
+    #traffic-table tbody tr:last-child td, #funnels-table tbody tr:last-child td { border-bottom: none; }
+    #traffic-table thead th:last-child, #traffic-table tbody td:last-child,
+    #funnels-table thead th:last-child, #funnels-table tbody td:last-child { border-right: none; }
+    #traffic-table td.frozen-num, #funnels-table td.frozen-num { vertical-align: middle !important; }
+    th.frozen-offer, td.frozen-offer { position: sticky; left: 28px; z-index: 19; background: var(--bg-primary); vertical-align: middle !important; box-shadow: 2px 0 0 var(--border-mid); overflow: hidden; }
     th.frozen-offer { background: var(--bg-secondary); z-index: 19; }
     tbody tr:hover td.frozen-offer, tbody tr:hover td.frozen-num { background: var(--bg-secondary); }
-    td.frozen-offer textarea { width: 100%; }
+    td.frozen-offer textarea, td.frozen-offer input { width: 100%; }
+    #ads-table td:nth-child(5), #ads-table td:nth-child(6) { position: relative; }
+    #ads-table td:nth-child(5) textarea, #ads-table td:nth-child(6) textarea,
+    #ads-table td.frozen-offer textarea { position: absolute; inset: 0; width: 100%; height: 100% !important; border-right: none !important; }
+    #funnels-table td:nth-child(3), #funnels-table td:nth-child(4), #funnels-table td:nth-child(6) { position: relative; }
+    #funnels-table td:nth-child(3) textarea, #funnels-table td:nth-child(4) textarea, #funnels-table td:nth-child(6) textarea { position: absolute; inset: 0; width: 100%; height: 100% !important; border-right: none !important; }
+    #traffic-table td:nth-child(3), #traffic-table td:nth-child(4), #traffic-table td:nth-child(6) { position: relative; }
+    #traffic-table td:nth-child(3) textarea, #traffic-table td:nth-child(4) textarea, #traffic-table td:nth-child(6) textarea { position: absolute; inset: 0; width: 100%; height: 100% !important; border-right: none !important; }
+    
     tbody tr:hover td.frozen-num { background: var(--bg-secondary); }
 
     .table-scroll { overflow-x: auto; border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
-    table { border-collapse: collapse; font-size: 12px; table-layout: fixed; width: max-content; min-width: 100%; }
-    thead th { position: relative; text-align: left; padding: 5px 8px; font-size: 10px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border-light); background: var(--bg-secondary); white-space: nowrap; overflow: hidden; user-select: none; width: 110px; }
-    .row-num { width: 28px !important; min-width: 28px !important; max-width: 28px !important; text-align: center; color: var(--text-secondary); vertical-align: middle !important; padding: 0 !important; }
-    .row-num input { padding: 2px 0 !important; width: 28px !important; min-width: 28px !important; max-width: 28px !important; text-align: center; border-right: none !important; }
-    #ads-table td.frozen-num .row-num input, #ads-table td.row-num input { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    table { border-collapse: collapse; font-size: 12px; table-layout: fixed; width: max-content; }
+    thead th { position: relative; text-align: left; padding: 3px 6px; font-size: 10px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border-light); background: var(--bg-secondary); white-space: nowrap; overflow: hidden; user-select: none; width: 90px; }
+    .row-num { width: 28px; text-align: center; color: var(--text-secondary); vertical-align: middle; padding: 0; }
+    .row-num input { padding: 2px 0; width: 100%; text-align: center; border-right: none; }
+    #ads-table td.frozen-num .row-num input, #ads-table td.row-num input,
+    #traffic-table td.frozen-num .row-num input, #traffic-table td.row-num input,
+    #funnels-table td.frozen-num .row-num input, #funnels-table td.row-num input { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
     .col-resizer { position: absolute; right: 0; top: 0; bottom: 0; width: 6px; cursor: col-resize; z-index: 5; display: flex; align-items: center; justify-content: center; }
     .col-resizer::after { content: ''; display: block; width: 2px; height: 60%; background: var(--border-light); border-radius: 2px; transition: background 0.15s; }
     .col-resizer:hover::after, .col-resizer.dragging::after { background: var(--border-mid); }
-    th.frozen-offer .col-resizer::after, th.frozen-num .col-resizer::after { display: none; }
-    th.remove-col { width: 30px !important; } th.num-col { width: 28px !important; }
+    th.frozen-offer .col-resizer::after { display: none; }
+    tbody tr { position: relative; }
+    .row-resizer { position: absolute; bottom: 0; left: -9999px; right: 0; height: 4px; cursor: row-resize; z-index: 5; }
+    .row-resizer:hover, .row-resizer:active { background: var(--border-mid); }
+    th.remove-col { width: 76px; } th.num-col { width: 28px; }
+    #ads-table thead th:last-child, #ads-table tbody td:last-child,
+    #traffic-table thead th:last-child, #traffic-table tbody td:last-child,
+    #funnels-table thead th:last-child, #funnels-table tbody td:last-child { border-right: none !important; }
+    table { border-collapse: separate; border-spacing: 0; font-size: 12px; table-layout: fixed; width: max-content; }
     tbody tr:last-child td { border-bottom: none; }
-    tbody td { border-bottom: 1px solid var(--border-light); padding: 0; vertical-align: top; overflow: hidden; }
-    tbody td input, tbody td select, tbody td textarea { padding: 6px 8px; font-size: 12px; border: none; border-right: 1px solid var(--border-light); background: transparent; color: var(--text-primary); outline: none; font-family: inherit; box-sizing: border-box; resize: none; overflow: hidden; line-height: 1.5; display: block; width: 100%; }
-    tbody td textarea { min-height: 30px; white-space: pre-wrap; word-break: break-word; }
-    tbody td textarea.link-field { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #4A90D9; text-decoration: underline; cursor: pointer; }
-    tbody td textarea.link-field:focus { white-space: nowrap; }
-    .link-open-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #4A90D9; font-size: 12px; padding: 2px 4px; opacity: 0; transition: opacity 0.15s; z-index: 3; text-decoration: none; }
-    .link-cell { position: relative; }
-    .link-cell:hover .link-open-btn { opacity: 1; }
+    tbody td { border-bottom: 1px solid var(--border-light); padding: 0; vertical-align: middle; overflow: hidden; }
+    tbody td input, tbody td select, tbody td textarea { padding: 3px 5px; font-size: 12px; border: none; border-right: 1px solid var(--border-light); background: transparent; color: var(--text-primary); outline: none; font-family: inherit; box-sizing: border-box; resize: none; overflow: hidden; line-height: 1.4; display: block; width: 100%; align-self: center; }
+    tbody td textarea { white-space: pre-wrap; word-break: break-word; }
+    tbody td textarea:focus { position: relative; z-index: 10; }
+    /* ── Link chips ── */
+    .link-cell { position: relative; padding: 4px 6px !important; vertical-align: middle !important; }
+    .link-chip-wrap { display: flex; align-items: center; gap: 6px; min-height: 28px; width: 100%; }
+    .link-chip { display: flex; align-items: center; gap: 4px; background: var(--bg-secondary); border: 1px solid var(--border-light); border-radius: 20px; padding: 2px 8px 2px 6px; font-size: 10px; color: #4A90D9; max-width: calc(100% - 28px); overflow: hidden; white-space: nowrap; flex: 1; min-width: 0; cursor: pointer; transition: background 0.15s, border-color 0.15s; text-decoration: none; }
+    .link-chip:hover { background: var(--blue-bg); border-color: #4A90D9; }
+    .link-chip svg { flex-shrink: 0; }
+    .link-chip-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
+    .link-chip-empty { font-size: 12px; color: var(--text-secondary); font-style: italic; cursor: pointer; padding: 4px 2px; flex: 1; }
+    .link-chip-empty:hover { color: var(--text-primary); }
+    .link-chip-wrap-display:has(.link-chip[style*="flex"]) .link-chip-edit-btn { display: none; }
+    .link-chip-edit-icon { display: none; flex-shrink: 0; background: var(--bg-secondary); border: 1px solid var(--border-light); border-radius: 50%; cursor: pointer; color: var(--text-secondary); padding: 3px; width: 22px; height: 22px; align-items: center; justify-content: center; transition: background 0.15s, color 0.15s; }
+    .link-chip-edit-icon:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+    .link-chip-wrap-display.has-link .link-chip-edit-icon { display: flex; }
+    .link-chip-wrap-display { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
+    .link-input-wrap { display: none; align-items: center; gap: 4px; flex: 1; }
+    .link-input-wrap.editing { display: flex; }
+    .link-chip-wrap.editing .link-chip-wrap-display { display: none; }
+    .link-input-field { flex: 1; font-size: 12px; font-family: inherit; border: 1px solid var(--border-mid); border-radius: var(--radius-md); padding: 4px 8px; background: var(--bg-primary); color: var(--text-primary); outline: none; min-width: 0; }
+    .link-save-btn { flex-shrink: 0; background: #185FA5; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 10px; padding: 3px 8px; font-family: inherit; }
+    .link-cancel-btn { flex-shrink: 0; background: none; border: 1px solid var(--border-light); border-radius: 4px; cursor: pointer; color: var(--text-secondary); font-size: 10px; padding: 3px 6px; font-family: inherit; }
     tbody td select { cursor: pointer; height: 30px; }
     tbody td:has(select) { vertical-align: middle; }
 
     /* Custom colored select */
-    .sel-wrap { position: relative; width: 100%; height: 30px; overflow: hidden; }
+    .sel-wrap { position: relative; width: 100%; height: 100%; min-height: 22px; overflow: hidden; display: flex; align-items: center; }
     .sel-wrap select { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; z-index: 2; }
-    .sel-display { display: flex; align-items: center; gap: 7px; padding: 0 10px; height: 30px; font-size: 12px; font-family: inherit; color: var(--text-primary); pointer-events: none; overflow: hidden; white-space: nowrap; }
-    .sel-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; white-space: nowrap; flex-shrink: 0; max-width: calc(100% - 20px); overflow: hidden; text-overflow: ellipsis; }
+    .sel-display { display: flex; align-items: center; gap: 5px; padding: 0 7px; min-height: 22px; font-size: 10px; font-family: inherit; color: var(--text-primary); pointer-events: none; overflow: hidden; white-space: nowrap; width: 100%; }
+    .sel-badge { display: inline-block; padding: 1px 6px; border-radius: 20px; font-size: 11px; font-weight: 500; white-space: nowrap; flex-shrink: 0; max-width: calc(100% - 20px); overflow: hidden; text-overflow: ellipsis; }
     .sel-arrow { margin-left: 4px; color: var(--text-secondary); font-size: 10px; flex-shrink: 0; }
-    tbody td:has(.sel-wrap) { vertical-align: middle; overflow: hidden; }
+    tbody td:has(.sel-wrap) { vertical-align: middle !important; overflow: hidden; padding: 0 !important; }
 
-    /* Traffic Channel colors */
-    .badge-meta    { background: #E8F0FE; color: #1A56DB; }
-    .badge-tiktok  { background: #FEE2E2; color: #991B1B; }
-    .badge-google  { background: #FEF3C7; color: #92400E; }
-    .badge-native  { background: #D1FAE5; color: #065F46; }
+    /* Traffic Source — brand-inspired colors */
+    .badge-meta    { background: #DBEAFE; color: #1D4ED8; } /* Meta blue */
+    .badge-tiktok  { background: #F3F4F6; color: #111827; } /* TikTok dark/black */
+    .badge-google  { background: #FEF9C3; color: #854D0E; } /* Google yellow */
+    .badge-native  { background: #D1FAE5; color: #065F46; } /* Native green */
+    .badge-youtube { background: #FEE2E2; color: #B91C1C; } /* YouTube red */
+    .badge-pinterest { background: #FFE4E6; color: #9F1239; } /* Pinterest red-pink */
+    .badge-snapchat { background: #FEFCE8; color: #854D0E; } /* Snapchat yellow */
+    .badge-twitter { background: #E0F2FE; color: #0369A1; } /* Twitter/X blue */
+    .badge-linkedin { background: #DBEAFE; color: #1E40AF; } /* LinkedIn blue */
+    .badge-reddit  { background: #FEF3C7; color: #92400E; } /* Reddit orange */
+    .badge-email   { background: #FCE7F3; color: #9D174D; } /* Email pink */
+    .badge-sms     { background: #D1FAE5; color: #065F46; } /* SMS green */
+    .badge-push    { background: #EDE9FE; color: #6D28D9; } /* Push purple */
+    .badge-in-app-dsp { background: #FDF4FF; color: #7E22CE; } /* In-App violet */
+    .badge-native-dsp { background: #DCFCE7; color: #166534; } /* Native DSP mint */
+    .badge-programmatic { background: #F0F9FF; color: #0C4A6E; } /* Programmatic sky */
+    .badge-outbrain  { background: #FEF3C7; color: #92400E; } /* Outbrain amber */
+    .badge-mgid      { background: #D1FAE5; color: #065F46; } /* MGID green */
+    .badge-taboola   { background: #DBEAFE; color: #1E40AF; } /* Taboola blue */
+    .badge-revcontent { background: #EDE9FE; color: #6D28D9; } /* RevContent purple */
 
-    /* Format colors */
-    .badge-static        { background: #EDE9FE; color: #5B21B6; }
-    .badge-video         { background: #FCE7F3; color: #9D174D; }
-    .badge-carousel      { background: #DBEAFE; color: #1E40AF; }
-    .badge-text          { background: #F3F4F6; color: #374151; }
-    .badge-native-article{ background: #D1FAE5; color: #065F46; }
-    .badge-playable      { background: #FFF0F0; color: #B91C1C; }
-    .badge-email         { background: #FEF3C7; color: #92400E; }
+    /* Format — visual/content type logic */
+    .badge-static        { background: #E0F2FE; color: #0369A1; } /* Static = calm blue */
+    .badge-video         { background: #FEE2E2; color: #B91C1C; } /* Video = red (YouTube-ish) */
+    .badge-carousel      { background: #EDE9FE; color: #6D28D9; } /* Carousel = purple (multi) */
+    .badge-text          { background: #F3F4F6; color: #374151; } /* Text = neutral gray */
+    .badge-native-article{ background: #D1FAE5; color: #065F46; } /* Native = green */
+    .badge-playable      { background: #FEF3C7; color: #92400E; } /* Playable = amber (game) */
+    .badge-email         { background: #FCE7F3; color: #9D174D; } /* Email = pink */
 
-    /* Traffic Type colors */
-    .badge-paid-search    { background: #DBEAFE; color: #1E40AF; }
-    .badge-organic-search { background: #D1FAE5; color: #065F46; }
-    .badge-paid-social    { background: #FCE7F3; color: #9D174D; }
-    .badge-organic-social { background: #EDE9FE; color: #5B21B6; }
-    .badge-email          { background: #FEF3C7; color: #92400E; }
-    .badge-direct         { background: #F3F4F6; color: #374151; }
-    .badge-referral       { background: #FEE2E2; color: #991B1B; }
-    .badge-display        { background: #E0F2FE; color: #075985; }
+    /* Traffic Type — paid=blue family, organic=green family */
+    .badge-paid-search    { background: #DBEAFE; color: #1E40AF; } /* Paid = blue */
+    .badge-organic-search { background: #D1FAE5; color: #065F46; } /* Organic = green */
+    .badge-paid-social    { background: #E0E7FF; color: #3730A3; } /* Paid social = indigo */
+    .badge-organic-social { background: #DCFCE7; color: #166534; } /* Organic social = light green */
+    .badge-direct         { background: #F3F4F6; color: #374151; } /* Direct = neutral */
+    .badge-referral       { background: #FEF9C3; color: #854D0E; } /* Referral = warm yellow */
+    .badge-display        { background: #FDF4FF; color: #7E22CE; } /* Display = violet (visual) */
+    .badge-native         { background: #D1FAE5; color: #065F46; } /* Native = green */
 
-    /* Funnel Type colors */
-    .badge-quiz          { background: #FEF3C7; color: #92400E; }
-    .badge-landing-page  { background: #DBEAFE; color: #1E40AF; }
-    .badge-vsl           { background: #FCE7F3; color: #9D174D; }
-    .badge-lead-gen      { background: #D1FAE5; color: #065F46; }
-    .badge-multi-step    { background: #EDE9FE; color: #5B21B6; }
-    .badge-advertorial   { background: #FEE2E2; color: #991B1B; }
-    .badge-comparison    { background: #E0F2FE; color: #075985; }
+    /* Funnel Type — complexity/intent logic */
+    .badge-quiz          { background: #FEF9C3; color: #854D0E; } /* Quiz = playful amber */
+    .badge-landing-page  { background: #E0F2FE; color: #0369A1; } /* LP = clean blue */
+    .badge-vsl           { background: #FEE2E2; color: #B91C1C; } /* VSL = red (video) */
+    .badge-lead-gen      { background: #D1FAE5; color: #065F46; } /* Lead gen = green (growth) */
+    .badge-multi-step    { background: #EDE9FE; color: #6D28D9; } /* Multi-step = purple */
+    .badge-advertorial   { background: #FEF3C7; color: #92400E; } /* Advertorial = amber (content) */
+    .badge-comparison    { background: #F0F9FF; color: #0C4A6E; } /* Comparison = light blue */
     tbody td:last-child input, tbody td:last-child select, tbody td:last-child textarea { border-right: none; }
     tbody td input:focus, tbody td select:focus, tbody td textarea:focus { background: var(--bg-secondary); }
     
-    .row-num input { padding: 2px 0 !important; width: 28px !important; min-width: 28px !important; max-width: 28px !important; text-align: center; border-right: none !important; }
-    tbody td.remove-col { width: 30px !important; min-width: 30px !important; max-width: 30px !important; vertical-align: middle !important; }
-    .remove-row-btn { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; margin: auto; background: none; border: none; cursor: pointer; color: var(--text-secondary); border-radius: 4px; font-size: 16px; line-height: 1; }
+    .row-num input { padding: 2px 0; width: 100%; text-align: center; border-right: none; }
+    tbody td.remove-col { width: 76px; vertical-align: middle !important; }
+    .comment-cell { position: relative; }
+    .cell-actions { display: flex; align-items: center; justify-content: center; gap: 2px; padding: 2px; }
+    .remove-row-btn { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; background: none; border: none; cursor: pointer; color: var(--text-secondary); border-radius: 4px; font-size: 14px; line-height: 1; flex-shrink: 0; }
     .remove-row-btn:hover { background: var(--bg-secondary); color: #A32D2D; }
+    .dup-row-btn { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; background: none; border: none; cursor: pointer; color: var(--text-secondary); border-radius: 4px; font-size: 13px; line-height: 1; flex-shrink: 0; }
+    .dup-row-btn:hover { background: var(--bg-secondary); color: var(--accent); }
+    .drag-handle { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; cursor: grab; color: var(--border-mid); font-size: 14px; flex-shrink: 0; user-select: none; }
+    .drag-handle:active { cursor: grabbing; }
+    tr.drag-over td { background: var(--blue-bg) !important; transition: background 0.1s; }
+    tr.dragging-row { opacity: 0.3; }
+    #drag-ghost { position: fixed; top: -1000px; left: -1000px; pointer-events: none; z-index: 9999; background: var(--bg-primary); border: 1.5px solid var(--accent, #4A90D9); border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.18); padding: 6px 10px; font-size: 10px; font-family: inherit; color: var(--text-primary); white-space: nowrap; max-width: 320px; overflow: hidden; opacity: 0.95; }
+    .comment-btn { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; background: none; border: none; cursor: pointer; font-size: 11px; opacity: 0; transition: opacity 0.15s; color: var(--text-secondary); z-index: 2; padding: 0; border-radius: 4px; flex-shrink: 0; }
+    tr:hover .comment-btn { opacity: 1; }
+    .comment-btn.has-comment { opacity: 1; color: var(--blue-text); }
     .add-row { padding: 8px 12px; border-top: 1px solid var(--border-light); }
     .add-btn { width: 100%; padding: 6px 12px; font-size: 12px; font-family: inherit; color: var(--text-secondary); background: none; border: 1px dashed var(--border-light); border-radius: var(--radius-md); cursor: pointer; }
     .add-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
-    .notes-body textarea { width: 100%; min-height: 90px; padding: 12px 16px; font-size: 13px; font-family: inherit; color: var(--text-primary); background: transparent; border: none; resize: vertical; outline: none; line-height: 1.6; }
+    .notes-body { position: relative; display: flex; flex-direction: column; min-height: 120px; }
+    .notes-body textarea { flex: 1; min-height: 80px; }
+    .notes-body textarea { width: 100%; min-height: 90px; padding: 12px 16px; font-size: 13px; font-family: inherit; color: var(--text-primary); background: transparent; border: none; resize: none; outline: none; line-height: 1.6; box-sizing: border-box; overflow-y: auto; display: block; cursor: text; }
+    .notes-body textarea:hover { cursor: text; }
+    .notes-resize-handle { height: 12px; cursor: row-resize; background: transparent; display: flex; align-items: center; justify-content: center; }
+    .notes-resize-handle::after { content: ''; width: 40px; height: 3px; background: var(--border-mid); border-radius: 2px; }
+    .notes-resize-handle:hover::after { background: var(--accent,#4A90D9); }
     .notes-body textarea:focus { background: var(--bg-secondary); }
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     @media (max-width: 620px) { .two-col { grid-template-columns: 1fr; } }
 
-    .media-cell { padding: 6px 10px !important; border-right: 1px solid var(--border-light); }
-    .media-upload-btn { display: flex; align-items: center; gap: 6px; padding: 5px 10px; font-size: 12px; font-family: inherit; color: var(--text-secondary); background: none; border: 1px dashed var(--border-light); border-radius: var(--radius-md); cursor: pointer; white-space: nowrap; }
-    .media-upload-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
-    .media-preview { display: flex; align-items: center; gap: 8px; }
-    .media-thumb { width: 48px; height: 36px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-light); flex-shrink: 0; cursor: pointer; }
+    .media-cell { padding: 4px !important; border-right: 1px solid var(--border-light); overflow: hidden; position: relative; vertical-align: middle !important; }
+    .media-preview { display: flex; align-items: center; justify-content: center; width: 100%; }
+    .media-thumb { width: 100%; height: auto; object-fit: cover; object-position: center; border-radius: 4px; border: 1px solid var(--border-light); cursor: pointer; display: block; }
+    .media-thumb:hover { opacity: 0.85; }
+    .media-remove { flex-shrink: 0; margin-left: 4px; background: var(--bg-secondary); border: 1px solid var(--border-light); cursor: pointer; color: var(--text-secondary); padding: 2px 5px; border-radius: 4px; font-size: 11px; line-height: 1; }
+    .media-remove:hover { background: #FEE2E2; color: #991B1B; border-color: #FCA5A5; }
+    .media-upload-btn { display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%; padding: 5px 8px; font-size: 11px; font-family: inherit; color: var(--text-secondary); background: none; border: 1px dashed var(--border-light); border-radius: var(--radius-md); cursor: pointer; white-space: nowrap; }
+    .media-upload-btn:hover { background: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-mid); }
     .media-video-thumb { width: 48px; height: 36px; border-radius: 4px; border: 1px solid var(--border-light); background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; }
     .media-filename { font-size: 11px; color: var(--text-secondary); max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .media-remove { background: none; border: none; cursor: pointer; color: var(--text-secondary); padding: 2px; line-height: 1; font-size: 14px; }
@@ -217,6 +294,112 @@
     .export-menu button:hover { background: var(--bg-secondary); }
 
     @media print { body { background: white; padding: 0; } .add-row, .save-bar, .modal-overlay { display: none; } }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .header-top { flex-direction: column; gap: 8px; }
+      .save-bar { flex-wrap: wrap; gap: 6px; }
+      .toolbar-btn { font-size: 10px; padding: 4px 8px; }
+      h1#main-title { font-size: 20px !important; }
+      .header-left > div { gap: 12px !important; }
+    }
+    @media (max-width: 700px) {
+      body { padding: 8px; }
+      .container { padding: 0; }
+      .header { padding: 12px; }
+      .save-bar .toolbar-btn span, .save-bar .toolbar-btn #themeLabel, .save-bar .toolbar-btn #autosaveLabel { display: none; }
+      .two-col { grid-template-columns: 1fr; }
+      .ads-grid-inner { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important; }
+      h1#main-title { font-size: 18px !important; }
+      .section-header { flex-wrap: wrap; gap: 6px; }
+    }
+    @media (max-width: 480px) {
+      .ads-grid-inner { grid-template-columns: 1fr 1fr !important; }
+      .header-left { flex-direction: column !important; align-items: flex-start !important; }
+      .save-bar { gap: 4px; }
+    }
+
+    /* ── Column grouping ── */
+    thead th.col-group-creative { background: color-mix(in srgb, var(--amber-bg) 50%, var(--bg-secondary)) !important; }
+    thead th.col-group-links { background: color-mix(in srgb, var(--blue-bg) 50%, var(--bg-secondary)) !important; }
+    thead th.col-group-copy { background: color-mix(in srgb, var(--purple-bg) 50%, var(--bg-secondary)) !important; }
+    thead th.col-group-offer { background: color-mix(in srgb, var(--blue-bg) 50%, var(--bg-secondary)) !important; }
+    thead th.col-group-source { background: color-mix(in srgb, var(--teal-bg) 50%, var(--bg-secondary)) !important; }
+    thead th.col-group-advertiser { background: color-mix(in srgb, var(--purple-bg) 50%, var(--bg-secondary)) !important; }
+
+    /* ── Row striping ── */
+    #ads-table tbody tr:nth-child(even) td,
+    #traffic-table tbody tr:nth-child(even) td,
+    #funnels-table tbody tr:nth-child(even) td { background: var(--bg-secondary); }
+    #ads-table tbody tr:nth-child(even) td.frozen-num,
+    #ads-table tbody tr:nth-child(even) td.frozen-offer,
+    #traffic-table tbody tr:nth-child(even) td.frozen-num,
+    #funnels-table tbody tr:nth-child(even) td.frozen-num { background: var(--bg-secondary); }
+    #ads-table tbody tr:hover td,
+    #traffic-table tbody tr:hover td,
+    #funnels-table tbody tr:hover td { background: color-mix(in srgb, var(--blue-bg) 15%, var(--bg-secondary)); }
+
+    /* ── Sticky thead ── */
+    #ads-table thead tr th,
+    #traffic-table thead tr th,
+    #funnels-table thead tr th { position: sticky; top: 0; z-index: 6; }
+    #ads-table thead tr th.frozen-num,
+    #traffic-table thead tr th.frozen-num,
+    #funnels-table thead tr th.frozen-num { z-index: 22; }
+    #ads-table thead tr th.frozen-offer { z-index: 21; }
+
+    /* ── Cell color coding for text columns ── */
+    tbody td.offer-col, tbody td.source-col, tbody td.advertiser-col { vertical-align: middle !important; overflow: hidden; padding: 3px 5px !important; }
+    tbody td.offer-col textarea, tbody td.source-col textarea, tbody td.advertiser-col textarea { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; overflow: hidden; }
+    .text-badge-wrap { display: flex; align-items: center; justify-content: center; width: 100%; cursor: text; }
+    .text-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; cursor: text; }
+    .text-badge-empty { font-size: 11px; color: var(--text-secondary); font-style: italic; }
+    .text-badge-input { display: none; width: 100%; font-size: 11px; font-family: inherit; border: 1px solid var(--border-mid); border-radius: 20px; padding: 2px 10px; background: var(--bg-primary); color: var(--text-primary); outline: none; text-align: center; }
+    .text-badge-input.editing { display: block; }
+
+    /* ── Row comments ── */
+    .comment-btn { position: absolute; top: 4px; right: 4px; background: none; border: none; cursor: pointer; font-size: 11px; opacity: 0; transition: opacity 0.15s; color: var(--text-secondary); z-index: 2; padding: 2px 4px; border-radius: 4px; }
+    tr:hover .comment-btn { opacity: 1; }
+    .comment-btn.has-comment { opacity: 1; color: var(--blue-text); }
+    .comment-cell { position: relative; }
+    .comment-popup { position: absolute; top: 0; right: 100%; margin-right: 6px; z-index: 200; background: var(--bg-primary); border: 1px solid var(--border-mid); border-radius: var(--radius-md); padding: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); min-width: 240px; display: none; }
+    .comment-popup.open { display: block; }
+    .comment-popup textarea { width: 100%; min-height: 70px; font-size: 12px; font-family: inherit; border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 6px 8px; background: var(--bg-secondary); color: var(--text-primary); resize: vertical; outline: none; }
+    .comment-popup-footer { display: flex; justify-content: flex-end; gap: 6px; margin-top: 6px; }
+    .comment-popup-footer button { font-size: 11px; font-family: inherit; padding: 4px 10px; border-radius: var(--radius-md); border: 1px solid var(--border-light); cursor: pointer; background: var(--bg-secondary); color: var(--text-primary); }
+    .comment-popup-footer button.primary { background: #185FA5; color: #fff; border-color: transparent; }
+
+    /* ── Undo toast ── */
+    .undo-toast { display: flex; align-items: center; gap: 10px; }
+    .undo-toast button { font-size: 12px; font-family: inherit; padding: 3px 10px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.15); color: inherit; cursor: pointer; }
+
+    /* ── Last edited indicator ── */
+    .last-edited { font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .ads-grid-inner { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px; }
+    .grid-card { background:var(--bg-secondary); border:1px solid var(--border-light); border-radius:8px; display:flex; flex-direction:column; }
+    .grid-card-img { width:100%; aspect-ratio:5/4; object-fit:cover; background:var(--bg-primary); display:block; cursor:pointer; }
+    .grid-card-img-empty { width:100%; aspect-ratio:5/4; background:var(--bg-primary); display:flex; align-items:center; justify-content:center; color:var(--text-secondary); font-size:10px; }
+    .grid-card-body { padding:8px; display:flex; flex-direction:column; gap:4px; flex:1; user-select:text; -webkit-user-select:text; }
+    .grid-card-body * { user-select:text; -webkit-user-select:text; }
+    .grid-card-offer { font-size:14px; font-weight:600; color:var(--text-primary); line-height:1.3; }
+    .grid-card-meta { font-size:13px; color:var(--text-secondary); display:flex; flex-wrap:wrap; gap:3px; }
+    .grid-card-badge { background:var(--bg-primary); border:1px solid var(--border-light); border-radius:10px; padding:1px 6px; font-size:11px; }
+    .grid-card-link { margin-top:auto; padding-top:6px; }
+    .grid-card-link a { font-size:10px; color:var(--accent,#4A90D9); text-decoration:none; display:flex; align-items:center; gap:3px; }
+    .grid-card-link a:hover { text-decoration:underline; }
+    .grid-card.dragging { opacity: 0.4; transform: scale(0.97); }
+    .grid-card.drag-over { outline: 2px solid var(--accent,#4A90D9); outline-offset: 2px; }
+    .grid-card { cursor: default; transition: transform 0.1s, opacity 0.1s; }
+    .grid-card[draggable="true"] { cursor: grab; }
+    .grid-card[draggable="true"]:active { cursor: grabbing; }
+    /* Lightbox */
+    #lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; cursor:zoom-out; }
+    #lightbox.open { display:flex; }
+    #lightbox img { max-width:90vw; max-height:90vh; object-fit:contain; border-radius:8px; box-shadow:0 20px 60px rgba(0,0,0,0.5); }
+    #lightbox-close { position:fixed; top:20px; right:24px; color:#fff; font-size:28px; cursor:pointer; line-height:1; opacity:0.8; }
+    #lightbox-close:hover { opacity:1; }
+    /* Grid loading */
+    .grid-loading { display:flex; align-items:center; justify-content:center; padding:40px; color:var(--text-secondary); font-size:12px; gap:8px; }
   </style>
 </head>
 <body>
@@ -250,8 +433,22 @@
   <div class="header">
     <div class="header-top">
       <div class="header-left">
-        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTc4IiBoZWlnaHQ9IjI2MiIgdmlld0JveD0iMCAwIDk3OCAyNjIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0yMjAuMDA4IDIxNi4yMkwxMTguODk5IDBWMTM3LjMzOEMxMTguODk5IDE4MC45MDMgMTU0LjYwMyAyMTYuMjIgMTk4LjY0NyAyMTYuMjJIMjIwLjAwOFoiIGZpbGw9IiMwMTZBQzkiLz4KPHBhdGggZD0iTTAgMjE2LjIyTDEwMS4xMDkgMFYxMzcuMzM4QzEwMS4xMDkgMTgwLjkwMyA2NS40MDQyIDIxNi4yMiAyMS4zNjEgMjE2LjIySDBaIiBmaWxsPSIjMDE2QUM5Ii8+CjxwYXRoIGQ9Ik0xMDguOTQgMTgxLjcxTDExNi4xNjYgMTk0LjM4MUMxMjEuMDE0IDIwMi44ODQgMTI4LjEyIDIwOS45MTIgMTM2LjcxNSAyMTQuNzA4TDE0OS41MjYgMjIxLjg1NUwxMzYuNzE1IDIyOS4wMDJDMTI4LjEyIDIzMy43OTggMTIxLjAxNCAyNDAuODI2IDExNi4xNjYgMjQ5LjMyOEwxMDguOTQgMjYyTDEwMS43MTUgMjQ5LjMyOEM5Ni44NjY0IDI0MC44MjYgODkuNzYwNyAyMzMuNzk4IDgxLjE2NTMgMjI5LjAwMkw2OC4zNTQyIDIyMS44NTVMODEuMTY1MyAyMTQuNzA4Qzg5Ljc2MDcgMjA5LjkxMiA5Ni44NjY0IDIwMi44ODQgMTAxLjcxNSAxOTQuMzgxTDEwOC45NCAxODEuNzFaIiBmaWxsPSIjMDE2QUM5Ii8+CjxwYXRoIGQ9Ik0zMDUuNDg0IDE5My4xNzRIMzcwLjkwMVYyMjQuNDAySDI2NS42NjVWMjguMDMyN0gzMDUuNDg0VjE5My4xNzRaIiBmaWxsPSIjMDE2QUM5Ii8+CjxwYXRoIGQ9Ik00MTYuNDAyIDQ5Ljk3NjRDNDA5LjM4NSA0OS45NzY0IDQwMy41MDcgNDcuODE5MyAzOTguNzY2IDQzLjUwNTVDMzk0LjIxOCAzOS4wMDQ1IDM5MS45NDIgMzMuNDcxNiAzOTEuOTQyIDI2LjkwNzJDMzkxLjk0MiAyMC4zNDI4IDM5NC4yMTggMTQuOTAzNyAzOTguNzY2IDEwLjU5QzQwMy41MDcgNi4wODg2NyA0MDkuMzg1IDMuODM4MDQgNDE2LjQwMiAzLjgzODA0QzQyMy40MTggMy44MzgwNCA0MjkuMiA2LjA4ODY3IDQzMy43NTIgMTAuNTlDNDM4LjQ5MyAxNC45MDM3IDQ0MC44NjEgMjAuMzQyOCA0NDAuODYxIDI2LjkwNzJDNDQwLjg2MSAzMy40NzE2IDQzOC40OTMgMzkuMDA0NSA0MzMuNzUyIDQzLjUwNTVDNDI5LjIgNDcuODE5MyA0MjMuNDE4IDQ5Ljk3NjQgNDE2LjQwMiA0OS45NzY0Wk00MzYuMDI4IDY4LjU0NDRWMjI0LjQwMkgzOTYuMjA5VjY4LjU0NDRINDM2LjAyOFoiIGZpbGw9IiMwMTZBQzkiLz4KPHBhdGggZD0iTTU0Ny42MTMgMTAwLjg5OEg1MjAuMDI0VjIyNC40MDJINDc5LjYzNlYxMDAuODk4SDQ2MS43MTZWNjguNTQ0Nkg0NzkuNjM2VjYwLjY2NzNDNDc5LjYzNiA0MS41MzY2IDQ4NS4xMzcgMjcuNDcwMSA0OTYuMTMzIDE4LjQ2NzVDNTA3LjEyOSA5LjQ2NDkgNTIzLjcxOSA1LjI0NDkyIDU0NS45MDYgNS44MDc1OFYzOS4wMDQ3QzUzNi4yMzMgMzguODE3MSA1MjkuNTA0IDQwLjQxMTQgNTI1LjcxIDQzLjc4NzNDNTIxLjkxOSA0Ny4xNjM1IDUyMC4wMjQgNTMuMjU4OCA1MjAuMDI0IDYyLjA3NFY2OC41NDQ2SDU0Ny42MTNWMTAwLjg5OFoiIGZpbGw9IiMwMTZBQzkiLz4KPHBhdGggZD0iTTYxOS43NzUgMTAwLjg5N1YxNzYuMjk0QzYxOS43NzUgMTgxLjU0NiA2MjEuMDA5IDE4NS4zOSA2MjMuNDczIDE4Ny44MjhDNjI2LjEyNiAxOTAuMDc5IDYzMC40OSAxOTEuMjA0IDYzNi41NTcgMTkxLjIwNEg2NTUuMDQ1VjIyNC40MDJINjMwLjAxM0M1OTYuNDU2IDIyNC40MDIgNTc5LjY3MSAyMDguMjcyIDU3OS42NzEgMTc2LjAxM1YxMDAuODk3SDU2MC45MDFWNjguNTQ0Mkg1NzkuNjcxVjMwLjAwMTdINjE5Ljc3NVY2OC41NDQySDY1NS4wNDVWMTAwLjg5N0g2MTkuNzc1WiIgZmlsbD0iIzAxNkFDOSIvPgo8cGF0aCBkPSJNNzQxLjY3IDI2LjkwNzNWMjI0LjQwMkg2OTMuMDMyVjI2LjkwNzNINzQxLjY3WiIgZmlsbD0iIzAxNkFDOSIvPgo8cGF0aCBkPSJNOTE5LjEyMyAyNTguMTYxTDg5My41MjYgMjI0LjEyQzg4NS45NDQgMjI1LjYyIDg3OC41NDcgMjI2LjM3MSA4NzEuMzQyIDIyNi4zNzFDODUyLjU3MiAyMjYuMzcxIDgzNS4zMTQgMjIyLjA1NyA4MTkuNTc3IDIxMy40M0M4MDQuMDMgMjA0LjgwMiA3OTEuNjA4IDE5Mi43OTkgNzgyLjMxOSAxNzcuNDJDNzczLjIxNSAxNjEuODUyIDc2OC42NjcgMTQ0LjQxIDc2OC42NjcgMTI1LjA5MkM3NjguNjY3IDEwNS43NzQgNzczLjIxNSA4OC40MjQ4IDc4Mi4zMTkgNzMuMDQ1OEM3OTEuNjA4IDU3LjY2NjEgODA0LjAzIDQ1LjY2MjcgODE5LjU3NyAzNy4wMzUxQzgzNS4zMTQgMjguNDA3NiA4NTIuNTcyIDI0LjA5MzkgODcxLjM0MiAyNC4wOTM5Qzg5MC4xMTIgMjQuMDkzOSA5MDcuMjc0IDI4LjQwNzYgOTIyLjgyNSAzNy4wMzUxQzkzOC41NTggNDUuNjYyNyA5NTAuODg3IDU3LjY2NjEgOTU5Ljc5NiA3My4wNDU4Qzk2OC44OTYgODguNDI0OCA5NzMuNDQ4IDEwNS43NzQgOTczLjQ0OCAxMjUuMDkyQzk3My40NDggMTQxLjk3MiA5NjkuOTM4IDE1Ny40NDUgOTYyLjkyNSAxNzEuNTEyQzk1Ni4xMDEgMTg1LjM5IDk0Ni41MjQgMTk2LjkyNSA5MzQuMTk4IDIwNi4xMTVMOTc4IDI1OC4xNjFIOTE5LjEyM1pNODE4LjQzOSAxMjUuMDkyQzgxOC40MzkgMTQyLjUzNCA4MjMuMTc3IDE1Ni41MDcgODMyLjY2MSAxNjcuMDFDODQyLjMzIDE3Ny4zMjYgODU1LjIyNSAxODIuNDgzIDg3MS4zNDIgMTgyLjQ4M0M4ODcuMjcgMTgyLjQ4MyA4OTkuOTczIDE3Ny4yMzIgOTA5LjQ1NCAxNjYuNzI5QzkxOS4xMjMgMTU2LjIyNiA5MjMuOTYgMTQyLjM0NyA5MjMuOTYgMTI1LjA5MkM5MjMuOTYgMTA3LjY0OSA5MTkuMTIzIDkzLjc3MDIgOTA5LjQ1NCA4My40NTQ3Qzg5OS45NzMgNzIuOTUxOSA4ODcuMjcgNjcuNzAwMSA4NzEuMzQyIDY3LjcwMDFDODU1LjIyNSA2Ny43MDAxIDg0Mi4zMyA3Mi44NTc5IDgzMi42NjEgODMuMTczNEM4MjMuMTc3IDkzLjQ4OSA4MTguNDM5IDEwNy40NjIgODE4LjQzOSAxMjUuMDkyWiIgZmlsbD0iIzAxNkFDOSIvPgo8L3N2Zz4K" style="height:32px;object-fit:contain;margin-bottom:10px;display:block;">
-        <h1>OBD Fuel Saver - SynGas Multi-Platform Creative Research</h1>
+        <div style="flex:1;min-width:0;">
+          <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTc4IiBoZWlnaHQ9IjI2MiIgdmlld0JveD0iMCAwIDk3OCAyNjIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0yMjAuMDA4IDIxNi4yMkwxMTguODk5IDBWMTM3LjMzOEMxMTguODk5IDE4MC45MDMgMTU0LjYwMyAyMTYuMjIgMTk4LjY0NyAyMTYuMjJIMjIwLjAwOFoiIGZpbGw9IiMwMTZBQzkiLz4KPHBhdGggZD0iTTAgMjE2LjIyTDEwMS4xMDkgMFYxMzcuMzM4QzEwMS4xMDkgMTgwLjkwMyA2NS40MDQyIDIxNi4yMiAyMS4zNjEgMjE2LjIySDBaIiBmaWxsPSIjMDE2QUM5Ii8+CjxwYXRoIGQ9Ik0xMDguOTQgMTgxLjcxTDExNi4xNjYgMTk0LjM4MUMxMjEuMDE0IDIwMi44ODQgMTI4LjEyIDIwOS45MTIgMTM2LjcxNSAyMTQuNzA4TDE0OS41MjYgMjIxLjg1NUwxMzYuNzE1IDIyOS4wMDJDMTI4LjEyIDIzMy43OTggMTIxLjAxNCAyNDAuODI2IDExNi4xNjYgMjQ5LjMyOEwxMDguOTQgMjYyTDEwMS43MTUgMjQ5LjMyOEM5Ni44NjY0IDI0MC44MjYgODkuNzYwNyAyMzMuNzk4IDgxLjE2NTMgMjI5LjAwMkw2OC4zNTQyIDIyMS44NTVMODEuMTY1MyAyMTQuNzA4Qzg5Ljc2MDcgMjA5LjkxMiA5Ni44NjY0IDIwMi44ODQgMTAxLjcxNSAxOTQuMzgxTDEwOC45NCAxODEuNzFaIiBmaWxsPSIjMDE2QUM5Ii8+CjxwYXRoIGQ9Ik0zMDUuNDg0IDE5My4xNzRIMzcwLjkwMVYyMjQuNDAySDI2NS42NjVWMjguMDMyN0gzMDUuNDg0VjE5My4xNzRaIiBmaWxsPSIjMDE2QUM5Ii8+CjxwYXRoIGQ9Ik00MTYuNDAyIDQ5Ljk3NjRDNDA5LjM4NSA0OS45NzY0IDQwMy41MDcgNDcuODE5MyAzOTguNzY2IDQzLjUwNTVDMzk0LjIxOCAzOS4wMDQ1IDM5MS45NDIgMzMuNDcxNiAzOTEuOTQyIDI2LjkwNzJDMzkxLjk0MiAyMC4zNDI4IDM5NC4yMTggMTQuOTAzNyAzOTguNzY2IDEwLjU5QzQwMy41MDcgNi4wODg2NyA0MDkuMzg1IDMuODM4MDQgNDE2LjQwMiAzLjgzODA0QzQyMy40MTggMy44MzgwNCA0MjkuMiA2LjA4ODY3IDQzMy43NTIgMTAuNTlDNDM4LjQ5MyAxNC45MDM3IDQ0MC44NjEgMjAuMzQyOCA0NDAuODYxIDI2LjkwNzJDNDQwLjg2MSAzMy40NzE2IDQzOC40OTMgMzkuMDA0NSA0MzMuNzUyIDQzLjUwNTVDNDI5LjIgNDcuODE5MyA0MjMuNDE4IDQ5Ljk3NjQgNDE2LjQwMiA0OS45NzY0Wk00MzYuMDI4IDY4LjU0NDRWMjI0LjQwMkgzOTYuMjA5VjY4LjU0NDRINDM2LjAyOFoiIGZpbGw9IiMwMTZBQzkiLz4KPHBhdGggZD0iTTU0Ny42MTMgMTAwLjg5OEg1MjAuMDI0VjIyNC40MDJINDc5LjYzNlYxMDAuODk4SDQ2MS43MTZWNjguNTQ0Nkg0NzkuNjM2VjYwLjY2NzNDNDc5LjYzNiA0MS41MzY2IDQ4NS4xMzcgMjcuNDcwMSA0OTYuMTMzIDE4LjQ2NzVDNTA3LjEyOSA5LjQ2NDkgNTIzLjcxOSA1LjI0NDkyIDU0NS45MDYgNS44MDc1OFYzOS4wMDQ3QzUzNi4yMzMgMzguODE3MSA1MjkuNTA0IDQwLjQxMTQgNTI1LjcxIDQzLjc4NzNDNTIxLjkxOSA0Ny4xNjM1IDUyMC4wMjQgNTMuMjU4OCA1MjAuMDI0IDYyLjA3NFY2OC41NDQ2SDU0Ny42MTNWMTAwLjg5OFoiIGZpbGw9IiMwMTZBQzkiLz4KPHBhdGggZD0iTTYxOS43NzUgMTAwLjg5N1YxNzYuMjk0QzYxOS43NzUgMTgxLjU0NiA2MjEuMDA5IDE4NS4zOSA2MjMuNDczIDE4Ny44MjhDNjI2LjEyNiAxOTAuMDc5IDYzMC40OSAxOTEuMjA0IDYzNi41NTcgMTkxLjIwNEg2NTUuMDQ1VjIyNC40MDJINjMwLjAxM0M1OTYuNDU2IDIyNC40MDIgNTc5LjY3MSAyMDguMjcyIDU3OS42NzEgMTc2LjAxM1YxMDAuODk3SDU2MC45MDFWNjguNTQ0Mkg1NzkuNjcxVjMwLjAwMTdINjE5Ljc3NVY2OC41NDQySDY1NS4wNDVWMTAwLjg5N0g2MTkuNzc1WiIgZmlsbD0iIzAxNkFDOSIvPgo8cGF0aCBkPSJNNzQxLjY3IDI2LjkwNzNWMjI0LjQwMkg2OTMuMDMyVjI2LjkwNzNINzQxLjY3WiIgZmlsbD0iIzAxNkFDOSIvPgo8cGF0aCBkPSJNOTE5LjEyMyAyNTguMTYxTDg5My41MjYgMjI0LjEyQzg4NS45NDQgMjI1LjYyIDg3OC41NDcgMjI2LjM3MSA4NzEuMzQyIDIyNi4zNzFDODUyLjU3MiAyMjYuMzcxIDgzNS4zMTQgMjIyLjA1NyA4MTkuNTc3IDIxMy40M0M4MDQuMDMgMjA0LjgwMiA3OTEuNjA4IDE5Mi43OTkgNzgyLjMxOSAxNzcuNDJDNzczLjIxNSAxNjEuODUyIDc2OC42NjcgMTQ0LjQxIDc2OC42NjcgMTI1LjA5MkM3NjguNjY3IDEwNS43NzQgNzczLjIxNSA4OC40MjQ4IDc4Mi4zMTkgNzMuMDQ1OEM3OTEuNjA4IDU3LjY2NjEgODA0LjAzIDQ1LjY2MjcgODE5LjU3NyAzNy4wMzUxQzgzNS4zMTQgMjguNDA3NiA4NTIuNTcyIDI0LjA5MzkgODcxLjM0MiAyNC4wOTM5Qzg5MC4xMTIgMjQuMDkzOSA5MDcuMjc0IDI4LjQwNzYgOTIyLjgyNSAzNy4wMzUxQzkzOC41NTggNDUuNjYyNyA5NTAuODg3IDU3LjY2NjEgOTU5Ljc5NiA3My4wNDU4Qzk2OC44OTYgODguNDI0OCA5NzMuNDQ4IDEwNS43NzQgOTczLjQ0OCAxMjUuMDkyQzk3My40NDggMTQxLjk3MiA5NjkuOTM4IDE1Ny40NDUgOTYyLjkyNSAxNzEuNTEyQzk1Ni4xMDEgMTg1LjM5IDk0Ni41MjQgMTk2LjkyNSA5MzQuMTk4IDIwNi4xMTVMOTc4IDI1OC4xNjFIOTE5LjEyM1pNODE4LjQzOSAxMjUuMDkyQzgxOC40MzkgMTQyLjUzNCA4MjMuMTc3IDE1Ni41MDcgODMyLjY2MSAxNjcuMDFDODQyLjMzIDE3Ny4zMjYgODU1LjIyNSAxODIuNDgzIDg3MS4zNDIgMTgyLjQ4M0M4ODcuMjcgMTgyLjQ4MyA4OTkuOTczIDE3Ny4yMzIgOTA5LjQ1NCAxNjYuNzI5QzkxOS4xMjMgMTU2LjIyNiA5MjMuOTYgMTQyLjM0NyA5MjMuOTYgMTI1LjA5MkM5MjMuOTYgMTA3LjY0OSA5MTkuMTIzIDkzLjc3MDIgOTA5LjQ1NCA4My40NTQ3Qzg5OS45NzMgNzIuOTUxOSA4ODcuMjcgNjcuNzAwMSA4NzEuMzQyIDY3LjcwMDFDODU1LjIyNSA2Ny43MDAxIDg0Mi4zMyA3Mi44NTc5IDgzMi42NjEgODMuMTczNEM4MjMuMTc3IDkzLjQ4OSA4MTguNDM5IDEwNy40NjIgODE4LjQzOSAxMjUuMDkyWiIgZmlsbD0iIzAxNkFDOSIvPgo8L3N2Zz4K" style="height:32px;object-fit:contain;margin-bottom:6px;display:block;">
+          <div style="font-size:24px;color:var(--text-primary);font-weight:600;margin-bottom:4px;">Multi-Platform Creative Research</div>
+          <div style="display:flex;align-items:center;gap:4px;flex-wrap:nowrap;">
+            <h1 id="main-title" style="color:var(--text-primary);margin:0;white-space:normal;word-break:break-word;">OBD Fuel Saver - SynGas</h1>
+            <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
+              <button onclick="editTitle()" title="Edit title" style="background:none;border:none;cursor:pointer;color:var(--text-secondary);opacity:0.7;padding:2px;line-height:1;display:flex;align-items:center;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 2l3 3-8 8H3v-3l8-8z" stroke-linejoin="round"/></svg>
+              </button>
+              <a id="title-link-btn" href="#" target="_blank" rel="noopener" title="Open link" onclick="return openTitleLink(event)" style="display:none;color:var(--text-secondary);opacity:0.7;flex-shrink:0;line-height:1;align-items:center;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9"/><path d="M10 2h4v4M14 2 8 8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+        <input type="file" id="header-img-input" accept="image/*" style="display:none;" onchange="loadHeaderImg(this)">
       </div>
       <div class="save-bar">
         <div class="autosave-status">
@@ -262,13 +459,13 @@
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M13 13H3a1 1 0 0 1-1-1V4l3-3h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1z" stroke="currentColor" stroke-width="1.4"/><path d="M5 13V9h6v4M5 1v4h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
           Save
         </button>
-        <button class="toolbar-btn" id="autosaveToggle" onclick="toggleAutosave()" title="Toggle auto-save">
+        <button class="toolbar-btn" id="autosaveToggle" onclick="toggleAutosave()" title="When ON, saves automatically as you type. When OFF, only saves when you click Save.">
           Auto-save: <span id="autosaveLabel">Off</span>
         </button>
         <div class="export-wrap" id="exportWrap">
           <button class="toolbar-btn" onclick="toggleExportMenu()" id="exportBtn">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M4 7l4 4 4-4M2 13h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Export ▾
+            Export
           </button>
           <div class="export-menu hidden" id="exportMenu">
             <button onclick="exportJSON();closeExportMenu()">📄 JSON (backup)</button>
@@ -277,6 +474,10 @@
           </div>
         </div>
         <button class="toolbar-btn" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode">🌙 <span id="themeLabel">Dark mode</span></button>
+        <button class="toolbar-btn" onclick="showHistory()" title="Version history">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.5l2.5 1.5" stroke-linecap="round"/></svg>
+          History
+        </button>
         <button class="toolbar-btn" onclick="showSetupModal()" title="Cloud sync settings">☁️</button>
         <input type="file" id="importInput" accept=".json" style="display:none" onchange="importJSON(this)">
       </div>
@@ -297,7 +498,7 @@
         </div>
         <span class="section-title">Key takeaways</span>
       </div>
-      <div class="notes-body"><textarea id="notes-takeaways" placeholder="Summarize the main findings, patterns, and strategic insights from this analysis..."></textarea></div>
+      <div class="notes-body"><textarea id="notes-takeaways" placeholder="Summarize the main findings, patterns, and strategic insights from this analysis..." oninput="scheduleCloudSave()"></textarea><div class="notes-resize-handle" data-for="notes-takeaways" onmousedown="notesResizeStart(event,this)"></div></div>
     </div>
     <div class="section">
       <div class="section-header">
@@ -306,77 +507,114 @@
         </div>
         <span class="section-title">Recommended actions</span>
       </div>
-      <div class="notes-body"><textarea id="notes-actions" placeholder="List specific actions to test, replicate, or counter based on these findings..."></textarea></div>
+      <div class="notes-body"><textarea id="notes-actions" placeholder="List specific actions to test, replicate, or counter based on these findings..." oninput="scheduleCloudSave()"></textarea><div class="notes-resize-handle" data-for="notes-actions" onmousedown="notesResizeStart(event,this)"></div></div>
     </div>
   </div>
 
   <div class="section">
     <div class="section-header">
       <div class="section-icon icon-blue">
-        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 12 L5 8 L8 10 L11 5 L14 7" stroke="#185FA5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="15" height="15" viewBox="0 0 247 247" fill="#185FA5" xmlns="http://www.w3.org/2000/svg"><path d="M160.551,36.935c-0.614-1.892-1.956-3.462-3.727-4.365c-1.774-0.904-3.831-1.065-5.724-0.45l-31.376,10.196c-3.939,1.28-6.096,5.511-4.815,9.45l1.568,4.828l-79.811,58.625L5.183,125.448c-1.892,0.615-3.462,1.956-4.365,3.728c-0.903,1.772-1.065,3.831-0.45,5.723l19.129,58.862c1.03,3.169,3.97,5.184,7.131,5.184c0.769,0,1.55-0.119,2.32-0.369l31.478-10.229l16.173,0.085c3.248,15.336,16.888,26.88,33.176,26.88c16.164,0,29.714-11.371,33.095-26.531l16.587,0.087l1.568,4.829c0.614,1.892,1.955,3.462,3.728,4.365c1.064,0.542,2.232,0.817,3.405,0.817c0.78,0,1.563-0.122,2.317-0.367l31.377-10.195c3.939-1.28,6.096-5.511,4.816-9.45L160.551,36.935z M31.444,181.992l-14.492-44.597l18.364-5.967l14.49,44.597L31.444,181.992z M109.774,200.312c-7.912,0-14.694-4.887-17.513-11.797l34.958,0.184C124.356,195.514,117.617,200.312,109.774,200.312z M64.714,173.369l-7.888-24.277l-7.888-24.277l72.419-53.194l22.209,68.349l11.006,33.873L64.714,173.369z M172.972,181.929l-0.921-2.833c-0.001-0.005-0.002-0.011-0.004-0.017l-19.815-60.983l-20.74-63.833l17.111-5.561l41.48,127.665L172.972,181.929z"/><path d="M185.807,73.393c1.092,0.556,2.254,0.819,3.4,0.819c2.73,0,5.363-1.496,6.688-4.096l13.461-26.41c1.882-3.69,0.415-8.207-3.275-10.088c-3.69-1.88-8.207-0.415-10.088,3.276l-13.461,26.41C180.65,66.995,182.117,71.512,185.807,73.393z"/><path d="M242.176,144.712l-26.414-13.455c-3.691-1.879-8.207-0.412-10.087,3.279c-1.881,3.691-0.412,8.207,3.278,10.087l26.414,13.455c1.091,0.555,2.253,0.818,3.398,0.818c2.73,0,5.364-1.497,6.689-4.097C247.335,151.109,245.867,146.593,242.176,144.712z"/><path d="M204.242,101.204c1.03,3.169,3.97,5.184,7.131,5.184c0.769,0,1.55-0.119,2.32-0.369l28.188-9.16c3.938-1.28,6.095-5.511,4.814-9.451c-1.28-3.94-5.511-6.092-9.451-4.815l-28.188,9.16C205.118,93.034,202.962,97.265,204.242,101.204z"/></svg>
       </div>
       <span class="section-title">Top traffic sources</span>
+      <div style="display:flex;gap:6px;margin-left:12px;">
+        <button id="traffic-view-grid" onclick="setTrafficView('grid')" title="Grid view" style="background:transparent;border:1px solid var(--border-mid);border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--text-secondary);font-size:11px;display:flex;align-items:center;gap:5px;"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Grid</button>
+        <button id="traffic-view-table" onclick="setTrafficView('table')" title="Table view" style="background:var(--accent-muted,rgba(74,144,217,0.2));border:1px solid var(--accent,#4A90D9);border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--accent,#4A90D9);font-size:11px;display:flex;align-items:center;gap:5px;"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="1" width="14" height="14" rx="1"/><path d="M1 5h14M1 9h14M5 5v9"/></svg>Table</button>
+      </div>
     </div>
     <div class="section-body">
       <div class="table-scroll">
         <table id="traffic-table"><thead><tr>
           <th class="num-col frozen-num">#</th>
-          <th style="width:150px">Source / Channel</th>
-          <th style="width:100px">Est. Ads Quantity</th>
-          <th style="width:120px">Traffic Type</th>
-          <th style="width:150px">Notes</th>
+          <th>Traffic Source</th>
+          <th>Geo</th>
+          <th>Est. Ads Quantity</th>
+          <th>Traffic Type</th>
+          <th>Notes</th>
           <th class="remove-col"></th>
         </tr></thead><tbody id="traffic-body"></tbody></table>
       </div>
-      <div class="add-row"><button class="add-btn" onclick="addRow('traffic-body',trafficRow)">+ Add row</button></div>
+      <div id="traffic-grid" style="display:none;padding:16px;"></div>
+      <div class="add-row"><button class="add-btn" onclick="addRow('traffic-body',trafficRow)" title="Ctrl+Enter to add row from last cell">+ Add row</button></div>
     </div>
   </div>
 
   <div class="section">
     <div class="section-header">
       <div class="section-icon icon-amber">
-        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="8" rx="1.5" stroke="#854F0B" stroke-width="1.5"/><path d="M5 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1" stroke="#854F0B" stroke-width="1.5"/></svg>
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="12" rx="2" stroke="#854F0B" stroke-width="1.5"/><circle cx="5.5" cy="6" r="1.5" fill="#854F0B"/><path d="M1 11l4-3 3 3 2-2 4 3" stroke="#854F0B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <span class="section-title">Top ads</span>
+      <div style="display:flex;gap:6px;margin-left:12px;">
+        <button id="ads-view-grid" onclick="setAdsView('grid')" title="Grid view" style="background:var(--accent-muted,rgba(74,144,217,0.2));border:1px solid var(--accent,#4A90D9);border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--text-secondary);font-size:11px;display:flex;align-items:center;gap:5px;">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Grid
+        </button>
+        <button id="ads-view-table" onclick="setAdsView('table')" title="Table view" style="background:transparent;border:1px solid var(--border-mid);border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--accent,#4A90D9);font-size:11px;display:flex;align-items:center;gap:5px;">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="1" width="14" height="14" rx="1"/><path d="M1 5h14M1 9h14M5 5v9"/></svg>Table
+        </button>
+      </div>
     </div>
     <div class="section-body">
       <div class="table-scroll">
         <table id="ads-table"><thead><tr>
           <th class="num-col frozen-num">#</th>
-          <th class="frozen-offer">Offer</th><th>Traffic Channel</th><th>Format</th>
-          <th>Creative Preview</th><th>Creative Link</th>
-          <th>Angle / Hook</th><th>Headline</th><th>CTA</th><th>Title</th>
+          <th class="frozen-offer col-group-offer">Offer</th><th>Traffic Source</th><th>Format</th><th style="width:90px">Geo</th><th style="width:110px">Lifecycle</th>
+          <th class="col-group-links">Landing Page Link</th>
+          <th class="col-group-links">Spy Tool Link</th><th class="col-group-links">Fan Page Link</th>
+          <th class="col-group-creative">Creative Preview</th><th class="col-group-creative">Creative Link</th>
+          <th class="col-group-copy">Angle / Hook</th><th class="col-group-copy">Headline</th><th class="col-group-copy">CTA</th><th class="col-group-copy">Title</th>
           <th>Imp. Estimate</th>
-          <th>Landing Page Link</th>
-          <th>Spy Tool Link</th><th>Fan Page Link</th><th>Notes</th>
+          <th>Notes</th>
           <th class="remove-col"></th>
         </tr></thead><tbody id="ads-body"></tbody></table>
       </div>
-      <div class="add-row"><button class="add-btn" onclick="addRow('ads-body',adsRow)">+ Add row</button></div>
+      <div id="ads-grid" style="display:none;padding:16px;"></div>
+      <div class="add-row"><button class="add-btn" onclick="addRow('ads-body',adsRow)" title="Ctrl+Enter to add row from last cell">+ Add row</button></div>
     </div>
   </div>
 
   <div class="section">
     <div class="section-header">
       <div class="section-icon icon-teal">
-        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 13 L3 8 M7 13 L7 5 M11 13 L11 10 M13 4 L11 2 L9 4" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="20 7.75 4 7.75 2 3 22 3 20 7.75" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polygon points="17 14.88 7 14.88 5 10.13 19 10.13 17 14.88" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polygon points="14 22 10 22 8 17.25 16 17.25 14 22" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <span class="section-title">Top funnels used by advertisers</span>
+      <div style="display:flex;gap:6px;margin-left:12px;">
+        <button id="funnels-view-grid" onclick="setFunnelsView('grid')" title="Grid view" style="background:transparent;border:1px solid var(--border-mid);border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--text-secondary);font-size:11px;display:flex;align-items:center;gap:5px;"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Grid</button>
+        <button id="funnels-view-table" onclick="setFunnelsView('table')" title="Table view" style="background:var(--accent-muted,rgba(74,144,217,0.2));border:1px solid var(--accent,#4A90D9);border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--accent,#4A90D9);font-size:11px;display:flex;align-items:center;gap:5px;"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="1" width="14" height="14" rx="1"/><path d="M1 5h14M1 9h14M5 5v9"/></svg>Table</button>
+      </div>
     </div>
     <div class="section-body">
       <div class="table-scroll">
         <table id="funnels-table"><thead><tr>
-          <th class="num-col frozen-num">#</th><th style="width:140px">Link</th>
-          <th style="width:130px">Advertiser</th><th style="width:130px">Funnel Type</th>
-          <th style="width:180px">Key Observations</th>
+          <th class="num-col frozen-num">#</th><th>Link</th>
+          <th>Advertiser</th><th>Geo</th><th>Funnel Type</th>
+          <th>Key Observations</th>
           <th class="remove-col"></th>
         </tr></thead><tbody id="funnels-body"></tbody></table>
       </div>
-      <div class="add-row"><button class="add-btn" onclick="addRow('funnels-body',funnelRow)">+ Add row</button></div>
+      <div id="funnels-grid" style="display:none;padding:16px;"></div>
+      <div class="add-row"><button class="add-btn" onclick="addRow('funnels-body',funnelRow)" title="Ctrl+Enter to add row from last cell">+ Add row</button></div>
     </div>
   </div>
 
 </div>
+
+<!-- History Panel -->
+<div id="history-panel" style="display:none;position:fixed;top:0;right:0;width:320px;height:100vh;background:var(--bg-secondary);border-left:1px solid var(--border-light);z-index:1001;display:none;flex-direction:column;">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border-light);">
+    <span style="font-size:13px;font-weight:600;color:var(--text-primary);">Version history</span>
+    <button onclick="hideHistory()" style="background:none;border:none;cursor:pointer;color:var(--text-secondary);font-size:20px;line-height:1;">×</button>
+  </div>
+  <div style="padding:10px 12px;border-bottom:1px solid var(--border-light);font-size:11px;color:var(--text-secondary);">
+    Showing last <strong id="history-count">0</strong> versions from this session
+  </div>
+  <div id="history-list" style="flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:4px;"></div>
+</div>
+<div id="history-overlay" onclick="hideHistory()" style="display:none;position:fixed;inset:0;z-index:1000;"></div>
+
+<div id="lightbox" onclick="closeLightbox()"><span id="lightbox-close" onclick="closeLightbox()">×</span><img id="lightbox-img" src="" alt=""></div>
+
 
 <div class="toast-container" id="toastContainer"></div>
 
@@ -386,52 +624,1048 @@ const LS_LOCAL    = 'ecoverage_local_v2';
 let BIN_ID  = '69fb9158adc21f119a6273c4';
 let API_KEY = '$2a$10$IecvGoWgfhfhPACcMbpQ1ePIEi423.hKIhOwKhAlyX3ARia6WvXt6';
 
+function editTitle() {
+  const h1 = document.getElementById('main-title');
+  const current = h1.dataset.text || h1.textContent;
+  const currentUrl = h1.dataset.url || '';
+
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;flex-direction:column;gap:4px;';
+
+  const textIn = document.createElement('input');
+  textIn.type = 'text'; textIn.value = current; textIn.placeholder = 'Title text';
+  textIn.style.cssText = 'font-size:24px;font-weight:600;border:none;border-bottom:2px solid var(--accent,#4A90D9);background:transparent;color:var(--text-primary);outline:none;width:100%;font-family:inherit;';
+
+  const urlIn = document.createElement('input');
+  urlIn.type = 'text'; urlIn.value = currentUrl; urlIn.placeholder = 'Link URL (optional)';
+  urlIn.style.cssText = 'font-size:12px;border:none;border-bottom:1px solid var(--border-mid);background:transparent;color:var(--text-secondary);outline:none;width:100%;font-family:inherit;';
+
+  wrap.appendChild(textIn); wrap.appendChild(urlIn);
+  h1.replaceWith(wrap); textIn.focus(); textIn.select();
+
+  const save = () => {
+    const newText = textIn.value.trim() || current;
+    const newUrl = urlIn.value.trim();
+    const newH1 = document.createElement('h1');
+    newH1.id = 'main-title';
+    newH1.title = ''; newH1.style.cursor = 'default'; newH1.style.color = 'var(--text-primary)';
+    newH1.dataset.text = newText; newH1.dataset.url = newUrl;
+    if (newUrl) {
+      const a = document.createElement('a');
+      a.href = newUrl; a.target = '_blank'; a.rel = 'noopener';
+      a.textContent = newText; a.style.cssText = 'color:inherit;text-decoration:underline;text-underline-offset:3px;';
+      newH1.appendChild(a);
+    } else {
+      newH1.textContent = newText;
+    }
+    wrap.replaceWith(newH1);
+    localStorage.setItem('ecoverage_title', newText);
+    localStorage.setItem('ecoverage_title_url', newUrl);
+    document.title = newText;
+    updateTitleLinkBtn(newUrl);
+    doSave();
+  };
+
+  let saved = false;
+  const guardedSave = () => { if (!saved) { saved = true; save(); } };
+  textIn.addEventListener('blur', () => { setTimeout(() => { if (document.activeElement !== urlIn) guardedSave(); }, 100); });
+  urlIn.addEventListener('blur', () => { setTimeout(guardedSave, 100); });
+  textIn.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); urlIn.focus(); } if (e.key === 'Escape') { wrap.replaceWith(document.getElementById('main-title') || wrap); } });
+  urlIn.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); urlIn.blur(); } if (e.key === 'Escape') { urlIn.blur(); } });
+}
+
+function setViewMode(tableId, gridId, tableBtnId, gridBtnId, buildFn, storageKey, mode) {
+  const tableWrap = document.querySelector('#'+tableId).closest('.table-scroll');
+  const grid = document.getElementById(gridId);
+  const btnTable = document.getElementById(tableBtnId);
+  const btnGrid = document.getElementById(gridBtnId);
+  const accent = 'var(--accent,#4A90D9)', accentMuted = 'var(--accent-muted,rgba(74,144,217,0.2))';
+  // Find the add-row button in the same section
+  const addBtn = grid.nextElementSibling?.querySelector('.add-btn');
+  if (mode === 'grid') {
+    tableWrap.style.display = 'none'; grid.style.display = 'block'; buildFn();
+    btnGrid.style.background = accentMuted; btnGrid.style.borderColor = accent; btnGrid.style.color = accent;
+    btnTable.style.background = 'transparent'; btnTable.style.borderColor = 'var(--border-mid)'; btnTable.style.color = 'var(--text-secondary)';
+    if (addBtn) addBtn.textContent = '+ Add card';
+  } else {
+    tableWrap.style.display = ''; grid.style.display = 'none';
+    btnTable.style.background = accentMuted; btnTable.style.borderColor = accent; btnTable.style.color = accent;
+    btnGrid.style.background = 'transparent'; btnGrid.style.borderColor = 'var(--border-mid)'; btnGrid.style.color = 'var(--text-secondary)';
+    if (addBtn) addBtn.textContent = '+ Add row';
+  }
+  localStorage.setItem(storageKey, mode);
+  // Always save view preference locally regardless of editor status
+  try { localStorage.setItem(storageKey, mode); } catch(e) {}
+}
+
+function setTrafficView(mode) { setViewMode('traffic-table','traffic-grid','traffic-view-table','traffic-view-grid', buildTrafficGrid,'traffic_view_mode',mode); }
+function setFunnelsView(mode) { setViewMode('funnels-table','funnels-grid','funnels-view-table','funnels-view-grid', buildFunnelsGrid,'funnels_view_mode',mode); }
+
+function buildTrafficGrid() {
+  const grid = document.getElementById('traffic-grid');
+  const rows = document.querySelectorAll('#traffic-body tr');
+  if (!rows.length) { grid.innerHTML = '<div class="ads-grid-inner"><div class="grid-card-empty">No rows yet.</div></div>'; return; }
+  const BADGE_COLORS = {
+    'meta':{'bg':'#DBEAFE','color':'#1D4ED8'},'tiktok':{'bg':'#F3F4F6','color':'#111827'},
+    'google':{'bg':'#FEF9C3','color':'#854D0E'},'native':{'bg':'#D1FAE5','color':'#065F46'},
+    'youtube':{'bg':'#FEE2E2','color':'#B91C1C'},'pinterest':{'bg':'#FFE4E6','color':'#9F1239'},
+    'snapchat':{'bg':'#FEFCE8','color':'#854D0E'},'twitter':{'bg':'#E0F2FE','color':'#0369A1'},
+    'linkedin':{'bg':'#DBEAFE','color':'#1E40AF'},'reddit':{'bg':'#FEF3C7','color':'#92400E'},
+    'email':{'bg':'#FCE7F3','color':'#9D174D'},'sms':{'bg':'#D1FAE5','color':'#065F46'},
+    'push':{'bg':'#EDE9FE','color':'#6D28D9'},'paid-social':{'bg':'#DBEAFE','color':'#1D4ED8'},
+    'organic':{'bg':'#D1FAE5','color':'#065F46'},'search':{'bg':'#FEF9C3','color':'#854D0E'},
+    'display':{'bg':'#EDE9FE','color':'#6D28D9'},'video':{'bg':'#FEE2E2','color':'#B91C1C'},
+    'paid-search':{'bg':'#FEF9C3','color':'#854D0E'},'organic-search':{'bg':'#D1FAE5','color':'#065F46'},
+    'organic-social':{'bg':'#D1FAE5','color':'#065F46'},'direct':{'bg':'#F3F4F6','color':'#374151'},
+    'referral':{'bg':'#EDE9FE','color':'#6D28D9'},'native-dsp':{'bg':'#DCFCE7','color':'#166534'},
+    'in-app-dsp':{'bg':'#FDF4FF','color':'#7E22CE'},'programmatic':{'bg':'#F0F9FF','color':'#0C4A6E'},
+    'outbrain':{'bg':'#FEF3C7','color':'#92400E'},'mgid':{'bg':'#D1FAE5','color':'#065F46'},
+    'taboola':{'bg':'#DBEAFE','color':'#1E40AF'},'revcontent':{'bg':'#EDE9FE','color':'#6D28D9'},
+  };
+  const getBadgeStyle = td => {
+    const sel = td?.querySelector('select');
+    if (!sel || !sel.value) return null;
+    const text = td.querySelector('.sel-badge')?.textContent.trim() || sel.options[sel.selectedIndex]?.text || sel.value;
+    if (!text || text.includes('select')) return null;
+    const key = sel.value.toLowerCase().replace(/\s+/g,'-');
+    const clr = BADGE_COLORS[key] || { bg: '#E5E7EB', color: '#374151' };
+    return { text, bg: clr.bg, color: clr.color };
+  };
+  const renderChip = (td, label, rowIdx, tableId) => {
+    const sel = td?.querySelector('select');
+    if (!sel) return '';
+    const val = sel.value;
+    const text = val ? (sel.options[sel.selectedIndex]?.text || val) : '';
+    const hasVal = val && !text.includes('select');
+    const CHIP_COLORS = {
+      'meta':{'bg':'#DBEAFE','color':'#1D4ED8'},'tiktok':{'bg':'#F3F4F6','color':'#111827'},
+      'google':{'bg':'#FEF9C3','color':'#854D0E'},'native':{'bg':'#D1FAE5','color':'#065F46'},
+      'youtube':{'bg':'#FEE2E2','color':'#B91C1C'},'pinterest':{'bg':'#FFE4E6','color':'#9F1239'},
+      'snapchat':{'bg':'#FEFCE8','color':'#854D0E'},'twitter':{'bg':'#E0F2FE','color':'#0369A1'},
+      'linkedin':{'bg':'#DBEAFE','color':'#1E40AF'},'reddit':{'bg':'#FEF3C7','color':'#92400E'},
+      'email':{'bg':'#FCE7F3','color':'#9D174D'},'push':{'bg':'#EDE9FE','color':'#6D28D9'},
+      'paid-social':{'bg':'#DBEAFE','color':'#1D4ED8'},'paid-search':{'bg':'#FEF9C3','color':'#854D0E'},
+      'organic-search':{'bg':'#D1FAE5','color':'#065F46'},'organic-social':{'bg':'#D1FAE5','color':'#065F46'},
+      'display':{'bg':'#EDE9FE','color':'#6D28D9'},'video':{'bg':'#FEE2E2','color':'#B91C1C'},
+      'native-dsp':{'bg':'#DCFCE7','color':'#166534'},'in-app-dsp':{'bg':'#FDF4FF','color':'#7E22CE'},
+      'programmatic':{'bg':'#F0F9FF','color':'#0C4A6E'},'outbrain':{'bg':'#FEF3C7','color':'#92400E'},
+      'mgid':{'bg':'#D1FAE5','color':'#065F46'},'taboola':{'bg':'#DBEAFE','color':'#1E40AF'},
+      'image':{'bg':'#DBEAFE','color':'#1D4ED8'},'static-image':{'bg':'#DBEAFE','color':'#1D4ED8'},
+      'carousel':{'bg':'#D1FAE5','color':'#065F46'},'story':{'bg':'#FCE7F3','color':'#9D174D'},
+      'reel':{'bg':'#EDE9FE','color':'#6D28D9'},'ugc':{'bg':'#FEF3C7','color':'#92400E'},
+      'direct':{'bg':'#F3F4F6','color':'#374151'},'referral':{'bg':'#EDE9FE','color':'#6D28D9'},
+    };
+    const clr = CHIP_COLORS[val] || {bg:'#E5E7EB',color:'#374151'};
+    const chipHtml = hasVal
+      ? `<span style="background:${clr.bg};color:${clr.color};border-radius:20px;padding:1px 8px;font-size:11px;font-weight:500;white-space:nowrap;">${text}</span>`
+      : `<span style="opacity:0.4;font-size:10px;">— none —</span>`;
+    const tdIdx = Array.from(td.parentElement.children).indexOf(td) + 1;
+    const opts = Array.from(sel.options).map(o =>
+      `<option value="${o.value}"${o.selected?' selected':''}>${o.text}</option>`
+    ).join('');
+    return `<div style="font-size:13px;color:var(--text-secondary);line-height:1.4;margin-bottom:0;height:52px;min-height:52px;max-height:52px;overflow:hidden;flex-shrink:0;">
+      <div style="opacity:0.55;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:2px;">${label}</div>
+      <span style="position:relative;display:inline-flex;align-items:center;cursor:pointer;">
+        ${chipHtml}
+        <select data-row="${rowIdx}" data-table="${tableId}" data-tdidx="${tdIdx}"
+          onchange="gridChipEdit(this)"
+          style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;"
+        >${opts}</select>
+      </span>
+    </div>`;
+  };
+
+  const getText = td => td?.querySelector('textarea')?.value || '';
+  const gfField = (label, val, selector, rowIdx, tableId) => `<div style="font-size:13px;color:var(--text-secondary);line-height:1.4;margin-bottom:0;height:52px;min-height:52px;max-height:52px;overflow:hidden;flex-shrink:0;">
+    <div style="opacity:0.55;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:2px;">${label}</div>
+    <div class="gce" contenteditable="true" spellcheck="false" data-ta="${selector}" data-row="${rowIdx}" data-table="${tableId}"
+      style="color:${val?'var(--text-primary)':' var(--text-secondary)'};outline:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;white-space:pre-wrap;word-break:break-word;opacity:${val?'1':'0.4'};"
+      onclick="gcExpand(this)"
+      oninput="gridInlineEdit(this);this.style.color='var(--text-primary)';this.style.opacity='1';"
+      onblur="gcHandleBlur(event,this)"
+    >${val||''}</div>
+  </div>`;
+  const simpleField = (label, val, selector, rowIdx, tableId) => `<div style="font-size:13px;color:var(--text-secondary);line-height:1.4;margin-bottom:0;height:52px;min-height:52px;max-height:52px;overflow:hidden;flex-shrink:0;">
+    <div style="opacity:0.55;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:2px;">${label}</div>
+    <div class="gce" contenteditable="true" spellcheck="false" data-ta="${selector}" data-row="${rowIdx}" data-table="${tableId}"
+      style="color:${val?'var(--text-primary)':' var(--text-secondary)'};outline:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;white-space:pre-wrap;word-break:break-word;opacity:${val?'1':'0.4'};"
+      onclick="gcExpand(this)"
+      oninput="gridInlineEdit(this);this.style.color='var(--text-primary)';this.style.opacity='1';"
+      onblur="gcHandleBlur(event,this)"
+    >${val||''}</div>
+  </div>`;
+
+  // cols: 0=#, 1=source, 2=geo, 3=qty, 4=type, 5=notes
+  const cards = Array.from(rows).map((tr, idx) => {
+    const tds = tr.querySelectorAll('td');
+    const geo = getText(tds[2]);
+    const qty = getText(tds[3]);
+    const notes = getText(tds[5]);
+
+    return `<div class="grid-card" style="cursor:pointer;" >
+      <div class="grid-card-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:10px;color:#fff;background:rgba(0,0,0,0.55);border-radius:6px;padding:2px 5px;font-weight:500;">#${idx+1}</span>
+          <div style="display:flex;align-items:center;gap:4px;background:rgba(0,0,0,0.55);border-radius:6px;padding:3px 5px;backdrop-filter:blur(4px);" onclick="event.stopPropagation()">
+          <span class="grid-drag-handle" title="Drag to reorder" style="cursor:grab;color:#fff;opacity:0.8;padding:2px;font-size:14px;line-height:1;display:flex;align-items:center;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'"><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="7" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="7" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="7" cy="10" r="1.2"/></svg></span><button title="Duplicate" onclick="gridDupRow(${idx},'traffic-body')" style="background:none;border:none;cursor:pointer;color:#fff;opacity:0.8;padding:2px;font-size:13px;line-height:1;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">⧉</button>
+          <button title="Delete" onclick="gridRemoveRow(${idx},'traffic-body')" style="background:none;border:none;cursor:pointer;color:#fff;opacity:0.8;padding:2px;font-size:14px;line-height:1;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">×</button>
+        </div>
+        </div>
+        ${renderChip(tds[1], 'Traffic source', idx, 'traffic-body')}
+        ${renderChip(tds[4], 'Traffic type', idx, 'traffic-body')}
+        ${simpleField('Est. Qty', qty, 'td:nth-child(4)', idx, 'traffic-body')}
+        ${gfField('Geo', geo, 'td:nth-child(3)', idx, 'traffic-body')}
+        ${gfField('Notes', notes, 'td:nth-child(6)', idx, 'traffic-body')}
+      </div>
+    </div>`;
+  }).join('');
+  grid.innerHTML = `<div class="ads-grid-inner">${cards}</div>`;
+  initGridDrag('traffic-grid', 'traffic-body');
+}
+
+function buildFunnelsGrid() {
+  const grid = document.getElementById('funnels-grid');
+  const rows = document.querySelectorAll('#funnels-body tr');
+  if (!rows.length) { grid.innerHTML = '<div class="ads-grid-inner"><div class="grid-card-empty">No rows yet.</div></div>'; return; }
+
+  const FUNNEL_COLORS = {
+    'quiz':{'bg':'#EDE9FE','color':'#6D28D9'},'landing-page':{'bg':'#DBEAFE','color':'#1D4ED8'},
+    'vsl':{'bg':'#FEE2E2','color':'#B91C1C'},'lead-gen':{'bg':'#D1FAE5','color':'#065F46'},
+    'multi-step':{'bg':'#FEF3C7','color':'#92400E'},'advertorial':{'bg':'#FCE7F3','color':'#9D174D'},
+    'comparison':{'bg':'#F0F9FF','color':'#0C4A6E'},
+  };
+
+  const getText = td => td?.querySelector('textarea')?.value || '';
+  const getLinkHref = td => { const a = td?.querySelector('a.link-chip'); const h = a?.href||''; return (h && h.startsWith('http')) ? h : ''; };
+  const mkLink = (url, label) => url ? `<a href="${url}" target="_blank" rel="noopener" style="color:var(--accent,#4A90D9);text-decoration:none;font-size:10px;display:flex;align-items:center;gap:3px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9"/><path d="M10 2h4v4M14 2 8 8" stroke-linecap="round" stroke-linejoin="round"/></svg>${label}</a>` : '';
+  const gfField = (label, val, selector, rowIdx, tableId) => `<div style="font-size:13px;color:var(--text-secondary);line-height:1.4;margin-bottom:0;height:52px;min-height:52px;max-height:52px;overflow:hidden;flex-shrink:0;">
+    <div style="opacity:0.55;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:2px;">${label}</div>
+    <div class="gce" contenteditable="true" spellcheck="false" data-ta="${selector}" data-row="${rowIdx}" data-table="${tableId}"
+      style="color:${val?'var(--text-primary)':' var(--text-secondary)'};outline:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;white-space:pre-wrap;word-break:break-word;opacity:${val?'1':'0.4'};"
+      onclick="gcExpand(this)"
+      oninput="gridInlineEdit(this);this.style.color='var(--text-primary)';this.style.opacity='1';"
+      onblur="gcHandleBlur(event,this)"
+    >${val||''}</div>
+  </div>`;
+  const simpleField = (label, val, selector, rowIdx, tableId) => `<div style="font-size:13px;color:var(--text-secondary);line-height:1.4;margin-bottom:0;height:52px;min-height:52px;max-height:52px;overflow:hidden;flex-shrink:0;">
+    <div style="opacity:0.55;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:2px;">${label}</div>
+    <div class="gce" contenteditable="true" spellcheck="false" data-ta="${selector}" data-row="${rowIdx}" data-table="${tableId}"
+      style="color:${val?'var(--text-primary)':' var(--text-secondary)'};outline:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;white-space:pre-wrap;word-break:break-word;opacity:${val?'1':'0.4'};"
+      onclick="gcExpand(this)"
+      oninput="gridInlineEdit(this);this.style.color='var(--text-primary)';this.style.opacity='1';"
+      onblur="gcHandleBlur(event,this)"
+    >${val||''}</div>
+  </div>`;
+
+  const cards = Array.from(rows).map((tr, idx) => {
+    const tds = tr.querySelectorAll('td');
+    const linkUrl = getLinkHref(tds[1]);
+    const advertiser = getText(tds[2]);
+    const geo = getText(tds[3]);
+    const funnelSel = tds[4]?.querySelector('select');
+    const obs = getText(tds[5]);
+    const FUNNEL_CHIP_COLORS = {
+      'quiz':{'bg':'#EDE9FE','color':'#6D28D9'},'landing-page':{'bg':'#DBEAFE','color':'#1D4ED8'},
+      'vsl':{'bg':'#FEE2E2','color':'#B91C1C'},'lead-gen':{'bg':'#D1FAE5','color':'#065F46'},
+      'multi-step':{'bg':'#FEF3C7','color':'#92400E'},'advertorial':{'bg':'#FCE7F3','color':'#9D174D'},
+      'comparison':{'bg':'#F0F9FF','color':'#0C4A6E'},
+    };
+    const funnelOpts = funnelSel ? Array.from(funnelSel.options).map(o => `<option value="${o.value}"${o.selected?' selected':''}>${o.text}</option>`).join('') : '';
+    const fv = funnelSel?.value || '';
+    const ft = fv ? (funnelSel.options[funnelSel.selectedIndex]?.text || fv) : '';
+    const fc = FUNNEL_CHIP_COLORS[fv] || {bg:'#E5E7EB',color:'#374151'};
+    const funnelChipHtml = fv ? `<span style="background:${fc.bg};color:${fc.color};border-radius:20px;padding:1px 8px;font-size:11px;font-weight:500;white-space:nowrap;">${ft}</span>` : '<span style="opacity:0.4;font-size:10px;">— none —</span>';
+    const typeChip = funnelSel ? `<div style="font-size:13px;color:var(--text-secondary);line-height:1.4;margin-bottom:0;height:52px;min-height:52px;max-height:52px;overflow:hidden;flex-shrink:0;">
+      <div style="opacity:0.55;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:2px;">Funnel type</div>
+      <span style="position:relative;display:inline-flex;align-items:center;cursor:pointer;">
+        ${funnelChipHtml}
+        <select data-row="${idx}" data-table="funnels-body" data-tdidx="5"
+          onchange="gridChipEdit(this)"
+          style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;"
+        >${funnelOpts}</select>
+      </span>
+    </div>` : '';
+
+    return `<div class="grid-card" style="cursor:pointer;" >
+      <div class="grid-card-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:10px;color:#fff;background:rgba(0,0,0,0.55);border-radius:6px;padding:2px 5px;font-weight:500;">#${idx+1}</span>
+          <div style="display:flex;align-items:center;gap:4px;background:rgba(0,0,0,0.55);border-radius:6px;padding:3px 5px;backdrop-filter:blur(4px);" onclick="event.stopPropagation()">
+          <span class="grid-drag-handle" title="Drag to reorder" style="cursor:grab;color:#fff;opacity:0.8;padding:2px;font-size:14px;line-height:1;display:flex;align-items:center;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'"><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="7" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="7" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="7" cy="10" r="1.2"/></svg></span><button title="Duplicate" onclick="gridDupRow(${idx},'funnels-body')" style="background:none;border:none;cursor:pointer;color:#fff;opacity:0.8;padding:2px;font-size:13px;line-height:1;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">⧉</button>
+          <button title="Delete" onclick="gridRemoveRow(${idx},'funnels-body')" style="background:none;border:none;cursor:pointer;color:#fff;opacity:0.8;padding:2px;font-size:14px;line-height:1;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">×</button>
+        </div>
+        </div>
+        <div class="grid-card-offer">${advertiser || '<span style="opacity:0.4">No advertiser</span>'}</div>
+        ${typeChip}
+        ${gfField('Geo', geo, 'td:nth-child(4)', idx, 'funnels-body')}
+        ${gfField('Observations', obs, 'td:nth-child(6)', idx, 'funnels-body')}
+        <div style="padding-top:6px;border-top:1px solid var(--border-light);margin-top:4px;display:flex;align-items:center;gap:4px;" onclick="event.stopPropagation()">
+          ${linkUrl
+            ? `<a href="${linkUrl}" target="_blank" rel="noopener" style="color:var(--accent,#4A90D9);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:3px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9"/><path d="M10 2h4v4M14 2 8 8" stroke-linecap="round" stroke-linejoin="round"/></svg>Funnel link</a>`
+            : `<span style="font-size:12px;color:var(--text-secondary);opacity:0.5;flex:1;">Funnel link</span>`
+          }
+          <button onclick="gridEditLink(this,${idx},'funnels-body',2)" title="Edit URL" style="background:none;border:none;cursor:pointer;color:var(--text-secondary);opacity:0.5;padding:1px;line-height:1;flex-shrink:0;display:flex;align-items:center;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 2l3 3-8 8H3v-3l8-8z" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  grid.innerHTML = `<div class="ads-grid-inner">${cards}</div>`;
+  initGridDrag('funnels-grid', 'funnels-body');
+}
+
+function setAdsView(mode) { setViewMode('ads-table','ads-grid','ads-view-table','ads-view-grid', buildAdsGrid,'ads_view_mode',mode); }
+
+function buildAdsGrid() {
+  const grid = document.getElementById('ads-grid');
+  const rows = document.querySelectorAll('#ads-body tr');
+  if (!rows.length) { grid.innerHTML = '<div class="ads-grid-inner"><div class="grid-card-empty">No rows yet — add some in Table view.</div></div>'; return; }
+  grid.innerHTML = '<div class="grid-loading">⏳ Building grid…</div>';
+  setTimeout(() => {
+
+  const mkLink = (url, label) => url && url !== '#' && !url.endsWith('#')
+    ? `<a href="${url}" target="_blank" rel="noopener" style="color:var(--accent,#4A90D9);text-decoration:none;font-size:10px;display:flex;align-items:center;gap:3px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9"/><path d="M10 2h4v4M14 2 8 8" stroke-linecap="round" stroke-linejoin="round"/></svg>${label}</a>` : '';
+  const field = (label, val, taSelector, rowIdx, h=52) => `<div style="font-size:13px;color:var(--text-secondary);line-height:1.4;margin-bottom:0;height:${h}px;min-height:${h}px;max-height:${h}px;overflow:hidden;flex-shrink:0;">
+    <div style="opacity:0.55;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:2px;">${label}</div>
+    <div class="gce" contenteditable="true" spellcheck="false" data-ta="${taSelector}" data-row="${rowIdx}" data-table="ads-body"
+      style="color:${val?'var(--text-primary)':'var(--text-secondary)'};outline:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;min-width:20px;white-space:pre-wrap;word-break:break-word;opacity:${val?'1':'0.4'};"
+      onclick="gcExpand(this)"
+      oninput="gridInlineEdit(this);this.style.color='var(--text-primary)';this.style.opacity='1';"
+      onblur="gcHandleBlur(event,this)"
+    >${val||''}</div>
+  </div>`;
+
+  const getLinkHref = td => { const a = td?.querySelector('a.link-chip'); const h = a?.href || ''; return (h && h !== '#' && !h.endsWith('#') && h !== location.href && !h.endsWith(location.pathname) && h.startsWith('http')) ? h : ''; };
+  const getText = td => td?.querySelector('textarea')?.value || '';
+  const ADS_COLORS = {
+    'meta':{'bg':'#DBEAFE','color':'#1D4ED8'},'tiktok':{'bg':'#F3F4F6','color':'#111827'},
+    'google':{'bg':'#FEF9C3','color':'#854D0E'},'native':{'bg':'#D1FAE5','color':'#065F46'},
+    'youtube':{'bg':'#FEE2E2','color':'#B91C1C'},'pinterest':{'bg':'#FFE4E6','color':'#9F1239'},
+    'snapchat':{'bg':'#FEFCE8','color':'#854D0E'},'twitter':{'bg':'#E0F2FE','color':'#0369A1'},
+    'linkedin':{'bg':'#DBEAFE','color':'#1E40AF'},'reddit':{'bg':'#FEF3C7','color':'#92400E'},
+    'email':{'bg':'#FCE7F3','color':'#9D174D'},'push':{'bg':'#EDE9FE','color':'#6D28D9'},
+    'in-app-dsp':{'bg':'#FDF4FF','color':'#7E22CE'},'programmatic':{'bg':'#F0F9FF','color':'#0C4A6E'},
+    'outbrain':{'bg':'#FEF3C7','color':'#92400E'},'mgid':{'bg':'#D1FAE5','color':'#065F46'},
+    'taboola':{'bg':'#DBEAFE','color':'#1E40AF'},'revcontent':{'bg':'#EDE9FE','color':'#6D28D9'},
+    'image':{'bg':'#DBEAFE','color':'#1D4ED8'},'video':{'bg':'#FEE2E2','color':'#B91C1C'},
+    'carousel':{'bg':'#D1FAE5','color':'#065F46'},'story':{'bg':'#FCE7F3','color':'#9D174D'},
+    'reel':{'bg':'#EDE9FE','color':'#6D28D9'},'ugc':{'bg':'#FEF3C7','color':'#92400E'},
+  };
+  const getChipStyle = td => {
+    const sel = td?.querySelector('select');
+    if (!sel || !sel.value) return null;
+    const text = sel.options[sel.selectedIndex]?.text || sel.value;
+    if (!text || text.includes('select')) return null;
+    const clr = ADS_COLORS[sel.value.toLowerCase()] || { bg: '#E5E7EB', color: '#374151' };
+    return { text, bg: clr.bg, color: clr.color };
+  };
+  const renderChip = (td, label, rowIdx, tableId) => {
+    const sel = td?.querySelector('select');
+    if (!sel) return '';
+    const val = sel.value;
+    const text = val ? (sel.options[sel.selectedIndex]?.text || val) : '';
+    const hasVal = val && !text.includes('select');
+    const CHIP_COLORS = {
+      'meta':{'bg':'#DBEAFE','color':'#1D4ED8'},'tiktok':{'bg':'#F3F4F6','color':'#111827'},
+      'google':{'bg':'#FEF9C3','color':'#854D0E'},'native':{'bg':'#D1FAE5','color':'#065F46'},
+      'youtube':{'bg':'#FEE2E2','color':'#B91C1C'},'pinterest':{'bg':'#FFE4E6','color':'#9F1239'},
+      'snapchat':{'bg':'#FEFCE8','color':'#854D0E'},'twitter':{'bg':'#E0F2FE','color':'#0369A1'},
+      'linkedin':{'bg':'#DBEAFE','color':'#1E40AF'},'reddit':{'bg':'#FEF3C7','color':'#92400E'},
+      'email':{'bg':'#FCE7F3','color':'#9D174D'},'push':{'bg':'#EDE9FE','color':'#6D28D9'},
+      'paid-social':{'bg':'#DBEAFE','color':'#1D4ED8'},'paid-search':{'bg':'#FEF9C3','color':'#854D0E'},
+      'organic-search':{'bg':'#D1FAE5','color':'#065F46'},'organic-social':{'bg':'#D1FAE5','color':'#065F46'},
+      'display':{'bg':'#EDE9FE','color':'#6D28D9'},'video':{'bg':'#FEE2E2','color':'#B91C1C'},
+      'native-dsp':{'bg':'#DCFCE7','color':'#166534'},'in-app-dsp':{'bg':'#FDF4FF','color':'#7E22CE'},
+      'programmatic':{'bg':'#F0F9FF','color':'#0C4A6E'},'outbrain':{'bg':'#FEF3C7','color':'#92400E'},
+      'mgid':{'bg':'#D1FAE5','color':'#065F46'},'taboola':{'bg':'#DBEAFE','color':'#1E40AF'},
+      'image':{'bg':'#DBEAFE','color':'#1D4ED8'},'static-image':{'bg':'#DBEAFE','color':'#1D4ED8'},
+      'carousel':{'bg':'#D1FAE5','color':'#065F46'},'story':{'bg':'#FCE7F3','color':'#9D174D'},
+      'reel':{'bg':'#EDE9FE','color':'#6D28D9'},'ugc':{'bg':'#FEF3C7','color':'#92400E'},
+      'direct':{'bg':'#F3F4F6','color':'#374151'},'referral':{'bg':'#EDE9FE','color':'#6D28D9'},
+    };
+    const clr = CHIP_COLORS[val] || {bg:'#E5E7EB',color:'#374151'};
+    const chipHtml = hasVal
+      ? `<span style="background:${clr.bg};color:${clr.color};border-radius:20px;padding:1px 8px;font-size:11px;font-weight:500;white-space:nowrap;">${text}</span>`
+      : `<span style="opacity:0.4;font-size:10px;">— none —</span>`;
+    const tdIdx = Array.from(td.parentElement.children).indexOf(td) + 1;
+    const opts = Array.from(sel.options).map(o =>
+      `<option value="${o.value}"${o.selected?' selected':''}>${o.text}</option>`
+    ).join('');
+    return `<div style="font-size:13px;color:var(--text-secondary);line-height:1.4;margin-bottom:0;height:52px;min-height:52px;max-height:52px;overflow:hidden;flex-shrink:0;">
+      <div style="opacity:0.55;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:2px;">${label}</div>
+      <span style="position:relative;display:inline-flex;align-items:center;cursor:pointer;">
+        ${chipHtml}
+        <select data-row="${rowIdx}" data-table="${tableId}" data-tdidx="${tdIdx}"
+          onchange="gridChipEdit(this)"
+          style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;"
+        >${opts}</select>
+      </span>
+    </div>`;
+  };
+
+  const cards = Array.from(rows).map((tr, idx) => {
+    const tds = tr.querySelectorAll('td');
+    const num      = idx + 1;
+    const offer    = getText(tds[1]) || tds[1]?.querySelector('.text-badge')?.textContent.trim() || '';
+    const geo      = getText(tds[4]);
+    const lifecycle = getText(tds[5]);
+    const landingUrl = getLinkHref(tds[6]);
+    const spyUrl   = getLinkHref(tds[7]);
+    const fanUrl   = getLinkHref(tds[8]);
+    const thumbImg = tr.querySelector('img.media-thumb');
+    const thumbSrc = thumbImg ? thumbImg.src : '';
+    const thumbUrl = thumbImg ? (thumbImg.getAttribute('onclick')?.match(/window\.open\('([^']+)'/)?.[1] || thumbSrc) : '';
+    const creativeUrl = getLinkHref(tds[10]);
+    const angle    = getText(tds[11]);
+    const headline = getText(tds[12]);
+    const cta      = getText(tds[13]);
+    const title    = getText(tds[14]);
+    const imp      = getText(tds[15]);
+    const notes    = getText(tds[16]);
+
+    const imgHtml = thumbSrc
+      ? `<img class="grid-card-img" src="${thumbSrc}" onclick="event.stopPropagation();${creativeUrl ? `window.open('${creativeUrl}','_blank')` : `openLightbox('${thumbUrl||thumbSrc}')`}" title="${creativeUrl ? 'Open creative' : 'Enlarge'}" style="cursor:pointer;">`
+      : `<div class="grid-card-img-empty" onclick="event.stopPropagation();document.getElementById('grid-upload-${idx}').click()" style="cursor:pointer;" title="Click to upload image">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-secondary);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span style="font-size:10px;">Add preview</span>
+          </div>
+          <input type="file" id="grid-upload-${idx}" accept="image/*,video/*" style="display:none;" onchange="gridUploadMedia(this,${idx})">
+        </div>`;
+
+    const mkEditableLink = (url, label, tdIdx) => {
+      const hasUrl = url && url.startsWith('http');
+      return `<div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;" onclick="event.stopPropagation()">
+        ${hasUrl
+          ? `<a href="${url}" target="_blank" rel="noopener" style="color:var(--accent,#4A90D9);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:3px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9"/><path d="M10 2h4v4M14 2 8 8" stroke-linecap="round" stroke-linejoin="round"/></svg>${label}</a>`
+          : `<span style="font-size:13px;color:var(--text-secondary);opacity:0.5;flex:1;">${label}</span>`
+        }
+        <button onclick="gridEditLink(this,${idx},'ads-body',${tdIdx})" title="Edit URL" style="background:none;border:none;cursor:pointer;color:var(--text-secondary);opacity:0.5;padding:1px;line-height:1;flex-shrink:0;display:flex;align-items:center;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 2l3 3-8 8H3v-3l8-8z" stroke-linejoin="round"/></svg></button>
+      </div>`;
+    };
+    const linkBlock = `<div style="padding-top:6px;border-top:1px solid var(--border-light);margin-top:4px;">
+      <div style="display:flex;gap:8px;justify-content:space-between;">
+        <div style="flex:1;">${mkEditableLink(landingUrl,'Landing',7)}${mkEditableLink(creativeUrl,'Creative',11)}</div>
+        <div style="flex:1;">${mkEditableLink(spyUrl,'Spy tool',8)}${mkEditableLink(fanUrl,'Fan page',9)}</div>
+      </div>
+    </div>`;
+
+    const linkBlockTop = `<div style="display:flex;gap:8px;justify-content:space-between;margin-bottom:6px;padding:6px 0;border-bottom:1px solid var(--border-light);">
+        <div style="display:flex;flex-direction:column;gap:2px;flex:1;">${mkEditableLink(landingUrl,'Landing',7)}${mkEditableLink(creativeUrl,'Creative',11)}</div>
+        <div style="display:flex;flex-direction:column;gap:2px;flex:1;align-items:flex-end;">${mkEditableLink(spyUrl,'Spy tool',8)}${mkEditableLink(fanUrl,'Fan page',9)}</div>
+      </div>`;
+
+    return `<div class="grid-card" >
+      <div style="position:relative;overflow:hidden;border-radius:8px 8px 0 0;">${imgHtml}
+        <div style="position:absolute;top:4px;left:4px;right:4px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:10px;color:#fff;background:rgba(0,0,0,0.55);border-radius:6px;padding:2px 5px;font-weight:500;">#${num}</span>
+          <div style="display:flex;align-items:center;gap:4px;background:rgba(0,0,0,0.55);border-radius:6px;padding:3px 5px;backdrop-filter:blur(4px);" onclick="event.stopPropagation()">
+          <span class="grid-drag-handle" title="Drag to reorder" style="cursor:grab;color:#fff;opacity:0.8;padding:2px;font-size:14px;line-height:1;display:flex;align-items:center;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'"><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><circle cx="3" cy="2" r="1.2"/><circle cx="7" cy="2" r="1.2"/><circle cx="3" cy="6" r="1.2"/><circle cx="7" cy="6" r="1.2"/><circle cx="3" cy="10" r="1.2"/><circle cx="7" cy="10" r="1.2"/></svg></span><button title="Duplicate" onclick="gridDupRow(${idx},'ads-body')" style="background:none;border:none;cursor:pointer;color:#fff;opacity:0.8;padding:2px;font-size:13px;line-height:1;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">⧉</button>
+          <button title="Delete" onclick="gridRemoveRow(${idx},'ads-body')" style="background:none;border:none;cursor:pointer;color:#fff;opacity:0.8;padding:2px;font-size:14px;line-height:1;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">×</button>
+        </div>
+        </div>
+      </div>
+      <div class="grid-card-body">
+        <div class="grid-card-offer">${offer || '<span style="opacity:0.4">No offer</span>'}</div>
+        ${linkBlockTop}
+        ${renderChip(tds[2], 'Traffic source', idx, 'ads-body')}
+        ${renderChip(tds[3], 'Format', idx, 'ads-body')}
+        ${field('Geo', geo, 'td:nth-child(5)', idx)}
+        ${field('Lifecycle', lifecycle, 'td:nth-child(6)', idx)}
+        ${field('Angle / Hook', angle, 'td:nth-child(12)', idx, 70)}
+        ${field('Headline', headline, 'td:nth-child(13)', idx, 80)}
+        ${field('CTA', cta, 'td:nth-child(14)', idx)}
+        ${field('Title', title, 'td:nth-child(15)', idx, 70)}
+        ${field('Imp. Estimate', imp, 'td:nth-child(16)', idx)}
+        ${field('Notes', notes, 'td:nth-child(17)', idx, 80)}
+      </div>
+    </div>`;
+  }).join('');
+  grid.innerHTML = `<div class="ads-grid-inner">${cards}</div>`;
+  initGridDrag('ads-grid', 'ads-body');
+  }, 0);
+}
+
+function gridChipEdit(sel) {
+  const rowIdx = parseInt(sel.dataset.row);
+  const tableId = sel.dataset.table;
+  const tdIdx = parseInt(sel.dataset.tdidx);
+  const tbody = document.getElementById(tableId);
+  if (!tbody) return;
+  const tr = tbody.querySelectorAll('tr')[rowIdx];
+  if (!tr) return;
+  const td = tr.querySelectorAll('td')[tdIdx - 1];
+  if (!td) return;
+  const tableSel = td.querySelector('select');
+  if (tableSel) {
+    tableSel.value = sel.value;
+    updateBadge(tableSel);
+    scheduleSave();
+    scheduleSnap();
+    rebuildGridForTable(tableId);
+  }
+}
+
+async function gridUploadMedia(input, rowIdx) {
+  const file = input.files[0]; if (!file) return;
+  const isVideo = file.type.startsWith('video/');
+  const tbody = document.getElementById('ads-body');
+  const tr = tbody.querySelectorAll('tr')[rowIdx];
+  if (!tr) return;
+
+  // Find the media cell (td with hidden-input)
+  const mediaCell = tr.querySelector('td.media-cell');
+  if (!mediaCell) return;
+  const uid = mediaCell.querySelector('input[type="file"]')?.id;
+  const previewId = uid + '-preview';
+
+  // Show uploading state
+  buildAdsGrid(); // rebuild to show loading
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_PRESET);
+
+  try {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/auto/upload`, {
+      method: 'POST', body: formData
+    });
+    if (!res.ok) throw new Error('Upload failed');
+    const data = await res.json();
+    const url = data.secure_url;
+    const thumbUrl = isVideo
+      ? url.replace('/upload/', '/upload/w_144,h_108,c_fill,so_0/').replace(/\.[^.]+$/, '.jpg')
+      : url.replace('/upload/', '/upload/w_144,h_108,c_fill,q_80/');
+
+    const pd = document.getElementById(previewId);
+    if (pd) {
+      pd.innerHTML = `<div class="media-preview">
+        <img class="media-thumb" src="${thumbUrl}" onclick="window.open('${url}','_blank')" style="cursor:pointer" title="Click to open">
+        <button class="media-remove" onclick="removeMedia('${uid}','${previewId}')">×</button>
+      </div><input type="hidden" class="cloudinary-url" value="${url}">`;
+    }
+    scheduleSave();
+    buildAdsGrid();
+  } catch(e) {
+    console.error('Upload error:', e);
+  }
+}
+
+function initGridDrag(gridId, tableId) {
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+  const inner = grid.querySelector('.ads-grid-inner');
+  if (!inner) return;
+
+  let dragSrc = null;
+
+  inner.querySelectorAll('.grid-card').forEach(card => {
+    const handle = card.querySelector('.grid-drag-handle');
+    if (!handle) return;
+
+    // Enable drag only when handle is pressed
+    handle.addEventListener('mousedown', () => { card.draggable = true; });
+    handle.addEventListener('touchstart', () => { card.draggable = true; }, { passive: true });
+    document.addEventListener('mouseup', () => { if (!dragSrc) card.draggable = false; }, { once: false });
+
+    card.addEventListener('dragstart', (e) => {
+      dragSrc = card;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', '');
+    });
+
+    card.addEventListener('dragend', () => {
+      card.draggable = false;
+      card.classList.remove('dragging');
+      inner.querySelectorAll('.grid-card').forEach(c => c.classList.remove('drag-over'));
+      dragSrc = null;
+    });
+
+    card.addEventListener('dragover', (e) => {
+      if (!dragSrc || dragSrc === card) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      inner.querySelectorAll('.grid-card').forEach(c => c.classList.remove('drag-over'));
+      card.classList.add('drag-over');
+    });
+
+    card.addEventListener('drop', (e) => {
+      e.preventDefault();
+      if (!dragSrc || dragSrc === card) return;
+      const cards = Array.from(inner.querySelectorAll('.grid-card'));
+      const srcIdx = cards.indexOf(dragSrc);
+      const tgtIdx = cards.indexOf(card);
+      if (srcIdx === -1 || tgtIdx === -1) return;
+      const tbody = document.getElementById(tableId);
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      const srcRow = rows[srcIdx], tgtRow = rows[tgtIdx];
+      if (!srcRow || !tgtRow) return;
+      if (srcIdx < tgtIdx) tgtRow.after(srcRow);
+      else tgtRow.before(srcRow);
+      renumberTable(tableId);
+      scheduleSave();
+      setTimeout(() => rebuildGridForTable(tableId), 50);
+    });
+  });
+}
+
+function gcSelectAll(el) {
+  gcExpand(el);
+  setTimeout(() => {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }, 10);
+}
+
+function gcHandleBlur(e, el) {
+  // Don't collapse if the user is just selecting text (relatedTarget is null = clicked outside but may be selecting)
+  const sel = window.getSelection();
+  if (sel && sel.toString().length > 0 && sel.containsNode(el, true)) return;
+  el.style.background = ''; el.style.padding = '';
+  gcCollapse(el);
+}
+
+// Double-click any grid card field to select all text
+document.addEventListener('dblclick', (e) => {
+  const el = e.target.closest('.gce');
+  if (!el) return;
+  e.preventDefault();
+  gcExpand(el);
+  setTimeout(() => {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }, 10);
+});
+
+function gcExpand(el) {
+  const wrapper = el.closest('[style*="max-height"]');
+  if (wrapper) {
+    wrapper._origMaxH = wrapper.style.maxHeight;
+    wrapper._origH = wrapper.style.height;
+    wrapper._origOF = wrapper.style.overflow;
+    wrapper.style.maxHeight = 'none';
+    wrapper.style.height = 'auto';
+    wrapper.style.overflow = 'visible';
+    wrapper.style.zIndex = '10';
+    wrapper.style.position = 'relative';
+  }
+  el.style.display = 'block';
+  el.style.webkitLineClamp = '';
+  el.style.overflow = 'visible';
+  el.style.cursor = 'text';
+  el.style.color = 'var(--text-primary)';
+  el.style.opacity = '1';
+  el.focus();
+  // Place cursor at end
+  const range = document.createRange();
+  const sel = window.getSelection();
+  range.selectNodeContents(el);
+  range.collapse(false);
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
+function gcCollapse(el) {
+  const wrapper = el.closest('[style*="max-height"]');
+  if (wrapper) {
+    if (wrapper._origMaxH !== undefined) {
+      wrapper.style.maxHeight = wrapper._origMaxH;
+      wrapper.style.height = wrapper._origH;
+      wrapper.style.overflow = wrapper._origOF || 'hidden';
+    }
+    wrapper.style.zIndex = '';
+    wrapper.style.position = '';
+    wrapper.style.background = '';
+    wrapper.style.borderRadius = '';
+    wrapper.style.boxShadow = '';
+    wrapper.style.padding = '';
+  }
+  el.style.display = '-webkit-box';
+  el.style.webkitLineClamp = '2';
+  el.style.overflow = 'hidden';
+  el.style.cursor = 'pointer';
+  el.style.background = '';
+  el.style.padding = '';
+  el.style.color = '';
+}
+
+function gcCollapse(el) {
+  el.style.display = '-webkit-box';
+  el.style.webkitLineClamp = '2';
+  el.style.overflow = 'hidden';
+  el.style.cursor = 'pointer';
+}
+
+// Collapse all expanded grid fields when clicking outside
+document.addEventListener('click', e => {
+  if (!e.target.closest('.gce')) {
+    document.querySelectorAll('.gce').forEach(el => {
+      if (el.style.overflow === 'visible') gcCollapse(el);
+    });
+  }
+});
+
+function gridInlineEdit(el) {
+  const selector = el.dataset.ta;
+  const rowIdx = parseInt(el.dataset.row);
+  const tableId = el.dataset.table;
+  const tbody = document.getElementById(tableId);
+  if (!tbody) return;
+  const tr = tbody.querySelectorAll('tr')[rowIdx];
+  if (!tr) return;
+  const td = tr.querySelector(selector);
+  const ta = td ? td.querySelector('textarea') : null;
+  if (ta) {
+    ta.value = el.innerText.replace(/\n$/, '');
+    autoGrow(ta);
+    centerTextareas();
+  }
+  scheduleSave();
+  scheduleSnap();
+}
+
+// Snap on blur of any contenteditable grid field
+document.addEventListener('focusout', function(e) {
+  if (e.target.contentEditable === 'true' && e.target.dataset.ta) {
+    snapForUndo();
+  }
+});
+
+function gridEditLink(btn, rowIdx, tableId, tdIdx) {
+  const wrap = btn.closest('div[onclick]');
+  if (!wrap) return;
+
+  const tbody = document.getElementById(tableId);
+  const tr = tbody.querySelectorAll('tr')[rowIdx];
+  if (!tr) return;
+  const td = tr.querySelectorAll('td')[tdIdx - 1];
+  if (!td) return;
+  const a = td.querySelector('a.link-chip');
+  const currentUrl = (a && a.href && a.href.startsWith('http')) ? a.href : '';
+
+  // Replace wrap content with inline input
+  const label = wrap.querySelector('a, span')?.textContent?.trim() || 'URL';
+  wrap.innerHTML = `<input type="url" value="${currentUrl}" placeholder="https://..." autocomplete="off"
+    style="flex:1;font-size:10px;padding:2px 4px;background:var(--bg-primary);border:1px solid var(--accent,#4A90D9);border-radius:4px;color:var(--text-primary);outline:none;width:100%;"
+    onkeydown="if(event.key==='Enter'){event.preventDefault();gridSaveLink(this,${rowIdx},'${tableId}',${tdIdx},'${label}')}if(event.key==='Escape'){rebuildGridForTable('${tableId}')}"
+    onblur="gridSaveLink(this,${rowIdx},'${tableId}',${tdIdx},'${label}')"
+  >`;
+  const input = wrap.querySelector('input');
+  input.focus(); input.select();
+}
+
+function gridSaveLink(input, rowIdx, tableId, tdIdx, label) {
+  if (input._saved) return; input._saved = true;
+  const tbody = document.getElementById(tableId);
+  const tr = tbody.querySelectorAll('tr')[rowIdx];
+  if (!tr) return;
+  const td = tr.querySelectorAll('td')[tdIdx - 1];
+  if (!td) return;
+  syncLinkCell(td, input.value.trim());
+  scheduleSave();
+  rebuildGridForTable(tableId);
+}
+
+function syncLinkCell(td, url) {
+  const a = td.querySelector('a.link-chip');
+  const empty = td.querySelector('.link-chip-empty, .link-add-btn');
+  const chipText = td.querySelector('.link-chip-text');
+  if (url && a) {
+    a.href = url;
+    if (chipText) chipText.textContent = url.replace(/^https?:\/\//, '').slice(0, 30);
+    a.style.display = '';
+    if (empty) empty.style.display = 'none';
+  } else if (a) {
+    a.href = '#';
+    a.style.display = 'none';
+    if (empty) empty.style.display = '';
+  }
+}
+
+function gridRemoveRow(idx, tableId) {
+  const tbody = document.getElementById(tableId);
+  const rows = tbody.querySelectorAll('tr');
+  if (rows[idx]) rows[idx].remove();
+  renumberTable(tableId);
+  scheduleSave();
+  rebuildGridForTable(tableId);
+}
+
+function gridDupRow(idx, tableId) {
+  const tbody = document.getElementById(tableId);
+  const rows = tbody.querySelectorAll('tr');
+  if (!rows[idx]) return;
+  const clone = rows[idx].cloneNode(true);
+  rows[idx].after(clone);
+  renumberTable(tableId);
+  setTimeout(() => { resizeAllInputs(); updateAllBadges(); syncAllLinks(); initAllColResize(); updateFrozenOffsets(); applyTextColors(); }, 0);
+  scheduleSave();
+  rebuildGridForTable(tableId);
+}
+
+function rebuildGridForTable(tableId) {
+  if (tableId === 'ads-body' && document.getElementById('ads-grid').style.display !== 'none') buildAdsGrid();
+  if (tableId === 'traffic-body' && document.getElementById('traffic-grid').style.display !== 'none') buildTrafficGrid();
+  if (tableId === 'funnels-body' && document.getElementById('funnels-grid').style.display !== 'none') buildFunnelsGrid();
+}
+
+function resetRowHeight(input) {
+  const tr = input.closest('tr');
+  tr.style.height = ''; tr.style.maxHeight = '';
+  tr.querySelectorAll('td').forEach(td => { td.style.maxHeight = ''; td.style.overflow = ''; });
+  tr.querySelectorAll('textarea').forEach(ta => { ta.style.height = ''; autoGrow(ta); });
+  tr.querySelectorAll('img.media-thumb').forEach(img => { img.style.height = ''; img.style.maxHeight = ''; });
+  saveRowHeights(); doSave();
+}
+
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+  document.addEventListener('keydown', lbKey);
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.removeEventListener('keydown', lbKey);
+}
+function lbKey(e) { if (e.key === 'Escape') closeLightbox(); }
+
+function gfExpand(clip) {
+  document.querySelectorAll('.gf-full').forEach(f => {
+    f.style.display = 'none';
+    f.closest('.gf-wrap').querySelector('.gf-clip').style.display = 'block';
+  });
+  clip.style.display = 'none';
+  clip.closest('.gf-wrap').querySelector('.gf-full').style.display = 'block';
+}
+
+document.addEventListener('click', e => {
+  if (e.target.closest('.gf-full') || e.target.closest('.gf-clip')) return;
+  document.querySelectorAll('.gf-full').forEach(f => {
+    if (f.style.display === 'block') {
+      f.style.display = 'none';
+      f.closest('.gf-wrap').querySelector('.gf-clip').style.display = 'block';
+    }
+  });
+});
+
+function openTitleLink(e) {
+  const btn = document.getElementById('title-link-btn');
+  return true; // let browser open it
+}
+
+function updateTitleLinkBtn(url) {
+  const btn = document.getElementById('title-link-btn');
+  if (!btn) return;
+  if (url) { btn.href = url; btn.style.display = 'inline-flex'; }
+  else { btn.href = '#'; btn.style.display = 'none'; }
+}
+
 function toggleTheme() {
-  const body = document.body;
-  const btn = document.getElementById('themeToggle');
-  const label = document.getElementById('themeLabel');
-  const isDark = body.classList.contains('force-dark') ||
-    (!body.classList.contains('force-light') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const isDark = document.body.classList.contains('force-dark');
   if (isDark) {
-    body.classList.remove('force-dark');
-    body.classList.add('force-light');
-    btn.childNodes[0].textContent = '☀️ ';
-    if (label) label.textContent = 'Light mode';
+    document.body.classList.remove('force-dark');
+    document.body.classList.add('force-light');
     localStorage.setItem('ecoverage_theme', 'light');
   } else {
-    body.classList.remove('force-light');
-    body.classList.add('force-dark');
-    btn.childNodes[0].textContent = '🌙 ';
-    if (label) label.textContent = 'Dark mode';
+    document.body.classList.remove('force-light');
+    document.body.classList.add('force-dark');
     localStorage.setItem('ecoverage_theme', 'dark');
+  }
+  applyThemeUI();
+}
+
+function applyThemeUI() {
+  const isDark = document.body.classList.contains('force-dark');
+  const btn = document.getElementById('themeToggle');
+  const label = document.getElementById('themeLabel');
+  if (isDark) {
+    if (btn) btn.childNodes[0].textContent = '☀️ ';
+    if (label) label.textContent = 'Light mode';
+  } else {
+    if (btn) btn.childNodes[0].textContent = '🌙 ';
+    if (label) label.textContent = 'Dark mode';
   }
 }
 
 // Apply saved theme on load
 (function() {
   const saved = localStorage.getItem('ecoverage_theme');
-  const btn = document.getElementById('themeToggle');
-  const label = document.getElementById('themeLabel');
-  if (saved === 'dark') {
-    document.body.classList.add('force-dark');
-    if (btn) btn.childNodes[0].textContent = '🌙 ';
-    if (label) label.textContent = 'Dark mode';
-  } else if (saved === 'light') {
-    document.body.classList.add('force-light');
-    if (btn) btn.childNodes[0].textContent = '☀️ ';
-    if (label) label.textContent = 'Light mode';
-  } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    if (btn) btn.childNodes[0].textContent = '🌙 ';
-    if (label) label.textContent = 'Dark mode';
-  } else {
-    if (btn) btn.childNodes[0].textContent = '☀️ ';
-    if (label) label.textContent = 'Light mode';
-  }
+  if (saved === 'dark') document.body.classList.add('force-dark');
+  else document.body.classList.add('force-light');
+  applyThemeUI();
 })();
 
-function loadSettings() {
+// ── Keyboard shortcuts ──
+document.addEventListener('keydown', function(e) {
+  const mod = e.ctrlKey || e.metaKey;
+  if (mod && e.key === 'z' && !e.shiftKey) {
+    // If focus is in a contenteditable grid field, flush it first then undo
+    const ce = document.activeElement;
+    if (ce && ce.contentEditable === 'true' && ce.dataset.ta) {
+      ce.blur(); // flush gridInlineEdit via blur
+    }
+    e.preventDefault();
+    applyUndo(undoStack, redoStack);
+    return;
+  }
+  if (mod && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+    const ce = document.activeElement;
+    if (ce && ce.contentEditable === 'true' && ce.dataset.ta) ce.blur();
+    e.preventDefault();
+    applyUndo(redoStack, undoStack);
+    return;
+  }
+  // Tab inside table cell moves to next cell
+  if (e.key === 'Tab' && e.target.matches('tbody td textarea, tbody td input:not([type="file"])')) {
+    const td = e.target.closest('td');
+    const tr = td.closest('tr');
+    const tds = Array.from(tr.querySelectorAll('td:not(.remove-col)'));
+    const idx = tds.indexOf(td);
+    e.preventDefault();
+    const next = e.shiftKey ? tds[idx - 1] : tds[idx + 1];
+    if (next) {
+      const el = next.querySelector('textarea, select, input:not([type="file"])');
+      if (el) el.focus();
+    } else if (!e.shiftKey) {
+      // Move to next row first cell
+      const nextRow = tr.nextElementSibling;
+      if (nextRow) {
+        const el = nextRow.querySelector('textarea, select, input:not([type="file"])');
+        if (el) el.focus();
+      }
+    }
+  }
+  // Enter on last cell of row adds new row
+  if (e.key === 'Enter' && e.ctrlKey && e.target.matches('tbody td textarea')) {
+    e.preventDefault();
+    const tbody = e.target.closest('tbody');
+    if (tbody) {
+      const id = tbody.id;
+      const fn = id === 'traffic-body' ? trafficRow : id === 'ads-body' ? adsRow : funnelRow;
+      addRow(id, fn);
+      setTimeout(() => {
+        const rows = tbody.querySelectorAll('tr');
+        const lastRow = rows[rows.length - 1];
+        if (lastRow) {
+          const el = lastRow.querySelector('textarea, input:not([type="file"])');
+          if (el) el.focus();
+        }
+      }, 50);
+    }
+  }
+});
+
+// ── URL auto-format handled in saveLinkChip ──
+
+// ── Comments ──
+function toggleComment(btn) {
+  const popup = btn.closest('.comment-cell').querySelector('.comment-popup');
+  const isOpen = popup.classList.contains('open');
+  document.querySelectorAll('.comment-popup.open').forEach(p => p.classList.remove('open'));
+  if (!isOpen) { popup.classList.add('open'); popup.querySelector('textarea').focus(); }
+}
+function closeComment(btn) {
+  btn.closest('.comment-popup').classList.remove('open');
+}
+function saveComment(btn) {
+  const popup = btn.closest('.comment-popup');
+  const val = popup.querySelector('textarea').value.trim();
+  const commentBtn = popup.closest('.comment-cell').querySelector('.comment-btn');
+  commentBtn.classList.toggle('has-comment', !!val);
+  commentBtn.title = val || 'Add comment';
+  popup.classList.remove('open');
+  scheduleSave();
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.comment-cell')) {
+    document.querySelectorAll('.comment-popup.open').forEach(p => p.classList.remove('open'));
+  }
+});
+
+// ── Undo toast ──
+let undoTimer = null;
+function showUndoToast(msg, undoFn) {
+  const container = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast show';
+  t.innerHTML = `<div class="undo-toast"><span>${msg}</span><button onclick="this.closest('.toast').undoFn()">Undo</button></div>`;
+  t.undoFn = () => { undoFn(); t.classList.remove('show'); setTimeout(() => t.remove(), 250); };
+  container.appendChild(t);
+  const timer = setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 250); }, 5000);
+  t.dataset.timer = timer;
+}
+
+// ── Last edited tracking ──
+function updateLastEdited(analyst) {
+  const name = analyst || document.getElementById('meta-analyst')?.value || 'Someone';
+  const time = new Date().toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+  const bar = document.getElementById('lastEditedBar');
+  const text = document.getElementById('lastEditedText');
+  if (bar && text) {
+    text.textContent = `Last edited by ${name} at ${time}`;
+    bar.style.display = 'flex';
+  }
+}
+
+// ── Export size warning ──
+function getExportSizeWarning() {
+  const data = collectData();
+  const json = JSON.stringify(data);
+  const kb = Math.round(json.length / 1024);
+  if (kb > 4000) return `⚠️ Data is ${kb}KB — close to JSONBin's 5MB limit. Consider removing some images.`;
+  if (kb > 2000) return `ℹ️ Data is ${kb}KB. Consider compressing images to stay within limits.`;
+  return null;
+}
+
+// ── Notes textarea resize persistence ──
+let _notesResizeState = null;
+
+function notesResizeStart(e, handle) {
+  const id = handle.dataset.for;
+  const ta = document.getElementById(id);
+  const body = ta ? ta.closest('.notes-body') : null;
+  if (!ta || !body) return;
+  _notesResizeState = { ta, body, id, startY: e.clientY, startH: body.offsetHeight };
+  document.body.style.userSelect = 'none';
+  document.body.style.cursor = 'row-resize';
+  e.preventDefault();
+}
+
+document.addEventListener('mousemove', (e) => {
+  if (!_notesResizeState) return;
+  const h = Math.max(80, _notesResizeState.startH + (e.clientY - _notesResizeState.startY));
+  _notesResizeState.body.style.height = h + 'px';
+});
+
+document.addEventListener('mouseup', () => {
+  if (!_notesResizeState) return;
+  localStorage.setItem('notes-h-' + _notesResizeState.id, _notesResizeState.body.style.height);
+  try { doSave(); } catch(e) {}
+  document.body.style.userSelect = '';
+  document.body.style.cursor = '';
+  _notesResizeState = null;
+});
+
+function initNotesResize() {
+  ['notes-takeaways', 'notes-actions'].forEach(id => {
+    const ta = document.getElementById(id);
+    if (!ta) return;
+    const body = ta.closest('.notes-body');
+    const saved = localStorage.getItem('notes-h-' + id);
+    if (saved && body) body.style.height = saved;
+  });
+}function loadSettings() {
   try { const s = JSON.parse(localStorage.getItem(LS_SETTINGS)||'{}'); BIN_ID = s.binId||BIN_ID; API_KEY = s.apiKey||API_KEY; } catch(e){}
 }
+
+function applyReadOnlyMode() {}
+
 function saveSettings() { localStorage.setItem(LS_SETTINGS, JSON.stringify({ binId: BIN_ID, apiKey: API_KEY })); }
 
 function unlockCloudSettings() {
@@ -478,8 +1712,14 @@ function opt(v, l) { return `<option value="${v}">${l}</option>`; }
 
 function trafficRow(n) {
   return `<tr>
-    <td class="row-num frozen-num"><input type="text" value="${n}" style="text-align:center" oninput="scheduleSave()"></td>
-    <td><textarea placeholder="e.g. Google Organic, Meta Paid" oninput="autoGrow(this);scheduleSave()"></textarea></td>
+    <td class="row-num frozen-num"><input type="text" value="${n}" style="text-align:center" oninput="scheduleSave()" ondblclick="resetRowHeight(this)" title="Double-click to reset row height"></td>
+    <td><div class="sel-wrap">
+      <select onchange="updateBadge(this);scheduleSave()">
+        ${opt('','— select —')}${opt('meta','Meta')}${opt('tiktok','TikTok')}${opt('google','Google')}${opt('native','Native')}${opt('youtube','YouTube')}${opt('pinterest','Pinterest')}${opt('snapchat','Snapchat')}${opt('twitter','Twitter/X')}${opt('linkedin','LinkedIn')}${opt('reddit','Reddit')}${opt('email','Email')}${opt('sms','SMS')}${opt('push','Push Notifications')}${opt('in-app-dsp','In-App DSP')}${opt('programmatic','Programmatic/DSP')}${opt('outbrain','Outbrain')}${opt('mgid','MGID')}${opt('taboola','Taboola')}${opt('revcontent','RevContent')}
+      </select>
+      <div class="sel-display"><span class="sel-badge">— select —</span><span class="sel-arrow">▾</span></div>
+    </div></td>
+    <td><textarea placeholder="e.g. US, UK" oninput="autoGrow(this);scheduleSave()"></textarea></td>
     <td><textarea placeholder="e.g. 120" oninput="autoGrow(this);scheduleSave()"></textarea></td>
     <td><div class="sel-wrap">
       <select onchange="updateBadge(this);scheduleSave()">
@@ -491,18 +1731,18 @@ function trafficRow(n) {
       <div class="sel-display"><span class="sel-badge">— select —</span><span class="sel-arrow">▾</span></div>
     </div></td>
     <td><textarea placeholder="Observations..." oninput="autoGrow(this);scheduleSave()"></textarea></td>
-    <td class="remove-col"><button class="remove-row-btn" onclick="removeRow(this,'traffic-body')">×</button></td>
+    <td class="remove-col"><div class="cell-actions"><span class="drag-handle" draggable="false">⠿</span><button class="dup-row-btn" title="Duplicate row" onclick="dupRow(this,'traffic-body')">⧉</button><button class="remove-row-btn" onclick="removeRow(this,'traffic-body')">×</button></div><div class="comment-popup"><textarea placeholder="Add a note or comment..."></textarea><div class="comment-popup-footer"><button onclick="closeComment(this)">Cancel</button><button class="primary" onclick="saveComment(this)">Save</button></div></div></td>
   </tr>`;
 }
 
 function adsRow(n) {
   const uid = 'media-' + Date.now() + '-' + Math.random().toString(36).slice(2,6);
   return `<tr>
-    <td class="row-num frozen-num"><input type="text" value="${n}" style="text-align:center" oninput="scheduleSave()"></td>
-    <td class="frozen-offer"><textarea placeholder="Offer name or description" oninput="autoGrow(this);scheduleSave()"></textarea></td>
+    <td class="row-num frozen-num"><input type="text" value="${n}" style="text-align:center" oninput="scheduleSave()" ondblclick="resetRowHeight(this)" title="Double-click to reset row height"></td>
+    <td class="frozen-offer"><textarea placeholder="Offer name" oninput="autoGrow(this);scheduleSave()"></textarea></td>
     <td><div class="sel-wrap">
       <select onchange="updateBadge(this);scheduleSave()">
-        ${opt('','— select —')}${opt('meta','Meta')}${opt('tiktok','TikTok')}${opt('google','Google')}${opt('native','Native')}
+        ${opt('','— select —')}${opt('meta','Meta')}${opt('tiktok','TikTok')}${opt('google','Google')}${opt('native','Native')}${opt('youtube','YouTube')}${opt('pinterest','Pinterest')}${opt('snapchat','Snapchat')}${opt('twitter','Twitter/X')}${opt('linkedin','LinkedIn')}${opt('reddit','Reddit')}${opt('email','Email')}${opt('sms','SMS')}${opt('push','Push Notifications')}${opt('in-app-dsp','In-App DSP')}${opt('programmatic','Programmatic/DSP')}${opt('outbrain','Outbrain')}${opt('mgid','MGID')}${opt('taboola','Taboola')}${opt('revcontent','RevContent')}
       </select>
       <div class="sel-display"><span class="sel-badge">— select —</span><span class="sel-arrow">▾</span></div>
     </div></td>
@@ -513,8 +1753,61 @@ function adsRow(n) {
       </select>
       <div class="sel-display"><span class="sel-badge">— select —</span><span class="sel-arrow">▾</span></div>
     </div></td>
+    <td><textarea placeholder="e.g. US, UK" oninput="autoGrow(this);scheduleSave()"></textarea></td>
+    <td><textarea placeholder="e.g. 16 days" oninput="autoGrow(this);scheduleSave()"></textarea></td>
+    <td class="link-cell"><div class="link-chip-wrap">
+      <div class="link-chip-wrap-display">
+        <a class="link-chip" href="#" target="_blank" style="display:none">
+          <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9M9 1h6m0 0v6m0-6L7 9" stroke="#4A90D9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="link-chip-text"></span>
+        </a>
+        <button class="link-chip-edit-icon" onclick="startLinkEdit(this)" title="Edit link">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M11.5 2.5a1.414 1.414 0 0 1 2 2L5 13H3v-2L11.5 2.5Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="link-chip-empty" onclick="startLinkEdit(this)">+ Add link</span>
+      </div>
+      <div class="link-input-wrap">
+        <input class="link-input-field" type="url" placeholder="https://...">
+        <button class="link-save-btn" onclick="saveLinkChip(this)">Save</button>
+        <button class="link-cancel-btn" onclick="cancelLinkEdit(this)">✕</button>
+      </div>
+    </div></td>
+    <td class="link-cell"><div class="link-chip-wrap">
+      <div class="link-chip-wrap-display">
+        <a class="link-chip" href="#" target="_blank" style="display:none">
+          <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9M9 1h6m0 0v6m0-6L7 9" stroke="#4A90D9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="link-chip-text"></span>
+        </a>
+        <button class="link-chip-edit-icon" onclick="startLinkEdit(this)" title="Edit link">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M11.5 2.5a1.414 1.414 0 0 1 2 2L5 13H3v-2L11.5 2.5Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="link-chip-empty" onclick="startLinkEdit(this)">+ Add link</span>
+      </div>
+      <div class="link-input-wrap">
+        <input class="link-input-field" type="url" placeholder="https://...">
+        <button class="link-save-btn" onclick="saveLinkChip(this)">Save</button>
+        <button class="link-cancel-btn" onclick="cancelLinkEdit(this)">✕</button>
+      </div>
+    </div></td>
+    <td class="link-cell"><div class="link-chip-wrap">
+      <div class="link-chip-wrap-display">
+        <a class="link-chip" href="#" target="_blank" style="display:none">
+          <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9M9 1h6m0 0v6m0-6L7 9" stroke="#4A90D9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="link-chip-text"></span>
+        </a>
+        <button class="link-chip-edit-icon" onclick="startLinkEdit(this)" title="Edit link">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M11.5 2.5a1.414 1.414 0 0 1 2 2L5 13H3v-2L11.5 2.5Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="link-chip-empty" onclick="startLinkEdit(this)">+ Add link</span>
+      </div>
+      <div class="link-input-wrap">
+        <input class="link-input-field" type="url" placeholder="https://...">
+        <button class="link-save-btn" onclick="saveLinkChip(this)">Save</button>
+        <button class="link-cancel-btn" onclick="cancelLinkEdit(this)">✕</button>
+      </div>
+    </div></td>
     <td class="media-cell">
-      <input type="file" id="${uid}" class="hidden-input" accept="image/*" onchange="handleMediaUpload(this,'${uid}-preview')">
+      <input type="file" id="${uid}" class="hidden-input" accept="image/*,video/*" onchange="handleMediaUpload(this,'${uid}-preview')">
       <div id="${uid}-preview">
         <button class="media-upload-btn" onclick="document.getElementById('${uid}').click()">
           <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
@@ -524,25 +1817,55 @@ function adsRow(n) {
         </button>
       </div>
     </td>
-    <td class="link-cell"><textarea class="link-field" placeholder="https://..." oninput="autoGrow(this);scheduleSave()" onfocus="this.select()"></textarea><a class="link-open-btn" target="_blank" title="Open link">↗</a></td>
+    <td class="link-cell"><div class="link-chip-wrap">
+      <div class="link-chip-wrap-display">
+        <a class="link-chip" href="#" target="_blank" style="display:none">
+          <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9M9 1h6m0 0v6m0-6L7 9" stroke="#4A90D9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="link-chip-text"></span>
+        </a>
+        <button class="link-chip-edit-icon" onclick="startLinkEdit(this)" title="Edit link">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M11.5 2.5a1.414 1.414 0 0 1 2 2L5 13H3v-2L11.5 2.5Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="link-chip-empty" onclick="startLinkEdit(this)">+ Add link</span>
+      </div>
+      <div class="link-input-wrap">
+        <input class="link-input-field" type="url" placeholder="https://...">
+        <button class="link-save-btn" onclick="saveLinkChip(this)">Save</button>
+        <button class="link-cancel-btn" onclick="cancelLinkEdit(this)">✕</button>
+      </div>
+    </div></td>
     <td><textarea placeholder="Angle / hook description" oninput="autoGrow(this);scheduleSave()"></textarea></td>
     <td><textarea placeholder="Ad headline text" oninput="autoGrow(this);scheduleSave()"></textarea></td>
     <td><textarea placeholder="e.g. Get a Free Quote" oninput="autoGrow(this);scheduleSave()"></textarea></td>
     <td><textarea placeholder="Ad title text" oninput="autoGrow(this);scheduleSave()"></textarea></td>
     <td><textarea placeholder="e.g. 500K" oninput="autoGrow(this);scheduleSave()"></textarea></td>
-    <td class="link-cell"><textarea class="link-field" placeholder="https://..." oninput="autoGrow(this);scheduleSave()" onfocus="this.select()"></textarea><a class="link-open-btn" target="_blank" title="Open link">↗</a></td>
-    <td class="link-cell"><textarea class="link-field" placeholder="https://..." oninput="autoGrow(this);scheduleSave()" onfocus="this.select()"></textarea><a class="link-open-btn" target="_blank" title="Open link">↗</a></td>
-    <td class="link-cell"><textarea class="link-field" placeholder="https://..." oninput="autoGrow(this);scheduleSave()" onfocus="this.select()"></textarea><a class="link-open-btn" target="_blank" title="Open link">↗</a></td>
     <td><textarea placeholder="Additional notes..." oninput="autoGrow(this);scheduleSave()"></textarea></td>
-    <td class="remove-col"><button class="remove-row-btn" onclick="removeRow(this,'ads-body')">×</button></td>
+    <td class="remove-col"><div class="cell-actions"><span class="drag-handle" draggable="false">⠿</span><button class="dup-row-btn" title="Duplicate row" onclick="dupRow(this,'ads-body')">⧉</button><button class="remove-row-btn" onclick="removeRow(this,'ads-body')">×</button></div><div class="comment-popup"><textarea placeholder="Add a note or comment..."></textarea><div class="comment-popup-footer"><button onclick="closeComment(this)">Cancel</button><button class="primary" onclick="saveComment(this)">Save</button></div></div></td>
   </tr>`;
 }
 
 function funnelRow(n) {
   return `<tr>
-    <td class="row-num frozen-num"><input type="text" value="${n}" style="text-align:center" oninput="scheduleSave()"></td>
-    <td class="link-cell"><textarea class="link-field" placeholder="https://..." oninput="autoGrow(this);scheduleSave()" onfocus="this.select()"></textarea><a class="link-open-btn" target="_blank" title="Open link">↗</a></td>
+    <td class="row-num frozen-num"><input type="text" value="${n}" style="text-align:center" oninput="scheduleSave()" ondblclick="resetRowHeight(this)" title="Double-click to reset row height"></td>
+    <td class="link-cell"><div class="link-chip-wrap">
+      <div class="link-chip-wrap-display">
+        <a class="link-chip" href="#" target="_blank" style="display:none">
+          <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9M9 1h6m0 0v6m0-6L7 9" stroke="#4A90D9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="link-chip-text"></span>
+        </a>
+        <button class="link-chip-edit-icon" onclick="startLinkEdit(this)" title="Edit link">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M11.5 2.5a1.414 1.414 0 0 1 2 2L5 13H3v-2L11.5 2.5Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="link-chip-empty" onclick="startLinkEdit(this)">+ Add link</span>
+      </div>
+      <div class="link-input-wrap">
+        <input class="link-input-field" type="url" placeholder="https://...">
+        <button class="link-save-btn" onclick="saveLinkChip(this)">Save</button>
+        <button class="link-cancel-btn" onclick="cancelLinkEdit(this)">✕</button>
+      </div>
+    </div></td>
     <td><textarea placeholder="Advertiser name" oninput="autoGrow(this);scheduleSave()"></textarea></td>
+    <td><textarea placeholder="e.g. US, UK" oninput="autoGrow(this);scheduleSave()"></textarea></td>
     <td><div class="sel-wrap">
       <select onchange="updateBadge(this);scheduleSave()">
         ${opt('','— select —')}${opt('quiz','Quiz / Survey')}${opt('landing-page','Direct Landing Page')}
@@ -552,45 +1875,69 @@ function funnelRow(n) {
       <div class="sel-display"><span class="sel-badge">— select —</span><span class="sel-arrow">▾</span></div>
     </div></td>
     <td><textarea placeholder="Structure, copy, offer details..." oninput="autoGrow(this);scheduleSave()"></textarea></td>
-    <td class="remove-col"><button class="remove-row-btn" onclick="removeRow(this,'funnels-body')">×</button></td>
+    <td class="remove-col"><div class="cell-actions"><span class="drag-handle" draggable="false">⠿</span><button class="dup-row-btn" title="Duplicate row" onclick="dupRow(this,'funnels-body')">⧉</button><button class="remove-row-btn" onclick="removeRow(this,'funnels-body')">×</button></div><div class="comment-popup"><textarea placeholder="Add a note or comment..."></textarea><div class="comment-popup-footer"><button onclick="closeComment(this)">Cancel</button><button class="primary" onclick="saveComment(this)">Save</button></div></div></td>
   </tr>`;
 }
 
-function handleMediaUpload(input, previewId) {
+const CLOUDINARY_CLOUD = 'duvwxhj6k';
+const CLOUDINARY_PRESET = 'fuel_research';
+
+async function handleMediaUpload(input, previewId) {
   const file = input.files[0]; if (!file) return;
   const isVideo = file.type.startsWith('video/');
   const uid = input.id;
-  const shortName = file.name.length > 16 ? file.name.slice(0,14)+'…' : file.name;
+  const preview = document.getElementById(previewId); if (!preview) return;
 
-  if (isVideo) {
-    showToast('Videos cannot be shared — use Creative Link instead.', 'error');
-    input.value = '';
-    return;
-  }
+  // Show uploading state
+  preview.innerHTML = `<div class="media-preview" style="opacity:0.6">
+    <div style="font-size:11px;color:var(--text-secondary);padding:4px 8px;">Uploading...</div>
+  </div>`;
 
-  if (file.size > 1024 * 1024) {
-    showToast('Image too large (max 1MB). Please compress it first.', 'error');
-    input.value = '';
-    return;
-  }
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_PRESET);
 
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const src = e.target.result;
-    const preview = document.getElementById(previewId); if (!preview) return;
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/auto/upload`, {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!res.ok) throw new Error('Upload failed');
+    const data = await res.json();
+    const url = data.secure_url;
+    const thumbUrl = isVideo
+      ? url.replace('/upload/', '/upload/w_144,h_108,c_fill,so_0/').replace(/\.[^.]+$/, '.jpg')
+      : url.replace('/upload/', '/upload/w_144,h_108,c_fill,q_80/');
+
     preview.innerHTML = `<div class="media-preview">
-      <img class="media-thumb" src="${src}" onclick="openMedia('${src}','image/jpeg')">
+      <img class="media-thumb" src="${thumbUrl}" onclick="window.open('${url}','_blank')" style="cursor:pointer" title="Click to open">
       <button class="media-remove" onclick="removeMedia('${uid}','${previewId}')">×</button>
     </div>`;
+    // Store URL in a hidden input for saving
+    let hiddenUrl = preview.querySelector('.cloudinary-url');
+    if (!hiddenUrl) {
+      hiddenUrl = document.createElement('input');
+      hiddenUrl.type = 'hidden';
+      hiddenUrl.className = 'cloudinary-url';
+      preview.appendChild(hiddenUrl);
+    }
+    hiddenUrl.value = url;
     scheduleSave();
-  };
-  reader.readAsDataURL(file);
+    showToast('Uploaded successfully!', 'success');
+  } catch(e) {
+    preview.innerHTML = `<button class="media-upload-btn" onclick="document.getElementById('${uid}').click()">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+        <path d="M8 2v9M4 6l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>Image/Video</button>`;
+    showToast('Upload failed. Try again.', 'error');
+  }
+  input.value = '';
 }
 
-function openMedia(dataUrl, mimeType) {
-  const b = atob(dataUrl.split(',')[1]), ab = new ArrayBuffer(b.length), ia = new Uint8Array(ab);
-  for (let i = 0; i < b.length; i++) ia[i] = b.charCodeAt(i);
-  window.open(URL.createObjectURL(new Blob([ab], { type: mimeType })), '_blank');
+function openMedia(url) {
+  window.open(url, '_blank');
 }
 
 function removeMedia(uid, previewId) {
@@ -601,7 +1948,7 @@ function removeMedia(uid, previewId) {
       <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
         <path d="M8 2v9M4 6l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>Upload</button>`;
+      </svg>Image/Video</button>`;
     scheduleSave();
   }
 }
@@ -613,6 +1960,10 @@ const BADGE_LABELS = {
   '': '— select —',
   // Traffic Channel
   'meta': 'Meta', 'tiktok': 'TikTok', 'google': 'Google', 'native': 'Native',
+  'youtube': 'YouTube', 'pinterest': 'Pinterest', 'snapchat': 'Snapchat',
+  'twitter': 'Twitter/X', 'linkedin': 'LinkedIn', 'reddit': 'Reddit',
+  'email': 'Email', 'sms': 'SMS', 'push': 'Push Notifications',
+  'in-app-dsp': 'In-App DSP', 'native-dsp': 'Native DSP', 'programmatic': 'Programmatic/DSP',
   // Format
   'static': 'Static Image', 'video': 'Video', 'carousel': 'Carousel',
   'text': 'Text / Search', 'native-article': 'Native Teaser', 'email': 'Email', 'playable': 'Playable',
@@ -634,20 +1985,247 @@ function updateBadge(sel) {
   badge.className = 'sel-badge' + (val ? ' badge-' + val : '');
 }
 
-function syncAllLinks() {
-  document.querySelectorAll('tbody td textarea.link-field').forEach(ta => {
-    const btn = ta.closest('.link-cell')?.querySelector('.link-open-btn');
-    if (btn) btn.href = ta.value.trim() || '#';
+// ── Link chips ──
+function handleChipClick(e, chip) {
+  // chips now open directly — this function kept for compatibility
+}
+
+function startLinkEdit(el) {
+  const wrap = el.closest('.link-chip-wrap');
+  wrap.querySelector('.link-chip-wrap-display').style.display = 'none';
+  const inputWrap = wrap.querySelector('.link-input-wrap');
+  inputWrap.classList.add('editing');
+  const chip = wrap.querySelector('.link-chip');
+  const input = inputWrap.querySelector('.link-input-field');
+  input.value = (chip && chip.style.display !== 'none' && chip.href !== window.location.href) ? chip.href : '';
+  input.focus();
+  input.select();
+}
+function saveLinkChip(btn) {
+  const wrap = btn.closest('.link-chip-wrap');
+  const input = wrap.querySelector('.link-input-field');
+  let val = input.value.trim();
+  if (val && !val.startsWith('http://') && !val.startsWith('https://') && val.includes('.')) {
+    val = 'https://' + val;
+  }
+  setLinkChipValue(wrap, val);
+  wrap.querySelector('.link-chip-wrap-display').style.display = 'flex';
+  wrap.querySelector('.link-input-wrap').classList.remove('editing');
+  scheduleSave();
+}
+function cancelLinkEdit(btn) {
+  const wrap = btn.closest('.link-chip-wrap');
+  wrap.querySelector('.link-chip-wrap-display').style.display = 'flex';
+  wrap.querySelector('.link-input-wrap').classList.remove('editing');
+}
+function setLinkChipValue(wrap, val) {
+  const chip = wrap.querySelector('.link-chip');
+  const empty = wrap.querySelector('.link-chip-empty');
+  const text = wrap.querySelector('.link-chip-text');
+  const display = wrap.querySelector('.link-chip-wrap-display');
+  if (!chip || !empty || !text) return;
+  if (val) {
+    chip.href = val;
+    chip.style.display = 'flex';
+    text.textContent = val.replace(/^https?:\/\//, '').substring(0, 28) + (val.replace(/^https?:\/\//, '').length > 28 ? '…' : '');
+    empty.style.display = 'none';
+    if (display) display.classList.add('has-link');
+  } else {
+    chip.href = '#';
+    chip.style.display = 'none';
+    empty.style.display = '';
+    if (display) display.classList.remove('has-link');
+  }
+}
+function getLinkChipValue(wrap) {
+  const chip = wrap.querySelector('.link-chip');
+  if (!chip || chip.style.display === 'none') return '';
+  return chip.href === window.location.href ? '' : chip.href;
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && e.target.classList.contains('link-input-field')) {
+    e.preventDefault();
+    saveLinkChip(e.target.closest('.link-input-wrap').querySelector('.link-save-btn'));
+  }
+  if (e.key === 'Escape' && e.target.classList.contains('link-input-field')) {
+    cancelLinkEdit(e.target.closest('.link-input-wrap').querySelector('.link-cancel-btn'));
+  }
+});
+
+// ── Auto color coding for offer, source, advertiser columns ──
+const COLOR_PALETTES = [
+  { bg: '#DBEAFE', color: '#1E40AF' },  // blue
+  { bg: '#FCE7F3', color: '#9D174D' },  // pink
+  { bg: '#D1FAE5', color: '#065F46' },  // green
+  { bg: '#EDE9FE', color: '#5B21B6' },  // purple
+  { bg: '#FEE2E2', color: '#991B1B' },  // red
+  { bg: '#E0F2FE', color: '#0369A1' },  // sky
+  { bg: '#FDF4FF', color: '#7E22CE' },  // violet
+  { bg: '#DCFCE7', color: '#166534' },  // mint
+  { bg: '#FEF3C7', color: '#92400E' },  // amber
+  { bg: '#FFE4E6', color: '#9F1239' },  // rose
+];
+const colorMaps = { offer: {}, source: {}, advertiser: {}, geo: {}, lifecycle: {} };
+
+function getColorForValue(type, val) {
+  if (!val || !val.trim()) return null;
+  const key = val.trim().toLowerCase();
+  if (!colorMaps[type][key]) {
+    // Better hash — more sensitive to character differences
+    let hash = 5381;
+    for (let i = 0; i < key.length; i++) {
+      hash = ((hash << 5) + hash) ^ key.charCodeAt(i);
+      hash = hash & 0x7fffffff;
+    }
+    // Use prime offset per type to avoid same colors across columns
+    const typeOffset = type === 'offer' ? 0 : type === 'source' ? 3 : 6;
+    colorMaps[type][key] = COLOR_PALETTES[(Math.abs(hash) + typeOffset) % COLOR_PALETTES.length];
+  }
+  return colorMaps[type][key];
+}
+
+function startBadgeEdit(wrap) {
+  const input = wrap.querySelector('.text-badge-input');
+  const badge = wrap.querySelector('.text-badge');
+  const empty = wrap.querySelector('.text-badge-empty');
+  input.value = badge.style.display !== 'none' ? badge.textContent : '';
+  input.classList.add('editing');
+  badge.style.display = 'none';
+  empty.style.display = 'none';
+  input.focus();
+  input.select();
+}
+
+function saveBadge(input) {
+  const wrap = input.closest('.text-badge-wrap');
+  const badge = wrap.querySelector('.text-badge');
+  const empty = wrap.querySelector('.text-badge-empty');
+  const type = input.dataset.badgeType;
+  const val = input.value.trim();
+  input.classList.remove('editing');
+  if (val) {
+    badge.textContent = val;
+    badge.style.display = 'inline-block';
+    empty.style.display = 'none';
+    const c = getColorForValue(type, val);
+    badge.style.background = c.bg;
+    badge.style.color = c.color;
+  } else {
+    badge.style.display = 'none';
+    empty.style.display = '';
+  }
+  // sync hidden textarea
+  const ta = input.closest('td').querySelector('textarea');
+  if (ta) ta.value = val;
+  scheduleSave();
+}
+
+function applyTextColors() {
+  // Now handled by badge components - just restore badges on load
+  document.querySelectorAll('.text-badge-input').forEach(input => {
+    const ta = input.closest('td')?.querySelector('textarea');
+    if (ta && ta.value) {
+      const wrap = input.closest('.text-badge-wrap');
+      const badge = wrap?.querySelector('.text-badge');
+      const empty = wrap?.querySelector('.text-badge-empty');
+      const type = input.dataset.badgeType;
+      if (badge && empty && type) {
+        badge.textContent = ta.value;
+        badge.style.display = 'inline-block';
+        empty.style.display = 'none';
+        const c = getColorForValue(type, ta.value);
+        badge.style.background = c.bg;
+        badge.style.color = c.color;
+      }
+    }
   });
 }
+
+document.addEventListener('input', function(e) {
+  if (e.target.closest('td.offer-col, td.source-col, td.advertiser-col')) {
+    applyTextColors();
+  }
+});
+
+function syncAllLinks() { /* chips manage own state */ }
 
 function updateAllBadges() {
   document.querySelectorAll('.sel-wrap select').forEach(updateBadge);
 }
+// ── Resize persistence ──
+function saveColWidths() {
+  const data = {};
+  document.querySelectorAll('table').forEach(table => {
+    const id = table.id || 'table';
+    data[id] = {};
+    table.querySelectorAll('thead th').forEach((th, i) => {
+      if (th.style.width) data[id][i] = th.style.width;
+    });
+    if (table.style.width) data[id]['_tableW'] = table.style.width;
+  });
+  localStorage.setItem('ecoverage_col_widths', JSON.stringify(data));
+  scheduleCloudSave();
+}
+
+function restoreColWidths(cloudData) {
+  try {
+    const data = cloudData || JSON.parse(localStorage.getItem('ecoverage_col_widths') || '{}');
+    document.querySelectorAll('table').forEach(table => {
+      const id = table.id || 'table';
+      if (!data[id]) return;
+      table.querySelectorAll('thead th').forEach((th, i) => {
+        if (data[id][i]) th.style.width = data[id][i];
+      });
+      if (data[id]['_tableW']) table.style.width = data[id]['_tableW'];
+    });
+  } catch(e) {}
+}
+
+function saveRowHeights() {
+  const data = {};
+  document.querySelectorAll('table').forEach(table => {
+    const id = table.id || 'table';
+    data[id] = {};
+    table.querySelectorAll('tbody tr').forEach((tr, i) => {
+      if (tr.style.height) data[id][i] = tr.style.height;
+    });
+  });
+  localStorage.setItem('ecoverage_row_heights', JSON.stringify(data));
+  scheduleCloudSave();
+}
+
+function restoreRowHeights(cloudData) {
+  try {
+    const data = cloudData || JSON.parse(localStorage.getItem('ecoverage_row_heights') || '{}');
+    document.querySelectorAll('table').forEach(table => {
+      const id = table.id || 'table';
+      if (!data[id]) return;
+      table.querySelectorAll('tbody tr').forEach((tr, i) => {
+        if (data[id][i]) {
+          tr.style.height = data[id][i];
+          tr.style.maxHeight = data[id][i];
+          tr.querySelectorAll('td').forEach(td => {
+            td.style.maxHeight = data[id][i];
+            td.style.overflow = 'hidden';
+          });
+          tr.querySelectorAll('textarea').forEach(ta => { ta.style.height = data[id][i]; });
+          tr.querySelectorAll('img.media-thumb').forEach(img => { img.style.maxHeight = data[id][i]; });
+        }
+      });
+    });
+  } catch(e) {}
+}
+
 function initColResize(table) {
+  if (table._colResizeInit) return;
+  table._colResizeInit = true;
+  // Lock current pixel widths on all th so table-layout:fixed doesn't redistribute
+  table.querySelectorAll('thead th').forEach(th => {
+    if (!th.style.width) th.style.width = th.offsetWidth + 'px';
+  });
+  if (!table.style.width) table.style.width = table.offsetWidth + 'px';
   const ths = table.querySelectorAll('thead th');
   ths.forEach(th => {
-    if (th.classList.contains('remove-col')) return;
     if (th.querySelector('.col-resizer')) return;
     const resizer = document.createElement('div');
     resizer.className = 'col-resizer';
@@ -659,19 +2237,25 @@ function initColResize(table) {
       startX = e.clientX;
       startW = th.offsetWidth;
       startTableW = table.offsetWidth;
+      // Lock ALL column widths as explicit pixels before drag so none can redistribute
+      table.querySelectorAll('thead th').forEach(t => { t.style.width = t.offsetWidth + 'px'; });
+      table.style.width = table.offsetWidth + 'px';
       resizer.classList.add('dragging');
       document.body.style.cursor = 'col-resize';
       document.body.style.userSelect = 'none';
 
       const onMove = e => {
         const delta = e.clientX - startX;
-        const newW = Math.max(60, startW + delta);
+        const newW = Math.max(1, startW + delta);
         th.style.width = newW + 'px';
-        const newTableW = Math.max(startTableW, startTableW + delta);
-        if (newTableW > table.parentElement.offsetWidth) {
-          table.style.width = newTableW + 'px';
-        }
+        // adjust table width by the delta only
+        table.style.width = (startTableW + (newW - startW)) + 'px';
         updateFrozenOffsets();
+        const colIdx = Array.from(th.parentElement.children).indexOf(th);
+        table.querySelectorAll('tbody tr').forEach(row => {
+          const cell = row.children[colIdx];
+          if (cell) cell.querySelectorAll('textarea').forEach(autoGrow);
+        });
       };
       const onUp = () => {
         resizer.classList.remove('dragging');
@@ -679,6 +2263,52 @@ function initColResize(table) {
         document.body.style.userSelect = '';
         document.removeEventListener('mousemove', onMove);
         document.removeEventListener('mouseup', onUp);
+        saveColWidths();
+        doSave();
+      };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+  });
+}
+
+function initRowResize(table) {
+  table.querySelectorAll('tbody tr').forEach(tr => {
+    if (tr.querySelector('.row-resizer')) return;
+    const resizer = document.createElement('div');
+    resizer.className = 'row-resizer';
+    resizer.title = 'Drag to resize row';
+    const lastTd = tr.querySelector('td:last-child');
+    if (lastTd) lastTd.appendChild(resizer); else tr.appendChild(resizer);
+
+    let startY, startH;
+    resizer.addEventListener('mousedown', e => {
+      e.preventDefault();
+      startY = e.clientY;
+      startH = tr.offsetHeight;
+      document.body.style.cursor = 'row-resize';
+      document.body.style.userSelect = 'none';
+
+      const onMove = e => {
+        const newH = Math.max(0, startH + (e.clientY - startY));
+        tr.style.height = newH + 'px';
+        tr.style.maxHeight = newH + 'px';
+        tr.querySelectorAll('td').forEach(td => {
+          td.style.maxHeight = newH + 'px';
+          td.style.overflow = 'hidden';
+        });
+        tr.querySelectorAll('textarea').forEach(ta => { if (getComputedStyle(ta).position !== 'absolute') { ta.style.height = newH + 'px'; } ta.style.marginTop = ''; });
+        centerTextareas();
+        tr.querySelectorAll('img.media-thumb').forEach(img => { img.style.maxHeight = newH + 'px'; });
+        centerTextareas();
+      };
+      const onUp = () => {
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        saveRowHeights();
+        doSave();
       };
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup', onUp);
@@ -699,49 +2329,240 @@ function updateFrozenOffsets() {
 }
 
 function initAllColResize() {
-  document.querySelectorAll('table').forEach(initColResize);
+  document.querySelectorAll('table').forEach(t => { initColResize(t); initRowResize(t); });
 }
 
 function autoGrow(el) {
-  el.style.height = '0';
-  el.style.height = Math.max(el.scrollHeight, 34) + 'px';
+  if (!el || el.tagName !== 'TEXTAREA') return;
+  if (getComputedStyle(el).position === 'absolute') return;
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
 }
 
 function _growOne(el) { autoGrow(el); }
 
-function resizeAllInputs() { document.querySelectorAll('tbody td textarea').forEach(autoGrow); }
+function centerTextareas() {
+  const sel = '#ads-body td.frozen-offer textarea, #ads-body td:nth-child(5) textarea, #ads-body td:nth-child(6) textarea, #traffic-body td:nth-child(3) textarea, #traffic-body td:nth-child(4) textarea, #traffic-body td:nth-child(6) textarea, #funnels-body td:nth-child(3) textarea, #funnels-body td:nth-child(4) textarea, #funnels-body td:nth-child(6) textarea';
+  document.querySelectorAll(sel).forEach(ta => {
+    ta.style.paddingTop = '';
+    const tdH = ta.closest('td').offsetHeight;
+    const lineH = parseInt(getComputedStyle(ta).lineHeight) || 14;
+    const lines = ta.value ? ta.value.split('\n').length : 1;
+    const contentH = lines * lineH;
+    const pad = Math.max(3, Math.floor((tdH - contentH) / 2));
+    ta.style.paddingTop = pad + 'px';
+  });
+}
+
+function resizeAllInputs() { document.querySelectorAll('tbody td textarea').forEach(ta => { autoGrow(ta); ta.style.marginTop = ''; }); }
 function renumberTable(id) {
   document.getElementById(id).querySelectorAll('tr').forEach((r,i) => {
     const inp = r.querySelector('.row-num input'); if (inp) inp.value = i+1;
   });
 }
-function removeRow(btn, id) { btn.closest('tr').remove(); renumberTable(id); scheduleSave(); }
+// ── Row actions ──
+
+function removeRow(btn, id) {
+  const tr = btn.closest('tr');
+  const html = tr.outerHTML;
+  const idx = Array.from(tr.parentElement.children).indexOf(tr);
+  tr.remove();
+  renumberTable(id);
+  scheduleSave();
+  snapForUndo();
+  redoStack.length = 0; // clear redo on new action
+  showUndoToast('Row deleted — Ctrl+Z to undo', () => undoLast());
+}
+
+function dupRow(btn, id) {
+  snapForUndo();
+  const tr = btn.closest('tr');
+  const clone = tr.cloneNode(true);
+  tr.after(clone);
+  renumberTable(id);
+  setTimeout(() => { resizeAllInputs(); updateAllBadges(); syncAllLinks(); updateFrozenOffsets(); applyTextColors(); initRowResize(clone.closest('table')); initDragReorder(clone.closest('tbody')); }, 0);
+  scheduleSave();
+}
+
+// ── Drag to reorder rows ──
+function initDragReorder(tbody) {
+  if (!tbody || tbody._dragInit) return;
+  tbody._dragInit = true;
+  let dragSrc = null;
+
+  tbody.addEventListener('mousedown', e => {
+    const handle = e.target.closest('.drag-handle');
+    if (!handle) return;
+    const tr = handle.closest('tr');
+    tr.setAttribute('draggable', 'true');
+  });
+
+  tbody.addEventListener('mouseup', e => {
+    tbody.querySelectorAll('tr[draggable="true"]').forEach(tr => tr.setAttribute('draggable', 'false'));
+  });
+
+  tbody.addEventListener('dragstart', e => {
+    const tr = e.target.closest('tr[draggable="true"]');
+    if (!tr) { e.preventDefault(); return; }
+    dragSrc = tr;
+    tr.classList.add('dragging-row');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', '');
+
+    // Build custom ghost from row text content
+    let ghost = document.getElementById('drag-ghost');
+    if (!ghost) { ghost = document.createElement('div'); ghost.id = 'drag-ghost'; document.body.appendChild(ghost); }
+    const texts = Array.from(tr.querySelectorAll('td')).map(td => {
+      const ta = td.querySelector('textarea, input:not([type=file])');
+      const badge = td.querySelector('.sel-badge');
+      return (badge ? badge.textContent : ta ? ta.value : '').trim();
+    }).filter(Boolean).slice(0, 5);
+    ghost.textContent = texts.join('  ·  ') || 'Row';
+    ghost.style.top = '-1000px';
+    ghost.style.left = '-1000px';
+    document.body.appendChild(ghost);
+    e.dataTransfer.setDragImage(ghost, 0, 0);
+  });
+
+  tbody.addEventListener('dragover', e => {
+    e.preventDefault();
+    const tr = e.target.closest('tr');
+    if (!tr || tr === dragSrc) return;
+    tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+    tr.classList.add('drag-over');
+  });
+
+  tbody.addEventListener('dragleave', e => {
+    const tr = e.target.closest('tr');
+    if (tr) tr.classList.remove('drag-over');
+  });
+
+  tbody.addEventListener('drop', e => {
+    e.preventDefault();
+    const tr = e.target.closest('tr');
+    if (!tr || tr === dragSrc) return;
+    tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+    const allRows = Array.from(tbody.querySelectorAll('tr'));
+    const srcIdx = allRows.indexOf(dragSrc);
+    const tgtIdx = allRows.indexOf(tr);
+    snapForUndo();
+    if (srcIdx < tgtIdx) tr.after(dragSrc);
+    else tr.before(dragSrc);
+    const id = tbody.id;
+    renumberTable(id);
+    scheduleSave();
+  });
+
+  tbody.addEventListener('dragend', e => {
+    tbody.querySelectorAll('tr').forEach(r => {
+      r.classList.remove('dragging-row', 'drag-over');
+      r.setAttribute('draggable', 'false');
+    });
+    const ghost = document.getElementById('drag-ghost');
+    if (ghost) ghost.remove();
+    dragSrc = null;
+  });
+}
+
+function initAllDragReorder() {
+  document.querySelectorAll('tbody').forEach(initDragReorder);
+}
+
+function undoLast() {
+  const action = undoStack.pop();
+  if (!action) return;
+  if (action.type === 'delete') {
+    const tbody = document.getElementById(action.id);
+    const rows = tbody.querySelectorAll('tr');
+    if (action.idx >= rows.length) tbody.insertAdjacentHTML('beforeend', action.html);
+    else rows[action.idx].insertAdjacentHTML('beforebegin', action.html);
+    renumberTable(action.id);
+    setTimeout(() => { resizeAllInputs(); updateAllBadges(); syncAllLinks(); updateFrozenOffsets(); applyTextColors(); }, 0);
+    scheduleSave();
+    redoStack.push(action);
+    showToast('Undo successful', 'success');
+  }
+}
+
+function redoLast() {
+  const action = redoStack.pop();
+  if (!action) return;
+  if (action.type === 'delete') {
+    const tbody = document.getElementById(action.id);
+    const rows = tbody.querySelectorAll('tr');
+    if (rows[action.idx]) rows[action.idx].remove();
+    renumberTable(action.id);
+    scheduleSave();
+    undoStack.push(action);
+    showToast('Redo successful', 'success');
+  }
+}
+
+document.addEventListener('keydown', function(e) {
+  // Ctrl+Z — undo
+  if (e.key === 'z' && (e.ctrlKey || e.metaKey) && !e.shiftKey) {
+    // Only intercept if not in a text field
+    if (!e.target.matches('textarea, input[type="text"], input[type="date"]')) {
+      e.preventDefault();
+      undoLast();
+    }
+  }
+  // Ctrl+Shift+Z — redo
+  if (e.key === 'z' && (e.ctrlKey || e.metaKey) && e.shiftKey) {
+    if (!e.target.matches('textarea, input[type="text"], input[type="date"]')) {
+      e.preventDefault();
+      redoLast();
+    }
+  }
+});
 function addRow(id, fn) {
   const tbody = document.getElementById(id);
   const tmp = document.createElement('tbody');
   tmp.innerHTML = fn(tbody.querySelectorAll('tr').length + 1);
   tbody.appendChild(tmp.firstChild);
-  setTimeout(() => { resizeAllInputs(); updateAllBadges(); syncAllLinks(); initAllColResize(); updateFrozenOffsets(); }, 0);
+  setTimeout(() => {
+    resizeAllInputs(); updateAllBadges(); syncAllLinks(); initAllColResize(); updateFrozenOffsets(); applyTextColors();
+    const table = tbody.closest('table');
+    if (table) initRowResize(table);
+    // Rebuild grid if in grid view
+    if (id === 'ads-body' && document.getElementById('ads-grid').style.display !== 'none') buildAdsGrid();
+    if (id === 'traffic-body' && document.getElementById('traffic-grid').style.display !== 'none') buildTrafficGrid();
+    if (id === 'funnels-body' && document.getElementById('funnels-grid').style.display !== 'none') buildFunnelsGrid();
+  }, 0);
   scheduleSave();
 }
 
 document.addEventListener('input', function(e) {
   if (e.target.matches('tbody td textarea')) autoGrow(e.target);
-  if (e.target.matches('tbody td textarea.link-field')) {
-    const btn = e.target.closest('.link-cell')?.querySelector('.link-open-btn');
-    if (btn) btn.href = e.target.value.trim() || '#';
-  }
-  if (e.target.matches('#meta-analyst,#meta-date,#meta-period,#notes-takeaways,#notes-actions')) scheduleSave();
+  if (e.target.matches('#meta-analyst,#meta-date,#meta-period')) scheduleSave();
 });
 
 function collectData() {
+  const h1 = document.getElementById('main-title');
   return {
-    v: 2, savedAt: new Date().toISOString(),
+    v: 2,
+    header: {
+      title: h1 ? (h1.dataset.text || h1.textContent) : '',
+      titleUrl: h1 ? (h1.dataset.url || '') : '',
+      img: headerImg && headerImg.style.display !== 'none' ? headerImg.src : '',
+    },
+    viewModes: {
+      ads: localStorage.getItem('ads_view_mode') || 'grid',
+      traffic: localStorage.getItem('traffic_view_mode') || 'grid',
+      funnels: localStorage.getItem('funnels_view_mode') || 'table',
+    },
     meta: { analyst: document.getElementById('meta-analyst').value, date: document.getElementById('meta-date').value, period: document.getElementById('meta-period').value },
-    notes: { takeaways: document.getElementById('notes-takeaways').value, actions: document.getElementById('notes-actions').value },
-    traffic: collectTable('traffic-body', ['num','source','qty','type','notes']),
-    ads: collectTable('ads-body', ['num','offer','channel','format','creative','creativeLink','angle','headline','cta','title','imp','landingPage','spyLink','fanPage','notes']),
-    funnels: collectTable('funnels-body', ['num','link','advertiser','type','obs']),
+    notes: {
+      takeaways: document.getElementById('notes-takeaways').value,
+      actions: document.getElementById('notes-actions').value,
+      takeawaysH: document.getElementById('notes-takeaways')?.closest('.notes-body')?.style.height || '',
+      actionsH: document.getElementById('notes-actions')?.closest('.notes-body')?.style.height || '',
+    },
+    colWidths: (function() { const d={}; document.querySelectorAll('table').forEach(t => { const id=t.id||'table'; d[id]={}; t.querySelectorAll('thead th').forEach((th,i)=>{ if(th.style.width) d[id][i]=th.style.width; }); if(t.style.width) d[id]['_tableW']=t.style.width; }); return d; })(),
+    rowHeights: (function() { const d={}; document.querySelectorAll('table').forEach(t => { const id=t.id||'table'; d[id]={}; t.querySelectorAll('tbody tr').forEach((tr,i)=>{ if(tr.style.height) d[id][i]=tr.style.height; }); }); return d; })(),
+    traffic: collectTable('traffic-body', ['num','source','geo','qty','type','notes']),
+    ads: collectTable('ads-body', ['num','offer','channel','format','geo','lifecycle','landingPage','spyLink','fanPage','creative','creativeLink','angle','headline','cta','title','imp','notes']),
+    funnels: collectTable('funnels-body', ['num','link','advertiser','geo','type','obs']),
   };
 }
 
@@ -752,10 +2573,16 @@ function collectTable(id, keys) {
     cells.forEach((cell, i) => {
       const k = keys[i]||'c'+i;
       if (k === 'creative') {
-        const img = cell.querySelector('.media-preview img'), vid = cell.querySelector('.media-video-thumb'), fname = cell.querySelector('.media-filename');
-        if (img) obj[k] = { t:'img', src: img.src, name: fname?.title||'' };
-        else if (vid) obj[k] = { t:'vid', name: fname?.title||'' };
+        const img = cell.querySelector('.media-preview img');
+        const urlInput = cell.querySelector('.cloudinary-url');
+        if (urlInput && urlInput.value) obj[k] = { t: 'cloudinary', url: urlInput.value, thumb: img?.src || '' };
+        else if (img) obj[k] = { t: 'img', src: img.src };
         else obj[k] = null;
+      } else if (cell.querySelector('.text-badge-wrap')) {
+        const badge = cell.querySelector('.text-badge');
+        obj[k] = badge && badge.style.display !== 'none' ? badge.textContent : '';
+      } else if (cell.querySelector('.link-chip-wrap')) {
+        obj[k] = getLinkChipValue(cell.querySelector('.link-chip-wrap'));
       } else {
         const s = cell.querySelector('select'), ta = cell.querySelector('textarea'), inp = cell.querySelector('input:not([type="file"])');
         obj[k] = s ? s.value : ta ? ta.value : inp ? inp.value : '';
@@ -767,15 +2594,27 @@ function collectTable(id, keys) {
 
 function restoreData(data) {
   if (!data) return false;
+  if (data.header) {
+    const h1 = document.getElementById('main-title');
+    const t = data.header.title || ''; const tu = data.header.titleUrl || '';
+    if (h1 && t) {
+      h1.dataset.text = t; h1.dataset.url = tu;
+      if (tu) { const a = document.createElement('a'); a.href = tu; a.target = '_blank'; a.rel = 'noopener'; a.textContent = t; a.style.cssText = 'color:inherit;text-decoration:underline;text-underline-offset:3px;'; h1.innerHTML = ''; h1.appendChild(a); } else { h1.textContent = t; }
+      updateTitleLinkBtn(tu);
+    }
+
+  }
   document.getElementById('meta-analyst').value = data.meta?.analyst||'';
   document.getElementById('meta-date').value = data.meta?.date||'';
   document.getElementById('meta-period').value = data.meta?.period||'';
   document.getElementById('notes-takeaways').value = data.notes?.takeaways||'';
   document.getElementById('notes-actions').value = data.notes?.actions||'';
-  restoreTable('traffic-body', data.traffic||[], trafficRow, ['num','source','qty','type','notes']);
-  restoreTable('ads-body', data.ads||[], adsRow, ['num','offer','channel','format','creative','creativeLink','angle','headline','cta','title','imp','landingPage','spyLink','fanPage','notes']);
-  restoreTable('funnels-body', data.funnels||[], funnelRow, ['num','link','advertiser','type','obs']);
-  setTimeout(() => { resizeAllInputs(); updateAllBadges(); syncAllLinks(); initAllColResize(); updateFrozenOffsets(); }, 0);
+  if (data.notes?.takeawaysH) { const b = document.getElementById('notes-takeaways')?.closest('.notes-body'); if(b) b.style.height = data.notes.takeawaysH; }
+  if (data.notes?.actionsH) { const b = document.getElementById('notes-actions')?.closest('.notes-body'); if(b) b.style.height = data.notes.actionsH; }
+  restoreTable('traffic-body', data.traffic||[], trafficRow, ['num','source','geo','qty','type','notes']);
+  restoreTable('ads-body', data.ads||[], adsRow, ['num','offer','channel','format','geo','lifecycle','landingPage','spyLink','fanPage','creative','creativeLink','angle','headline','cta','title','imp','notes']);
+  restoreTable('funnels-body', data.funnels||[], funnelRow, ['num','link','advertiser','geo','type','obs']);
+  setTimeout(() => { resizeAllInputs(); updateAllBadges(); syncAllLinks(); initAllColResize(); updateFrozenOffsets(); applyTextColors(); restoreColWidths(data.colWidths); restoreRowHeights(data.rowHeights); centerTextareas(); initAllDragReorder(); }, 0);
   return true;
 }
 
@@ -790,24 +2629,48 @@ function restoreTable(id, rows, fn, keys) {
     cells.forEach((cell, i) => {
       const k = keys[i]||'c'+i, v = rd[k];
       if (k === 'creative' && v) {
-        if (v.t === 'img' && v.src) {
-          const fi = cell.querySelector('input[type="file"]'), pd = cell.querySelector('[id$="-preview"]');
-          if (pd && fi) {
-            const sn = (v.name||'').length > 16 ? (v.name||'').slice(0,14)+'…' : (v.name||'');
+        const fi = cell.querySelector('input[type="file"]'), pd = cell.querySelector('[id$="-preview"]');
+        if (pd && fi) {
+          if (v.t === 'cloudinary' && v.url) {
+            const thumb = v.thumb || v.url.replace('/upload/', '/upload/w_144,h_108,c_fill,q_80/');
             pd.innerHTML = `<div class="media-preview">
-              <img class="media-thumb" src="${v.src}" onclick="openMedia('${v.src}','image/jpeg')">
+              <img class="media-thumb" src="${thumb}" onclick="window.open('${v.url}','_blank')" style="cursor:pointer" title="Click to open">
+              <button class="media-remove" onclick="removeMedia('${fi.id}','${pd.id}')">×</button>
+            </div><input type="hidden" class="cloudinary-url" value="${v.url}">`;
+          } else if (v.t === 'img' && v.src) {
+            pd.innerHTML = `<div class="media-preview">
+              <img class="media-thumb" src="${v.src}" onclick="window.open('${v.src}','_blank')" style="cursor:pointer">
               <button class="media-remove" onclick="removeMedia('${fi.id}','${pd.id}')">×</button>
             </div>`;
           }
         }
       } else if (v !== undefined && v !== null) {
-        const s = cell.querySelector('select'), ta = cell.querySelector('textarea'), inp = cell.querySelector('input:not([type="file"])');
-        if (s) s.value = v;
+        const badgeWrap = cell.querySelector('.text-badge-wrap');
+        const chipWrap = cell.querySelector('.link-chip-wrap');
+        const s = cell.querySelector('select'), ta = cell.querySelector('textarea:not(.link-input-field):not(.comment-popup textarea)'), inp = cell.querySelector('input:not([type="file"]):not(.text-badge-input):not(.link-input-field)');
+        if (badgeWrap && v) {
+          const badge = badgeWrap.querySelector('.text-badge');
+          const empty = badgeWrap.querySelector('.text-badge-empty');
+          const input = badgeWrap.querySelector('.text-badge-input');
+          const type = input?.dataset.badgeType;
+          if (badge && empty && type) {
+            badge.textContent = v;
+            badge.style.display = 'inline-block';
+            empty.style.display = 'none';
+            const c = getColorForValue(type, v);
+            badge.style.background = c.bg;
+            badge.style.color = c.color;
+          }
+          const hiddenTa = cell.querySelector('textarea');
+          if (hiddenTa) hiddenTa.value = v;
+        } else if (chipWrap) setLinkChipValue(chipWrap, v);
+        else if (s) s.value = v;
         else if (ta) { ta.value = v; autoGrow(ta); }
         else if (inp) inp.value = v;
       }
     });
   });
+  
 }
 
 async function cloudSave(data) {
@@ -849,24 +2712,87 @@ function toggleAutosave() {
   document.getElementById('autosaveLabel').textContent = autosaveEnabled ? 'On' : 'Off';
   document.getElementById('autosaveToggle').style.color = autosaveEnabled ? '#22a05a' : '';
   document.getElementById('autosaveToggle').style.borderColor = autosaveEnabled ? '#22a05a' : '';
+  localStorage.setItem('ecoverage_autosave', autosaveEnabled ? '1' : '0');
   showToast('Auto-save ' + (autosaveEnabled ? 'enabled' : 'disabled'), autosaveEnabled ? 'success' : '');
 }
+
+// Restore auto-save preference on load
+(function() {
+  const saved = localStorage.getItem('ecoverage_autosave');
+  if (saved === '1') {
+    autosaveEnabled = true;
+    const lbl = document.getElementById('autosaveLabel');
+    const btn = document.getElementById('autosaveToggle');
+    if (lbl) lbl.textContent = 'On';
+    if (btn) { btn.style.color = '#22a05a'; btn.style.borderColor = '#22a05a'; }
+  }
+})();
 
 function setStatus(state, text) {
   document.getElementById('autosaveDot').className = 'autosave-dot '+(state||'');
   document.getElementById('autosaveText').textContent = text;
 }
+let cloudSaveTimer = null;
+function scheduleCloudSave() {
+  setStatus('saving', 'Saving…');
+  clearTimeout(cloudSaveTimer);
+  cloudSaveTimer = setTimeout(doSave, 1200);
+}
+
+// ── Undo/Redo ──
+const undoStack = [];
+const redoStack = [];
+let undoSnapTimer = null;
+let lastSnap = null;
+
+function snapForUndo() {
+  const data = collectData();
+  const snap = JSON.stringify(data);
+  if (snap === lastSnap) return;
+  undoStack.push(snap);
+  if (undoStack.length > 50) undoStack.shift();
+  redoStack.length = 0;
+  lastSnap = snap;
+}
+
+function scheduleSnap() {
+  clearTimeout(undoSnapTimer);
+  undoSnapTimer = setTimeout(snapForUndo, 600);
+}
+
+function applyUndo(stack, otherStack) {
+  if (stack.length === 0) return;
+  while (stack.length > 0 && typeof stack[stack.length-1] !== 'string') stack.pop();
+  if (stack.length === 0) return;
+  const currentSnap = JSON.stringify(collectData());
+  otherStack.push(currentSnap);
+  const snap = stack.pop();
+  const parsed = JSON.parse(snap);
+  lastSnap = JSON.stringify(parsed);
+  restoreData(parsed);
+  setTimeout(() => {
+    resizeAllInputs(); updateAllBadges(); syncAllLinks(); updateFrozenOffsets(); centerTextareas();
+    if (document.getElementById('ads-grid').style.display !== 'none') buildAdsGrid();
+    if (document.getElementById('traffic-grid').style.display !== 'none') buildTrafficGrid();
+    if (document.getElementById('funnels-grid').style.display !== 'none') buildFunnelsGrid();
+  }, 0);
+}
+
 function scheduleSave() {
+  scheduleSnap();
   if (!autosaveEnabled) return;
   setStatus('saving','Saving…');
   clearTimeout(saveTimer);
   saveTimer = setTimeout(doSave, 1200);
 }
+
 async function doSave() {
+  updateLastEdited();
   const data = collectData();
-  try { localStorage.setItem(LS_LOCAL, JSON.stringify(data)); } catch(e){}
+  const cloudData = { ...data, savedAt: new Date().toISOString() };
+  try { localStorage.setItem(LS_LOCAL, JSON.stringify(cloudData)); } catch(e){}
   if (BIN_ID && API_KEY) {
-    const ok = await cloudSave(data);
+    const ok = await cloudSave(cloudData);
     const t = new Date().toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
     setStatus(ok ? 'saved' : 'error', ok ? '☁️ Saved · '+t : '⚠️ Cloud failed — saved locally');
   } else {
@@ -874,6 +2800,7 @@ async function doSave() {
     setStatus('saved','Saved locally · '+t);
   }
 }
+
 async function manualSave() { await doSave(); showToast('Saved!','success'); }
 
 function toggleExportMenu() {
@@ -921,6 +2848,8 @@ function exportPDF() {
 }
 
 function exportJSON() {
+  const warn = getExportSizeWarning();
+  if (warn) showToast(warn, 'error');
   const data = collectData();
   const name = ('ecoverage-'+(document.getElementById('meta-period').value||'report')).replace(/[^a-z0-9\-]/gi,'-').toLowerCase();
   const a = document.createElement('a');
@@ -939,12 +2868,73 @@ function importJSON(input) {
   reader.readAsText(file);
 }
 
+function showHistory() {
+  const panel = document.getElementById('history-panel');
+  const overlay = document.getElementById('history-overlay');
+  const list = document.getElementById('history-list');
+  const count = document.getElementById('history-count');
+
+  // Build list from undoStack (most recent first)
+  const allSnaps = [...undoStack].reverse();
+  count.textContent = allSnaps.length;
+
+  if (!allSnaps.length) {
+    list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-secondary);font-size:12px;">No history yet — make some edits first.</div>';
+  } else {
+    list.innerHTML = allSnaps.map((snap, i) => {
+      const data = JSON.parse(snap);
+      const title = data.header?.title || data.meta?.analyst || 'Version';
+      const time = data.savedAt ? new Date(data.savedAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}) : (data._snapAt ? new Date(data._snapAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}) : 'Unknown time');
+      const date = data.savedAt ? new Date(data.savedAt).toLocaleDateString([], {month:'short',day:'numeric'}) : (data._snapAt ? new Date(data._snapAt).toLocaleDateString([], {month:'short',day:'numeric'}) : '');
+      const rowCount = (data.ads?.length||0) + (data.traffic?.length||0) + (data.funnels?.length||0);
+      return `<div style="background:var(--bg-primary);border:1px solid var(--border-light);border-radius:8px;padding:10px 12px;cursor:pointer;" onmouseover="this.style.borderColor='var(--accent,#4A90D9)'" onmouseout="this.style.borderColor='var(--border-light)'" onclick="restoreVersion(${undoStack.length - 1 - i})">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+          <span style="font-size:12px;font-weight:500;color:var(--text-primary);">${i === 0 ? '⭐ Latest' : `Version ${allSnaps.length - i}`}</span>
+          <span style="font-size:10px;color:var(--text-secondary);">${date} ${time}</span>
+        </div>
+        <div style="font-size:11px;color:var(--text-secondary);">${rowCount} rows · ${title}</div>
+      </div>`;
+    }).join('');
+  }
+
+  panel.style.display = 'flex';
+  overlay.style.display = 'block';
+}
+
+function hideHistory() {
+  document.getElementById('history-panel').style.display = 'none';
+  document.getElementById('history-overlay').style.display = 'none';
+}
+
+function restoreVersion(stackIdx) {
+  const snap = undoStack[stackIdx];
+  if (!snap) return;
+  if (!confirm('Restore this version? Current state will be added to history.')) return;
+  snapForUndo(); // save current state first
+  lastSnap = snap;
+  restoreData(JSON.parse(snap));
+  hideHistory();
+  showToast('Version restored', 'success');
+}
+
 function showToast(msg, type) {
   const t = document.createElement('div');
   t.className = 'toast '+(type||''); t.textContent = msg;
   document.getElementById('toastContainer').appendChild(t);
   requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
   setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),250); },3000);
+}
+
+function runPostInit() {
+  resizeAllInputs(); updateAllBadges(); syncAllLinks(); initAllColResize(); updateFrozenOffsets(); applyTextColors(); initNotesResize(); restoreColWidths(); restoreRowHeights(); centerTextareas(); initAllDragReorder();
+  setTimeout(centerTextareas, 300);
+  const vm = localStorage.getItem('ads_view_mode'); setAdsView(vm === 'table' ? 'table' : 'grid');
+  const tvm = localStorage.getItem('traffic_view_mode'); setTrafficView(tvm === 'grid' ? 'grid' : 'table');
+  const fvm = localStorage.getItem('funnels_view_mode'); setFunnelsView(fvm === 'grid' ? 'grid' : 'table');
+  const t = localStorage.getItem('ecoverage_title'); const tu = localStorage.getItem('ecoverage_title_url') || '';
+  if (t) { document.title = t; const h = document.getElementById('main-title'); if (h) { h.dataset.text = t; h.dataset.url = tu; if (tu) { const a = document.createElement('a'); a.href = tu; a.target = '_blank'; a.rel = 'noopener'; a.textContent = t; a.style.cssText = 'color:inherit;text-decoration:underline;text-underline-offset:3px;'; h.innerHTML = ''; h.appendChild(a); } else { h.textContent = t; } } }
+  updateTitleLinkBtn(tu);
+  setTimeout(snapForUndo, 600);
 }
 
 (async function init() {
@@ -954,14 +2944,15 @@ function showToast(msg, type) {
     const cloudData = await cloudLoad();
     if (cloudData && cloudData.v) {
       restoreData(cloudData);
-      const ts = new Date(cloudData.savedAt).toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+      const ts = new Date(cloudData.savedAt||Date.now()).toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
       setStatus('saved','☁️ Synced · '+ts);
+      setTimeout(runPostInit, 0);
       return;
     }
   }
   try {
     const raw = localStorage.getItem(LS_LOCAL);
-    if (raw) { restoreData(JSON.parse(raw)); setStatus('saved','Restored locally'); return; }
+    if (raw) { restoreData(JSON.parse(raw)); setStatus('saved','Restored locally'); setTimeout(runPostInit, 0); return; }
   } catch(e){}
   for (let i=1;i<=3;i++) {
     document.getElementById('traffic-body').insertAdjacentHTML('beforeend', trafficRow(i));
@@ -969,8 +2960,7 @@ function showToast(msg, type) {
     document.getElementById('funnels-body').insertAdjacentHTML('beforeend', funnelRow(i));
   }
   setStatus('', 'Auto-save on');
-  setTimeout(() => { resizeAllInputs(); updateAllBadges(); syncAllLinks(); initAllColResize(); updateFrozenOffsets(); }, 0);
-  initAllColResize();
+  setTimeout(runPostInit, 0);
 })();
 </script>
 </body>
