@@ -407,7 +407,7 @@
 <div class="modal-overlay hidden" id="setupModal" onclick="handleModalClick(event)">
   <div class="modal">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-      <h2 style="margin:0;cursor:default;user-select:none;" ondblclick="unlockCloudSettings()" title="">☁️ Connect shared cloud save</h2>
+      <h2 style="margin:0;cursor:default;user-select:none;" id="cloud-modal-title" onclick="cloudTitleClick()">☁️ Connect shared cloud save</h2>
       <button onclick="skipSetup()" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text-secondary);line-height:1;padding:0 4px;" title="Close">×</button>
     </div>
     <p>To sync data across all team members, connect a free <strong>JSONBin.io</strong> bin. Anyone who opens the page will see the latest saved data.</p>
@@ -420,8 +420,8 @@
     </ol>
     <label>Bin ID</label>
     <input type="text" id="setup-bin-id" placeholder="e.g. 6639abc1234567890abcdef" readonly style="cursor:default;opacity:0.7;">
-    <label>API Key</label>
-    <input type="text" id="setup-api-key" placeholder="$2a$10$..." readonly style="cursor:default;opacity:0.7;">
+    <label id="api-key-label" style="cursor:default;user-select:none;">API Key</label>
+    <input type="text" id="setup-api-key" placeholder="$2a$10$..." readonly style="cursor:default;opacity:0.7;-webkit-text-security:disc;text-security:disc;font-family:text-security-disc,monospace;letter-spacing:0.05em;">
     <div class="modal-actions">
       <button class="toolbar-btn" onclick="skipSetup()">Skip — local only</button>
       <button class="toolbar-btn primary" id="connectBtn" onclick="saveSetup()" disabled style="opacity:0.4;cursor:not-allowed;">Connect</button>
@@ -1668,23 +1668,45 @@ function applyReadOnlyMode() {}
 
 function saveSettings() { localStorage.setItem(LS_SETTINGS, JSON.stringify({ binId: BIN_ID, apiKey: API_KEY })); }
 
+let _cloudTitleClicks = 0, _cloudTitleTimer = null;
+function cloudTitleClick() {
+  _cloudTitleClicks++;
+  clearTimeout(_cloudTitleTimer);
+  _cloudTitleTimer = setTimeout(() => { _cloudTitleClicks = 0; }, 600);
+  if (_cloudTitleClicks >= 3) {
+    _cloudTitleClicks = 0;
+    unlockCloudSettings();
+  }
+}
+
 function unlockCloudSettings() {
-  document.getElementById('setup-bin-id').removeAttribute('readonly');
-  document.getElementById('setup-bin-id').style.opacity = '1';
-  document.getElementById('setup-bin-id').style.cursor = 'text';
-  document.getElementById('setup-api-key').removeAttribute('readonly');
-  document.getElementById('setup-api-key').style.opacity = '1';
-  document.getElementById('setup-api-key').style.cursor = 'text';
+  const apiKey = document.getElementById('setup-api-key');
+  const binId = document.getElementById('setup-bin-id');
+  apiKey.style.webkitTextSecurity = 'none';
+  apiKey.style.textSecurity = 'none';
+  apiKey.style.fontFamily = '';
+  apiKey.style.letterSpacing = '';
+  apiKey.removeAttribute('readonly'); apiKey.style.opacity = '1'; apiKey.style.cursor = 'text';
+  binId.removeAttribute('readonly'); binId.style.opacity = '1'; binId.style.cursor = 'text';
   const btn = document.getElementById('connectBtn');
-  btn.disabled = false;
-  btn.style.opacity = '1';
-  btn.style.cursor = 'pointer';
-  showToast('Edit mode unlocked', 'success');
+  if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; }
 }
 
 function showSetupModal() {
   document.getElementById('setup-bin-id').value = BIN_ID;
   document.getElementById('setup-api-key').value = API_KEY;
+  // Lock fields on open — require triple-click to unlock
+  document.getElementById('setup-bin-id').setAttribute('readonly', true);
+  document.getElementById('setup-bin-id').style.opacity = '0.7';
+  document.getElementById('setup-bin-id').style.cursor = 'default';
+  document.getElementById('setup-api-key').setAttribute('readonly', true);
+  document.getElementById('setup-api-key').style.opacity = '0.7';
+  document.getElementById('setup-api-key').style.cursor = 'default';
+  document.getElementById('setup-api-key').style.webkitTextSecurity = 'disc';
+  document.getElementById('setup-api-key').style.textSecurity = 'disc';
+  document.getElementById('setup-api-key').style.fontFamily = 'monospace';
+  document.getElementById('setup-api-key').style.letterSpacing = '0.05em';
+  _cloudTitleClicks = 0;
   document.getElementById('setupModal').classList.remove('hidden');
 }
 function saveSetup() {
