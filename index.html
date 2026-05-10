@@ -264,11 +264,12 @@
     .add-row { padding: 8px 12px; border-top: 1px solid var(--border-light); }
     .add-btn { width: 100%; padding: 6px 12px; font-size: 12px; font-family: inherit; color: var(--text-secondary); background: none; border: 1px dashed var(--border-light); border-radius: var(--radius-md); cursor: pointer; }
     .add-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
-    .notes-body { position: relative; }
-    .notes-body textarea { width: 100%; height: 160px; min-height: 80px; padding: 12px 16px; font-size: 13px; font-family: inherit; color: var(--text-primary); background: transparent; border: none; resize: none; outline: none; line-height: 1.6; box-sizing: border-box; overflow-y: auto; cursor: text; display: block; }
+    .notes-card { display: flex; flex-direction: column; height: 260px; min-height: 120px; overflow: hidden; }
+    .notes-body { flex: 1; min-height: 0; overflow-y: auto; }
+    .notes-body textarea { display: block; width: 100%; height: 100%; padding: 12px 16px; font-size: 13px; font-family: inherit; color: var(--text-primary); background: transparent; border: none; resize: none; outline: none; line-height: 1.6; box-sizing: border-box; overflow-y: auto; cursor: text; }
     .notes-body textarea:focus { background: var(--bg-secondary); }
-    .notes-resize-handle { height: 10px; background: var(--bg-secondary); border-top: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center; cursor: ns-resize; user-select: none; -webkit-user-select: none; }
-    .notes-resize-handle::after { content: ''; width: 32px; height: 2px; background: var(--border-mid); border-radius: 2px; pointer-events: none; }
+    .notes-resize-handle { flex-shrink: 0; height: 12px; background: var(--bg-secondary); border-top: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center; cursor: ns-resize; user-select: none; -webkit-user-select: none; }
+    .notes-resize-handle::after { content: ''; width: 32px; height: 3px; background: var(--border-mid); border-radius: 2px; pointer-events: none; }
     .notes-resize-handle:hover::after { background: var(--accent,#4A90D9); }
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     @media (max-width: 620px) { .two-col { grid-template-columns: 1fr; } }
@@ -517,23 +518,25 @@
   </div>
 
   <div class="two-col">
-    <div class="section">
+    <div class="section notes-card" id="notes-card-takeaways">
       <div class="section-header">
         <div class="section-icon icon-purple">
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="#534AB7" stroke-width="1.5"/><path d="M8 5.5 V8 L10 9.5" stroke="#534AB7" stroke-width="1.5" stroke-linecap="round"/></svg>
         </div>
         <span class="section-title">Key takeaways</span>
       </div>
-      <div class="notes-body"><textarea id="notes-takeaways" placeholder="Summarize the main findings, patterns, and strategic insights from this analysis..." oninput="scheduleCloudSave()"></textarea><div class="notes-resize-handle" onmousedown="notesResizeStart(event,this)" data-for="notes-takeaways"></div></div>
+      <div class="notes-body"><textarea id="notes-takeaways" placeholder="Summarize the main findings, patterns, and strategic insights from this analysis..." oninput="scheduleCloudSave()"></textarea></div>
+      <div class="notes-resize-handle" onmousedown="notesResizeStart(event,this)" onselectstart="return false" data-for="notes-takeaways"></div>
     </div>
-    <div class="section">
+    <div class="section notes-card" id="notes-card-actions">
       <div class="section-header">
         <div class="section-icon icon-coral">
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M4 8 L7 11 L12 5" stroke="#993C1D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <span class="section-title">Recommended actions</span>
       </div>
-      <div class="notes-body"><textarea id="notes-actions" placeholder="List specific actions to test, replicate, or counter based on these findings..." oninput="scheduleCloudSave()"></textarea><div class="notes-resize-handle" onmousedown="notesResizeStart(event,this)" data-for="notes-actions"></div></div>
+      <div class="notes-body"><textarea id="notes-actions" placeholder="List specific actions to test, replicate, or counter based on these findings..." oninput="scheduleCloudSave()"></textarea></div>
+      <div class="notes-resize-handle" onmousedown="notesResizeStart(event,this)" onselectstart="return false" data-for="notes-actions"></div>
     </div>
   </div>
 
@@ -1699,44 +1702,39 @@ let _notesResizeState = null;
 
 function notesResizeStart(e, handle) {
   const id = handle.dataset.for;
-  const ta = document.getElementById(id);
-  if (!ta) return;
+  const card = handle.closest('.notes-card');
+  if (!card) return;
   const startY = e.clientY;
-  const startH = ta.offsetHeight;
+  const startH = card.offsetHeight;
   e.preventDefault();
   e.stopPropagation();
 
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:2147483647;cursor:ns-resize;';
+  document.body.appendChild(overlay);
+
   function onMove(ev) {
-    ta.style.height = Math.max(60, startH + (ev.clientY - startY)) + 'px';
+    card.style.height = Math.max(120, startH + (ev.clientY - startY)) + 'px';
   }
   function onUp() {
+    overlay.remove();
+    localStorage.setItem('notes-h-' + id, card.style.height);
+    try { doSave(); } catch(err) {}
     window.removeEventListener('mousemove', onMove);
     window.removeEventListener('mouseup', onUp);
-    document.body.style.userSelect = '';
-    document.body.style.cursor = '';
-    localStorage.setItem('notes-h-' + id, ta.style.height);
-    try { doSave(); } catch(err) {}
   }
-  document.body.style.userSelect = 'none';
-  document.body.style.cursor = 'ns-resize';
   window.addEventListener('mousemove', onMove);
   window.addEventListener('mouseup', onUp);
 }
 
 
-function saveNotesHeight(ta) {
-  if (ta.style.height) {
-    localStorage.setItem('notes-h-' + ta.id, ta.style.height);
-    try { doSave(); } catch(e) {}
-  }
-}
 
 function initNotesResize() {
-  ['notes-takeaways', 'notes-actions'].forEach(id => {
-    const ta = document.getElementById(id);
-    if (!ta) return;
+  [{id:'notes-takeaways',card:'notes-card-takeaways'},{id:'notes-actions',card:'notes-card-actions'}].forEach(({id,card}) => {
+    const el = document.getElementById(card);
+    if (!el) return;
     const saved = localStorage.getItem('notes-h-' + id);
-    if (saved) ta.style.height = saved;
+    if (saved) el.style.height = saved;
   });
 }function loadSettings() {
   try {
@@ -2832,8 +2830,8 @@ function collectData() {
     notes: {
       takeaways: document.getElementById('notes-takeaways').value,
       actions: document.getElementById('notes-actions').value,
-      takeawaysH: document.getElementById('notes-takeaways')?.style.height || '',
-      actionsH: document.getElementById('notes-actions')?.style.height || '',
+      takeawaysH: document.getElementById('notes-card-takeaways')?.style.height || '',
+      actionsH: document.getElementById('notes-card-actions')?.style.height || '',
     },
     colWidths: (function() { const d={}; document.querySelectorAll('table').forEach(t => { const id=t.id||'table'; d[id]={}; t.querySelectorAll('thead th').forEach((th,i)=>{ if(th.style.width) d[id][i]=th.style.width; }); if(t.style.width) d[id]['_tableW']=t.style.width; }); return d; })(),
     rowHeights: (function() { const d={}; document.querySelectorAll('table').forEach(t => { const id=t.id||'table'; d[id]={}; t.querySelectorAll('tbody tr').forEach((tr,i)=>{ if(tr.style.height) d[id][i]=tr.style.height; }); }); return d; })(),
@@ -2889,8 +2887,8 @@ function restoreData(data) {
   document.getElementById('meta-period').value = data.meta?.period||'';
   document.getElementById('notes-takeaways').value = data.notes?.takeaways||'';
   document.getElementById('notes-actions').value = data.notes?.actions||'';
-  if (data.notes?.takeawaysH) { const ta = document.getElementById('notes-takeaways'); if(ta) ta.style.height = data.notes.takeawaysH; }
-  if (data.notes?.actionsH) { const ta = document.getElementById('notes-actions'); if(ta) ta.style.height = data.notes.actionsH; }
+  if (data.notes?.takeawaysH) { const c = document.getElementById('notes-card-takeaways'); if(c) c.style.height = data.notes.takeawaysH; }
+  if (data.notes?.actionsH) { const c = document.getElementById('notes-card-actions'); if(c) c.style.height = data.notes.actionsH; }
   restoreTable('traffic-body', data.traffic||[], trafficRow, ['num','source','geo','qty','type','notes']);
   restoreTable('ads-body', data.ads||[], adsRow, ['num','offer','channel','format','geo','lifecycle','landingPage','spyLink','fanPage','creative','creativeLink','angle','headline','cta','title','imp','notes']);
   restoreTable('funnels-body', data.funnels||[], funnelRow, ['num','link','advertiser','geo','type','obs']);
