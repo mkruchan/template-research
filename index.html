@@ -2748,7 +2748,7 @@ function snapForUndo() {
   const data = collectData();
   const snap = JSON.stringify(data);
   if (snap === lastSnap) return;
-  undoStack.push(snap);
+  undoStack.push(JSON.stringify({ ...data, _snapAt: new Date().toISOString() }));
   if (undoStack.length > 50) undoStack.shift();
   redoStack.length = 0;
   lastSnap = snap;
@@ -2763,10 +2763,11 @@ function applyUndo(stack, otherStack) {
   if (stack.length === 0) return;
   while (stack.length > 0 && typeof stack[stack.length-1] !== 'string') stack.pop();
   if (stack.length === 0) return;
-  const currentSnap = JSON.stringify(collectData());
+  const currentSnap = JSON.stringify({ ...collectData(), _snapAt: new Date().toISOString() });
   otherStack.push(currentSnap);
   const snap = stack.pop();
   const parsed = JSON.parse(snap);
+  delete parsed._snapAt;
   lastSnap = JSON.stringify(parsed);
   restoreData(parsed);
   setTimeout(() => {
@@ -2788,6 +2789,14 @@ function scheduleSave() {
 async function doSave() {
   updateLastEdited();
   const data = collectData();
+  const snap = JSON.stringify(data);
+  // Always record save in history with timestamp
+  const entry = JSON.stringify({ ...data, _snapAt: new Date().toISOString() });
+  if (snap !== lastSnap) {
+    undoStack.push(entry);
+    if (undoStack.length > 50) undoStack.shift();
+    lastSnap = snap;
+  }
   const cloudData = { ...data, savedAt: new Date().toISOString() };
   try { localStorage.setItem(LS_LOCAL, JSON.stringify(cloudData)); } catch(e){}
   if (BIN_ID && API_KEY) {
@@ -2889,8 +2898,8 @@ function showHistory() {
     list.innerHTML = allSnaps.map((snap, i) => {
       const data = JSON.parse(snap);
       const title = data.header?.title || data.meta?.analyst || 'Version';
-      const time = data.savedAt ? new Date(data.savedAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}) : (data._snapAt ? new Date(data._snapAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}) : 'Unknown time');
-      const date = data.savedAt ? new Date(data.savedAt).toLocaleDateString([], {month:'short',day:'numeric'}) : (data._snapAt ? new Date(data._snapAt).toLocaleDateString([], {month:'short',day:'numeric'}) : '');
+      const time = data._snapAt ? new Date(data._snapAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}) : 'Unknown time';
+      const date = data._snapAt ? new Date(data._snapAt).toLocaleDateString([], {month:'short',day:'numeric'}) : '';
       const rowCount = (data.ads?.length||0) + (data.traffic?.length||0) + (data.funnels?.length||0);
       return `<div style="background:var(--bg-primary);border:1px solid var(--border-light);border-radius:8px;padding:10px 12px;cursor:pointer;" onmouseover="this.style.borderColor='var(--accent,#4A90D9)'" onmouseout="this.style.borderColor='var(--border-light)'" onclick="restoreVersion(${undoStack.length - 1 - i})">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
@@ -2914,10 +2923,12 @@ function hideHistory() {
 function restoreVersion(stackIdx) {
   const snap = undoStack[stackIdx];
   if (!snap) return;
-  if (!confirm('Restore this version? Current state will be added to history.')) return;
-  snapForUndo(); // save current state first
-  lastSnap = snap;
-  restoreData(JSON.parse(snap));
+  if (!confirm('Restore this version? Current state will be saved first.')) return;
+  snapForUndo();
+  const parsed = JSON.parse(snap);
+  delete parsed._snapAt;
+  lastSnap = JSON.stringify(parsed);
+  restoreData(parsed);
   hideHistory();
   showToast('Version restored', 'success');
 }
