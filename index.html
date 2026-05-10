@@ -2958,18 +2958,35 @@ function restoreVersion(stackIdx) {
   const snap = undoStack[stackIdx];
   if (!snap) return;
   _restoring = true;
-  snapForUndo();
+  hideHistory();
+
   const parsed = JSON.parse(snap);
   delete parsed._snapAt;
-  lastSnap = JSON.stringify(parsed);
+
+  // Save directly to cloud and localStorage first
+  const cloudData = { ...parsed, savedAt: new Date().toISOString() };
+  try { localStorage.setItem(LS_LOCAL, JSON.stringify(cloudData)); } catch(e) {}
+  if (BIN_ID && API_KEY) cloudSave(cloudData).then(ok => {
+    const t = new Date().toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
+    setStatus(ok ? 'saved' : 'error', ok ? '☁️ Restored · '+t : '⚠️ Cloud failed');
+  });
+
+  // Restore DOM
   restoreData(parsed);
-  hideHistory();
-  // After DOM settles, clear flag and save the restored state
+  lastSnap = JSON.stringify(parsed);
+
   setTimeout(() => {
     _restoring = false;
-    doSave();
+    // Rebuild all UI after restore
+    resizeAllInputs(); updateAllBadges(); syncAllLinks(); initAllColResize();
+    updateFrozenOffsets(); applyTextColors(); initNotesResize();
+    restoreColWidths(parsed.colWidths); restoreRowHeights(parsed.rowHeights);
+    centerTextareas(); initAllDragReorder();
+    const vm = localStorage.getItem('ads_view_mode'); setAdsView(vm === 'table' ? 'table' : 'grid');
+    const tvm = localStorage.getItem('traffic_view_mode'); setTrafficView(tvm === 'grid' ? 'grid' : 'table');
+    const fvm = localStorage.getItem('funnels_view_mode'); setFunnelsView(fvm === 'grid' ? 'grid' : 'table');
     showToast('Version restored', 'success');
-  }, 300);
+  }, 100);
 }
 
 function showToast(msg, type) {
